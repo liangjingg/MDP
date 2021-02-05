@@ -65,5 +65,15 @@ class Algorithm:
 		except Exception as error:
                         print ('Failed to write from PC: {}'.format(str(error))
 			raise error
+			       
+## if you guys ever need a disconnect function for pc			       
+##	def disconnect(self):
+##                try:
+##                        self.socket.close()
+##                        print('disconnected')
+##
+##                except Exception as error:
+##                        print('PC disconnection error: {}'.format(str(error))
+##                        raise error 
 
 
