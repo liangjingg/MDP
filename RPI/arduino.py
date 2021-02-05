@@ -51,6 +51,7 @@ class Arduino:
 
             except Exception as error:
                 print('Arduino failed to read' + str(error))
+                raise error
 
     def write(self, msg):
         try:
@@ -60,6 +61,7 @@ class Arduino:
 
             except Exception as error:
                 print('Arduino failed to write' + str(error))
+                raise error
                 
                 
 
