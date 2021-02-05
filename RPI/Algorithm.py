@@ -55,7 +55,7 @@ class Algorithm:
 
 		except Exception as error:
 			print('Failed to read from PC: {}'.format(str(error)))
-			#raise error
+			raise error
 		
 
 	def write(self, msg):
@@ -64,6 +64,6 @@ class Algorithm:
 			self.clientsocket.send(msg)
 		except Exception as error:
                         print ('Failed to write from PC: {}'.format(str(error))
-			#raise error
+			raise error
 
 
