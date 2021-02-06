@@ -154,17 +154,19 @@ public class ControlFragment extends Fragment implements SensorEventListener {
                 else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
                     gridMap.moveRobot("forward");
                     MainActivity.refreshLabel();
-                    if (gridMap.getValidPosition())
+                    if (gridMap.getValidPosition()){
+                        MainActivity.printMessage("W1|");
                         updateStatus("moving forward");
+                        robotStatusTextView.setText("moving");
+                        counter++;
+                        if(counter>1){
+                            TimerTask MyTimer = new MyTimerTask();
+                            timer.scheduleAtFixedRate(MyTimer, 4000, 6000);
+                        }
+                    }
+
                     else
                         updateStatus("Unable to move forward");
-                    MainActivity.printMessage("W1|");
-                    robotStatusTextView.setText("moving");
-                    counter++;
-                    if(counter>1){
-                        TimerTask MyTimer = new MyTimerTask();
-                        timer.scheduleAtFixedRate(MyTimer, 4000, 6000);
-                    }
                 }
                 else
                     updateStatus("Please press 'STARTING POINT'");
@@ -198,11 +200,18 @@ public class ControlFragment extends Fragment implements SensorEventListener {
                 else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
                     gridMap.moveRobot("back");
                     MainActivity.refreshLabel();
-                    if (gridMap.getValidPosition())
+                    if (gridMap.getValidPosition()){
+                        MainActivity.printMessage("S1|");
                         updateStatus("moving backward");
-                    else
+                        robotStatusTextView.setText("moving");
+                        counter++;
+                        if(counter>1){
+                            TimerTask MyTimer = new MyTimerTask();
+                            timer.scheduleAtFixedRate(MyTimer, 4000, 6000);
+                        }
+                    }else
                         updateStatus("Unable to move backward");
-                    MainActivity.printMessage("S1|");
+
                 }
                 else
                     updateStatus("Please press 'STARTING POINT'");

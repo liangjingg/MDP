@@ -240,7 +240,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.522"
                 app:layout_constraintStart_toEndOf="@+id/mapView"
-                app:layout_constraintTop_toBottomOf="@+id/xAxisTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/xAxisTextView"
+                android:visibility = "gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
