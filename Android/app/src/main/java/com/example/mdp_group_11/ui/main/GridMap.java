@@ -539,6 +539,8 @@ public class GridMap extends View {
                     break;
                 case "image":
                     this.paint = obstacleColor;
+                case "id":
+                    
                 default:
                     showLog("setTtype default: " + type);
                     break;
@@ -774,6 +776,8 @@ public class GridMap extends View {
                         cells[waypointCoord[0]][20 - waypointCoord[1]].setType("waypoint");
                     break;
                 case "robotPosition":
+                    //TextView robotStatusTextView = ((Activity)this.getContext()).findViewById(R.id.robotStatusTextView);
+                    //robotStatusTextView.setText("yesss");
                     if (canDrawRobot)
                         this.setOldRobotCoord(curCoord[0], curCoord[1]);
                     infoJsonArray = mapInformation.getJSONArray("robotPosition");
@@ -837,6 +841,8 @@ public class GridMap extends View {
                     printRobotStatus(msg);
                     message = "status: " + msg;
                     break;
+                case "id":
+
                 default:
                     message = "Unintended default for JSONObject";
                     break;

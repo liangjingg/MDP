@@ -253,25 +253,23 @@ public class MainActivity extends AppCompatActivity {
 
     public static void refreshMessageReceived() {
         String received= sharedPreferences.getString("message", "");
-        //CommsFragment.getMessageReceivedTextView().setText(sharedPreferences.getString("message", ""));
-        CommsFragment.getMessageReceivedTextView().setText(received);
-        String[] separated = received.split("\\|");
-        robotStatusTextView.setText(Arrays.toString(separated));
-        //robotStatusTextView.setText(received);
+        CommsFragment.getMessageReceivedTextView().setText(sharedPreferences.getString("message", ""));
+        //CommsFragment.getMessageReceivedTextView().setText(received);
+        /*String[] separated = received.split("\\|");
         if(separated[counter].equals("\nstatus exploring")){
             robotStatusTextView.setText("exploring");
-        }else if(separated[counter].equals("\nstatus fastest path")){
+        }if(separated[counter].equals("\nstatus fastest path")){
             robotStatusTextView.setText("fastest path");
-        }else if(separated[counter].equals("\nstatus turning left")){
+        }if(separated[counter].equals("\nstatus turning left")){
             robotStatusTextView.setText("turning left");
-        }else if(separated[counter].equals("\nstatus turning right")){
+        }if(separated[counter].equals("\nstatus turning right")){
             robotStatusTextView.setText("turning right");
-        }else if(separated[counter].equals("\nstatus moving forward")){
+        }if(separated[counter].equals("\nstatus moving forward")){
             robotStatusTextView.setText("moving forward");
-        }else if(separated[counter].equals("\nstatus reversing")){
+        }if(separated[counter].equals("\nstatus reversing")){
             robotStatusTextView.setText("reversing");
         }
-        counter++;
+        counter++;*/
     }
 
 
