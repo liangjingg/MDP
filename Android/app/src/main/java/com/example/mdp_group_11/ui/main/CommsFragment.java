@@ -46,8 +46,6 @@ public class CommsFragment extends Fragment {
         return fragment;
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +80,9 @@ public class CommsFragment extends Fragment {
                 String sentText = "" + typeBoxEditText.getText().toString();
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("message", sharedPreferences.getString("message", "") + '\n' + sentText);
+                editor.putString("message", sharedPreferences.getString("message", "") +'\n' + sentText);
                 editor.commit();
+                //message sent from tablet and shown on the textview
                 messageReceivedTextView.setText(sharedPreferences.getString("message", ""));
                 typeBoxEditText.setText("");
 

@@ -39,6 +39,8 @@ import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     static TextView xAxisTextView, yAxisTextView, directionAxisTextView;
     static TextView robotStatusTextView;
     static Button f1, f2;
+    private static int counter=0;
     Button reconfigure;
     ReconfigureFragment reconfigureFragment = new ReconfigureFragment();
 
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     BluetoothDevice mBTDevice;
     private static UUID myUUID;
     ProgressDialog myDialog;
+
 
     private static final String TAG = "Main Activity";
 
@@ -248,7 +252,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void refreshMessageReceived() {
-        CommsFragment.getMessageReceivedTextView().setText(sharedPreferences.getString("message", ""));
+        String received= sharedPreferences.getString("message", "");
+        //CommsFragment.getMessageReceivedTextView().setText(sharedPreferences.getString("message", ""));
+        CommsFragment.getMessageReceivedTextView().setText(received);
+        String[] separated = received.split("\\|");
+        robotStatusTextView.setText(Arrays.toString(separated));
+        //robotStatusTextView.setText(received);
+        if(separated[counter].equals("\nstatus exploring")){
+            robotStatusTextView.setText("exploring");
+        }else if(separated[counter].equals("\nstatus fastest path")){
+            robotStatusTextView.setText("fastest path");
+        }else if(separated[counter].equals("\nstatus turning left")){
+            robotStatusTextView.setText("turning left");
+        }else if(separated[counter].equals("\nstatus turning right")){
+            robotStatusTextView.setText("turning right");
+        }else if(separated[counter].equals("\nstatus moving forward")){
+            robotStatusTextView.setText("moving forward");
+        }else if(separated[counter].equals("\nstatus reversing")){
+            robotStatusTextView.setText("reversing");
+        }
+        counter++;
     }
 
 
@@ -441,4 +464,5 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(TAG, "onSaveInstanceState");
         showLog("Exiting onSaveInstanceState");
     }
+
 }
