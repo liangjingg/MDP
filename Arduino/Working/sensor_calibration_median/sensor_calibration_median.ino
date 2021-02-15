@@ -1,10 +1,11 @@
 #include <DualVNH5019MotorShield.h>
 #include <EnableInterrupt.h>
+#include "MotorCalibration2.h"
 
-#define M1E1Right 5
-#define M2E2Left 11
+#define LEFT_ENCODER 5
+#define RIGHT_ENCODER 13
 
-DualVNH5019MotorShield md;
+//DualVNH5019MotorShield md;
 
 volatile unsigned int E1Pos = 0;
 volatile unsigned int E2Pos = 0;
@@ -46,52 +47,71 @@ void setup()
   Serial.println("SETUP");
 
   //setup for motor shield
-  pinMode(M1E1Right, INPUT);
-  digitalWrite(M1E1Right, HIGH);       // turn on pull-up resistor
-  pinMode(M2E2Left, INPUT);
-  digitalWrite(M2E2Left, HIGH);       // turn on pull-up resistor
+  pinMode(LEFT_ENCODER, INPUT);
+  digitalWrite(LEFT_ENCODER, HIGH);       // turn on pull-up resistor
+  pinMode(RIGHT_ENCODER, INPUT);
+  digitalWrite(RIGHT_ENCODER, HIGH);       // turn on pull-up resistor
+  //delay(1000);
+  enableInterrupt(LEFT_ENCODER, leftEncoderInc, RISING);
   delay(1000);
-  enableInterrupt(M1E1Right, E1, RISING);
-  delay(3000);
-  enableInterrupt(M2E2Left, E2, RISING);
+  enableInterrupt(RIGHT_ENCODER, rightEncoderInc, RISING);
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
   Serial.println("start");                // a personal quirk
+
+  leftPID.SetOutputLimits(-50,50);
+  leftPID.SetMode(AUTOMATIC);
+  rightPID.SetOutputLimits(-50,50);
+  rightPID.SetMode(AUTOMATIC); 
+  straightPID.SetOutputLimits(-50,50);
+  straightPID.SetMode(AUTOMATIC);
+  //rightEncoderRes();
+  //leftEncoderRes();
 }
 
 void loop()
 {
-  //left_analog = rawIRSensorMedian(50, 0);
-  //left_distanceInCm = shortRangeDistance(left_analog);
+  left_analog = rawIRSensorMedian(50, 0);
+  left_distanceInCm = shortRangeDistance(left_analog);
   
-  //right_analog = rawIRSensorMedian(50, 1);
-  //right_distanceInCm = shortRangeDistance(right_analog);
+  right_analog = rawIRSensorMedian(50, 1);
+  right_distanceInCm = shortRangeDistance(right_analog);
   
-  //back_analog = rawIRSensorMedian(50, 2);
-  //back_distanceInCm = longRangeDistance(back_analog) + 5;
+  back_analog = rawIRSensorMedian(50, 2);
+  back_distanceInCm = longRangeDistance(back_analog) + 5;
   
   front_analog = rawIRSensorMedian(50, 3);
   front_distanceInCm = longRangeDistance(front_analog);
-  Serial.print("Front: ");
-  Serial.println(front_distanceInCm);
   
-  //topLeft_analog = rawIRSensorMedian(50, 4);
-  //topLeft_distanceInCm = shortRangeDistance(topLeft_analog) -3 ;
-  //Serial.print("Topleft: ");
-  //Serial.println(topLeft_distanceInCm);
+  topLeft_analog = rawIRSensorMedian(50, 4);
+  topLeft_distanceInCm = shortRangeDistance(topLeft_analog) -3 ;
   
   topRight_analog = rawIRSensorMedian(50, 5);
   topRight_distanceInCm = shortRangeDistance(topRight_analog) - 3;
   
-  delay(1000);
+  Serial.println("TopLeft Front TopRight");
+  Serial.print(topLeft_distanceInCm);
+  Serial.print("\t");
+  Serial.print(front_distanceInCm);
+  Serial.print("\t");
+  Serial.println(topRight_distanceInCm);
+  Serial.println("    Left Back Right   ");
+  Serial.print(left_distanceInCm);
+  Serial.print("\t");
+  Serial.print(back_distanceInCm);
+  Serial.print("\t");
+  Serial.println(right_distanceInCm);
   
-  if (topLeft_distanceInCm >= 10)
+  if (topLeft_distanceInCm >= 10&&front_distanceInCm >= 20&&topRight_distanceInCm >= 10)
   {
     Serial.println("Moving Forward one box!");
+    Serial.println("");
     moveForward();
   }else{
-    //not executing for some reason?? 
     Serial.println("Too close to obstacle!");
+    Serial.println("");
+    turnRight(380);
+    md.setSpeeds(0,0);
   }
 }
 
@@ -147,6 +167,10 @@ void sort(int arr[],int n) {
 float shortRangeDistance(int analogValue)
 {
   float distanceInCm = (3867.508/(analogValue - 130.319));
+  if (distanceInCm > 70 || distanceInCm < 0)
+  {
+    distanceInCm = 70;
+  }
   return distanceInCm;
 }
 
@@ -154,6 +178,11 @@ float shortRangeDistance(int analogValue)
 float longRangeDistance(int analogValue)
 {
   float distanceInCm = (8687.689/(analogValue - 75.9339));
+
+  if (distanceInCm > 70 || distanceInCm < 0)
+  {
+    distanceInCm = 70;
+  }
   return distanceInCm;
 }
 
@@ -190,3 +219,18 @@ void moveForward()
     md.setM1Speed(0);
     md.setM2Speed(0);
 }
+/*
+void turnLeft()
+{
+  md.setSpeeds(-(200),(200));
+  delay(750);
+  md.setSpeeds(0,0);
+}
+
+void turnRight()
+{
+  md.setSpeeds((200),-(200));
+  delay(750);
+  md.setSpeeds(0,0);
+}
+*/
