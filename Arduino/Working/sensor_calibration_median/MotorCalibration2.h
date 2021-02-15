@@ -30,7 +30,7 @@
 #include "DualVNH5019MotorShield.h"
 #include <SharpIR.h>
 #include <EnableInterrupt.h>
-#include <PID_v1.h>
+#include <PID_v2.h>
 #include <ArduinoSort.h>
 
 /*
