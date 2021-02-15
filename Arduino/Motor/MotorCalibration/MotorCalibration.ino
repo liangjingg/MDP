@@ -1,3 +1,4 @@
+
 /*
  * Version: 1.0
  * 
@@ -28,7 +29,7 @@
 #include "DualVNH5019MotorShield.h"
 #include <SharpIR.h>
 #include <EnableInterrupt.h>
-#include <PID_v1.h>
+#include <PID_v2.h>
 #include <ArduinoSort.h>
 
 /*
@@ -112,8 +113,8 @@ void loop() {
   // put your main code here, to run repeatedly:
     char var = 'R'; 
     char readChar;
-    goStraight(5000);
-    //turnLeft(382);
+    //goStraight(5000);
+    turnLeft(382);
     //turnRight(372);
 }
 
