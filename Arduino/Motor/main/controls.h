@@ -65,7 +65,7 @@ void executeCommand(){
   }
 
   // MOVE BACK
-  else if (letter == 'A')
+  else if (letter == 'S')
   {
     // cmd_out is set to 1
     cmd_out++;
@@ -135,7 +135,7 @@ void executeCommand(){
   }
 
    // TURN LEFT
-  else if (letter == 'D')
+  else if (letter == 'A')
   {
     // cmd_out is set to 1
     cmd_out++;

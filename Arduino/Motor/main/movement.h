@@ -171,10 +171,10 @@ double rotationTicksRight(double angle){
 /* =============================== Adjusting the Steps ============================= */
 //ADJUST THE VALUE HERE TO CONTROL DISTANCE MOVED
 //ONE STEP = 1 Block --> define the distance travelled for one block
-#define STRAIGHTSTEP 100
-#define BACKSTEP 100
-#define RIGHTSTEP 100
-#define LEFTSTEP 100
+#define STRAIGHTSTEP 290 
+#define BACKSTEP 290
+#define RIGHTSTEP 400
+#define LEFTSTEP 400
 
 
 void moveStraightStep(double steps){
