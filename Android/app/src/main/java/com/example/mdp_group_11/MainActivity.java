@@ -381,9 +381,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             try {
-                if (message.length() > 8 && message.substring(2,7).equals("image")) {
+                if (message.length() > 8 && message.substring(2,4).equals("id")) {
                     JSONObject jsonObject = new JSONObject(message);
-                    JSONArray jsonArray = jsonObject.getJSONArray("image");
+                    JSONArray jsonArray = jsonObject.getJSONArray("id");
                     gridMap.drawImageNumberCell(jsonArray.getInt(0),jsonArray.getInt(1),jsonArray.getInt(2));
                     showLog("Image Added for index: " + jsonArray.getInt(0) + "," +jsonArray.getInt(1));
                 }

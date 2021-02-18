@@ -7,38 +7,38 @@
 7
 8    <uses-sdk
 9        android:minSdkVersion="15"
-9-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml
+9-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml
 10        android:targetSdkVersion="29" />
-10-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml
+10-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml
 11    <!-- package name needa changeeeee -->
 12
 13    <dist:module dist:instant="true" />
-13-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:8:5-40
-13-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:8:18-37
+13-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:8:5-40
+13-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:8:18-37
 14
 15    <!-- added permission for bluetooth connection -->
 16    <uses-feature android:name="android.hardware.bluetooth" />
-16-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:11:5-63
-16-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:11:19-60
+16-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:11:5-63
+16-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:11:19-60
 17
 18    <uses-permission android:name="android.permission.BLUETOOTH" />
-18-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:13:5-68
-18-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:13:22-65
+18-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:13:5-68
+18-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:13:22-65
 19    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-19-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:14:5-74
-19-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:14:22-71
+19-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:14:5-74
+19-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:14:22-71
 20    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-20-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:15:5-75
-20-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:15:22-72
+20-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:15:5-75
+20-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:15:22-72
 21    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-21-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:17:5-80
-21-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:17:22-78
+21-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:17:5-80
+21-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:17:22-78
 22    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-22-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:18:5-78
-22-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:18:22-76
+22-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:18:5-78
+22-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:18:22-76
 23    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
-23-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:20:5-21:47
-23-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:20:22-76
+23-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:20:5-21:47
+23-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:20:22-76
 24
 25    <!-- Include required permissions for Google Maps API to run. -->
 26    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -55,50 +55,50 @@
 31        android:required="true" /> <!-- added tools:ignore="ProtectedPermissions" as suggested -->
 31-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\User\.gradle\caches\transforms-2\files-2.1\a3d702a77cbfacefb23de82416a0cb1f\play-services-maps-17.0.0\AndroidManifest.xml:28:9-32
 32    <application
-32-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:24:5-44:19
+32-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:24:5-44:19
 33        android:allowBackup="true"
-33-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:25:9-35
+33-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:25:9-35
 34        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 34-->[androidx.core:core:1.1.0] C:\Users\User\.gradle\caches\transforms-2\files-2.1\e9dab9c67c1ee3668e0bbf86c6d8cbd8\core-1.1.0\AndroidManifest.xml:24:18-86
 35        android:debuggable="true"
 36        android:icon="@mipmap/ic_launcher"
-36-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:26:9-43
+36-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:26:9-43
 37        android:label="@string/app_name"
-37-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:27:9-41
+37-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:27:9-41
 38        android:roundIcon="@mipmap/ic_launcher_round"
-38-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:28:9-54
+38-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:28:9-54
 39        android:supportsRtl="true"
-39-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:29:9-35
+39-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:29:9-35
 40        android:testOnly="true"
 41        android:theme="@style/AppTheme" >
-41-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:30:9-40
+41-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:30:9-40
 42        <activity
-42-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:31:9-41:20
+42-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:31:9-41:20
 43            android:name="com.example.mdp_android_grp15.MainActivity"
-43-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:32:13-41
+43-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:32:13-41
 44            android:label="@string/app_name"
-44-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:33:13-45
+44-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:33:13-45
 45            android:theme="@style/AppTheme.NoActionBar"
-45-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:34:13-56
+45-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:34:13-56
 46            android:windowSoftInputMode="adjustPan" >
-46-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:35:13-52
+46-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:35:13-52
 47            <intent-filter>
-47-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:36:13-40:29
+47-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:36:13-40:29
 48                <action android:name="android.intent.action.MAIN" />
-48-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:37:17-69
-48-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:37:25-66
+48-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:37:17-69
+48-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:37:25-66
 49
 50                <category android:name="android.intent.category.LAUNCHER" />
-50-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:39:17-77
-50-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:39:27-74
+50-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:39:17-77
+50-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:39:27-74
 51            </intent-filter>
 52        </activity>
 53        <activity android:name="com.example.mdp_android_grp15.ui.main.BluetoothPopUp" />
-53-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:42:9-69
-53-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:42:19-57
+53-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:42:9-69
+53-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:42:19-57
 54        <activity android:name="com.example.mdp_android_grp15.ui.main.MapInformation" />
-54-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:43:9-60
-54-->C:\Users\User\Desktop\Y3S2\CZ3004  - MDP\Android\app\src\main\AndroidManifest.xml:43:19-57
+54-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:43:9-60
+54-->C:\Users\User\Documents\GitHub\MDP\Android\app\src\main\AndroidManifest.xml:43:19-57
 55        <!-- Needs to be explicitly declared on P+ -->
 56        <uses-library
 56-->[com.google.android.gms:play-services-maps:17.0.0] C:\Users\User\.gradle\caches\transforms-2\files-2.1\a3d702a77cbfacefb23de82416a0cb1f\play-services-maps-17.0.0\AndroidManifest.xml:33:9-35:40

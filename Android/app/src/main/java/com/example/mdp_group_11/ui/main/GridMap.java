@@ -89,7 +89,7 @@ public class GridMap extends View {
         blackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
         robotColor.setColor(Color.GREEN);
-        endColor.setColor(Color.RED);
+        endColor.setColor(Color.parseColor("#FFFCCB"));
         startColor.setColor(Color.CYAN);
         waypointColor.setColor(Color.YELLOW);
         unexploredColor.setColor(Color.LTGRAY);
@@ -539,8 +539,10 @@ public class GridMap extends View {
                     break;
                 case "image":
                     this.paint = obstacleColor;
+                    break;
                 case "id":
-                    
+                    this.paint = obstacleColor;
+                    break;
                 default:
                     showLog("setTtype default: " + type);
                     break;
@@ -842,7 +844,7 @@ public class GridMap extends View {
                     message = "status: " + msg;
                     break;
                 case "id":
-
+                    break;
                 default:
                     message = "Unintended default for JSONObject";
                     break;
