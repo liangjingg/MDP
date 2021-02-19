@@ -36,13 +36,15 @@ float front_distanceInCm = 0;
 float topLeft_distanceInCm = 0;
 float topRight_distanceInCm = 0;
 
-float sensorDist[2][6];
+float sensorDist[6];
 int counter = 0;
 
+/*
 void sensorSetup()
 {
-  Serial.begin(115200); // start the serial port
+  Serial.begin(9600); // start the serial port
 }
+*/
 
 /* =============================== Sorting Algorithm ============================= */
 void swap(int *x,int *y) {
@@ -74,7 +76,7 @@ int rawIRSensorMedian(int sample_size, int pin)
   {
     analog_distance = analogRead(pin);       // reads the value of the sharp sensor
     reading[i] = analog_distance;
-    delay(10);
+    //delay(10);
   }
   sort(reading,sample_size);
   sample_size = (sample_size+1) / 2 - 1;
@@ -129,15 +131,17 @@ void getSensorDist()
   topRight_distanceInCm = shortRangeDistance(topRight_analog) - 3;
 
   //adds to the the array
-  sensorDist[counter][0] = left_distanceInCm;
-  sensorDist[counter][1] = right_distanceInCm;
-  sensorDist[counter][2] = back_distanceInCm;
-  sensorDist[counter][3] = front_distanceInCm;
-  sensorDist[counter][4] = topLeft_distanceInCm;
-  sensorDist[counter][5] = topRight_distanceInCm;
+  sensorDist[0] = left_distanceInCm;
+  sensorDist[1] = right_distanceInCm;
+  sensorDist[2] = back_distanceInCm;
+  sensorDist[3] = front_distanceInCm;
+  sensorDist[4] = topLeft_distanceInCm;
+  sensorDist[5] = topRight_distanceInCm;
 
-  counter = (counter+1)%2;
+  //counter = (counter+1)%2;
+  
 
+  
   Serial.println("TopLeft Front TopRight");
   Serial.print(topLeft_distanceInCm);
   Serial.print("\t");
@@ -150,6 +154,16 @@ void getSensorDist()
   Serial.print(back_distanceInCm);
   Serial.print("\t");
   Serial.println(right_distanceInCm);
+
+  //Serial.println(sensorDist[0], sensorDist[1]);
+  //Serial.println("1");
+  //Serial.println(sensorDist[1]);
+  //Serial.println(sensorDist[2]);
+  //delay(1000);
+  //for (int i = 0; i < 6; i++){
+  //  Serial.println(sensorDist[i]);
+  //  delay(100);
+  //}
 }
 
 /* =============================== Return Distance Message ============================= */
@@ -159,8 +173,7 @@ String getDistanceMsg()
   if (counter == 0){
     read_counter = 1;
   }
-  String message = String(sensorDist[read_counter][0])+ "," + String(sensorDist[read_counter][1])+ "," + String(sensorDist[read_counter][2]) + "," + String(sensorDist[read_counter][3]) + "," + String(sensorDist[read_counter][4]) + "," + String(sensorDist[read_counter][5]);
+  String message = String(sensorDist[0])+ "," + String(sensorDist[1])+ "," + String(sensorDist[2]) + "," + String(sensorDist[3]) + "," + String(sensorDist[4]) + "," + String(sensorDist[5]);
   Serial.println(message);
   return message;
 }
-
