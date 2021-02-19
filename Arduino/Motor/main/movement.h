@@ -40,8 +40,8 @@ void rightEncoderRes(void){
 void movementSetup(){           //setup files used in the main
   md.init();
   
-   Serial.begin(9600);
-  md.init();
+  //Serial.begin(9600);
+  //md.init();
   pinMode (LEFT_ENCODER, INPUT); //set digital pin 5 as input
   pinMode (RIGHT_ENCODER, INPUT); //set digital pin 13 as input
   enableInterrupt(LEFT_ENCODER, leftEncoderInc, RISING);  // Reading the Encoder
