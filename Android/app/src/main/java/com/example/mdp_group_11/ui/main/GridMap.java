@@ -88,7 +88,7 @@ public class GridMap extends View {
         initMap();
         blackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
-        robotColor.setColor(Color.GREEN);
+        robotColor.setColor(Color.parseColor("#FF8B3D"));
         endColor.setColor(Color.parseColor("#FFFCCB"));
         startColor.setColor(Color.CYAN);
         waypointColor.setColor(Color.YELLOW);
@@ -155,7 +155,7 @@ public class GridMap extends View {
         showLog("Exiting drawIndividualCell");
     }
 
-    public void drawImageNumberCell(int x, int y, int id) {
+    public void drawImageNumberCell(int id,int x, int y) {
         cells[x+1][19-y].setType("image");
         cells[x+1][19-y].setId(id);
         this.invalidate();

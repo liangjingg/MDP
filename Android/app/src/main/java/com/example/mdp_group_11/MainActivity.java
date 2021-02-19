@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(message);
                     JSONArray jsonArray = jsonObject.getJSONArray("id");
                     gridMap.drawImageNumberCell(jsonArray.getInt(0),jsonArray.getInt(1),jsonArray.getInt(2));
-                    showLog("Image Added for index: " + jsonArray.getInt(0) + "," +jsonArray.getInt(1));
+                    showLog("Image Added for index: " + jsonArray.getInt(1) + "," +jsonArray.getInt(2));
                 }
             } catch (JSONException e) {
                 showLog("Adding Image Failed");
