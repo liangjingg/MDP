@@ -6,35 +6,35 @@
 
 /* =============================== sensor pin declaration ============================= */
 int ps1 = 0;   // A0 left analog pin used to connect the sharp sensor A0
-int ps2 = 1;   // A1 right
-int ps3 = 2;   // A2 back
-int ps4 = 3;   // A3 front
-int ps5 = 4;   // A4 top left
-int ps6 = 5;   // A5 top right
+int ps2 = 1;   // A1 right bottom
+int ps3 = 4;   // A2 front left
+int ps4 = 5;   // A3 right front
+int ps5 = 3;   // A4 front center
+int ps6 = 2;   // A5 front right
 
 /* =============================== a2d values from sensor ============================= */
 int left_analog = 0;
-int right_analog = 0;
-int back_analog = 0;
-int front_analog = 0;
-int topLeft_analog = 0;
-int topRight_analog = 0;
+int right_front_analog = 0;
+int right_back_analog = 0;
+int front_center_analog = 0;
+int front_left_analog = 0;
+int front_right_analog = 0;
 
 /* =============================== Offset from robot edge ============================= */
-float longFront = 0;      //A3 pin
-float longBack = 0;       //A2 pin
-float shortLeft = 0;      //A0 pin
-float shortRight = 0;     //A1 pin
-float shortTopLeft = 3;   //A4 pin
-float shortTopRight = 3;  //A5 pin
+float short_rightFront = 0;      //A3 pin
+float long_frontLeft = 0;       //A2 pin
+float long_Left = 0;      //A0 pin
+float short_rightBack = 0;     //A1 pin
+float short_frontCenter = 3;   //A4 pin
+float short_frontRight = 3;  //A5 pin
 
 /* =============================== Distance in CM ============================= */
-float left_distanceInCm = 0;
-float right_distanceInCm = 0;
-float back_distanceInCm = 0;
-float front_distanceInCm = 0;
-float topLeft_distanceInCm = 0;
-float topRight_distanceInCm = 0;
+float left_inDistanceCM = 0;
+float right_front_inDistanceCM = 0;
+float right_back_inDistanceCM = 0;
+float front_center_inDistanceCM = 0;
+float front_left_inDistanceCM = 0;
+float front_right_inDistanceCM = 0;
 
 float sensorDist[6];
 int counter = 0;
@@ -112,48 +112,50 @@ float longRangeDistance(int analogValue)
 /* =============================== define distance arr from obstacle for each sensor ============================= */
 void getSensorDist()
 {
+  
   left_analog = rawIRSensorMedian(50, 0);
-  left_distanceInCm = shortRangeDistance(left_analog);
+  left_inDistanceCM = longRangeDistance(left_analog);
 
-  right_analog = rawIRSensorMedian(50, 1);
-  right_distanceInCm = shortRangeDistance(right_analog);
+  right_front_analog = rawIRSensorMedian(50, 3);
+  right_front_inDistanceCM = shortRangeDistance(right_front_analog);
 
-  back_analog = rawIRSensorMedian(50, 2);
-  back_distanceInCm = longRangeDistance(back_analog) + 5;
+  right_back_analog = rawIRSensorMedian(50, 1);
+  right_back_inDistanceCM = shortRangeDistance(right_back_analog) + 5;
 
-  front_analog = rawIRSensorMedian(50, 3);
-  front_distanceInCm = longRangeDistance(front_analog);
+  front_center_analog = rawIRSensorMedian(50, 4);
+  front_center_inDistanceCM = shortRangeDistance(front_center_analog);
 
-  topLeft_analog = rawIRSensorMedian(50, 4);
-  topLeft_distanceInCm = shortRangeDistance(topLeft_analog) -3 ;
+  front_left_analog = rawIRSensorMedian(50, 2);
+  front_left_inDistanceCM = longRangeDistance(front_left_analog) -3 ;
 
-  topRight_analog = rawIRSensorMedian(50, 5);
-  topRight_distanceInCm = shortRangeDistance(topRight_analog) - 3;
+  front_right_analog = rawIRSensorMedian(50, 5);
+  front_right_inDistanceCM = shortRangeDistance(front_right_analog) - 3;
 
   //adds to the the array
-  sensorDist[0] = left_distanceInCm;
-  sensorDist[1] = right_distanceInCm;
-  sensorDist[2] = back_distanceInCm;
-  sensorDist[3] = front_distanceInCm;
-  sensorDist[4] = topLeft_distanceInCm;
-  sensorDist[5] = topRight_distanceInCm;
+  sensorDist[0] = left_inDistanceCM;
+  sensorDist[1] = right_front_inDistanceCM;
+  sensorDist[2] = right_back_inDistanceCM;
+  sensorDist[3] = front_center_inDistanceCM;
+  sensorDist[4] = front_left_inDistanceCM;
+  sensorDist[5] = front_right_inDistanceCM;
 
+  Serial.println(front_left_inDistanceCM);
   //counter = (counter+1)%2;
   
-
-  
-  Serial.println("TopLeft Front TopRight");
-  Serial.print(topLeft_distanceInCm);
-  Serial.print("\t");
-  Serial.print(front_distanceInCm);
-  Serial.print("\t");
-  Serial.println(topRight_distanceInCm);
-  Serial.println("    Left Back Right   ");
-  Serial.print(left_distanceInCm);
-  Serial.print("\t");
-  Serial.print(back_distanceInCm);
-  Serial.print("\t");
-  Serial.println(right_distanceInCm);
+//
+//  
+//  Serial.println("TopLeft Front TopRight");
+//  Serial.print(topLeft_distanceInCm);
+//  Serial.print("\t");
+//  Serial.print(front_distanceInCm);
+//  Serial.print("\t");
+//  Serial.println(topRight_distanceInCm);
+//  Serial.println("    Left Back Right   ");
+//  Serial.print(left_distanceInCm);
+//  Serial.print("\t");
+//  Serial.print(back_distanceInCm);
+//  Serial.print("\t");
+//  Serial.println(right_distanceInCm);
 
   //Serial.println(sensorDist[0], sensorDist[1]);
   //Serial.println("1");
@@ -167,13 +169,13 @@ void getSensorDist()
 }
 
 /* =============================== Return Distance Message ============================= */
-String getDistanceMsg()
-{
-  int read_counter = 0;
-  if (counter == 0){
-    read_counter = 1;
-  }
-  String message = String(sensorDist[0])+ "," + String(sensorDist[1])+ "," + String(sensorDist[2]) + "," + String(sensorDist[3]) + "," + String(sensorDist[4]) + "," + String(sensorDist[5]);
-  Serial.println(message);
-  return message;
-}
+//String getDistanceMsg()
+//{
+//  int read_counter = 0;
+//  if (counter == 0){
+//    read_counter = 1;
+//  }
+//  String message = String(sensorDist[0])+ "," + String(sensorDist[1])+ "," + String(sensorDist[2]) + "," + String(sensorDist[3]) + "," + String(sensorDist[4]) + "," + String(sensorDist[5]);
+//  Serial.println(message);
+//  return message;
+//}
