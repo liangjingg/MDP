@@ -33,6 +33,7 @@
 #include <ArduinoSort.h>
 #include "movement.h"         //includes the header for the files of going straight,back,left,right
 #include "controls.h"         //allows input from the serial monitor
+#include "sensor.h"
 
 /*
  * ==============================
@@ -68,10 +69,7 @@ volatile double sensor_reading[SAMPLE];  //Store Reading for Median_filtering
  */
 void setup() {
   Serial.begin(9600);
-  Serial.setTimeout(50);
-  if (DEBUG){
-    Serial.println("Connected");
-  }
+  Serial.println("Connected");
   
   movementSetup();        //pulls the setup files from movement.h
   
@@ -79,9 +77,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  getSensorDist();
+  delay(100);
   vroom();
-
-    
+  
 }
 
 // 
