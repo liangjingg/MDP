@@ -76,7 +76,7 @@ void goStraight(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff: ");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));      
-        md.setSpeeds((200),(200+Output));
+        md.setSpeeds((400),(400+Output));
       }
         md.setBrakes(400,400);
         delay(100);
@@ -100,7 +100,7 @@ void goBack(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff: ");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));      
-        md.setSpeeds(-(200),-(200+Output));
+        md.setSpeeds(-(400),-(400+Output));
       }
         md.setBrakes(400,400);
         delay(100);
@@ -118,7 +118,7 @@ void turnLeft(double ticks){
   {
     leftPID.Compute();
    
-    md.setSpeeds(-(200),(200+Output));
+    md.setSpeeds(-(400),(400+Output));
   }
   md.setBrakes(400, 400);
   delay(100);
@@ -139,7 +139,7 @@ void turnRight(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff:");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));  
-    md.setSpeeds((200),-(200+Output));
+    md.setSpeeds((400),-(400+Output));
   }
   md.setBrakes(400, 400);
   delay(100);

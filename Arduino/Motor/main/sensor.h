@@ -4,6 +4,11 @@
 //
 // ------------------------------------------------------------
 
+#include <math.h>
+#define LONGLEFTA 4618.42
+#define LONGLEFTB 3374.61
+#define LONGLEFTC 0.0655686
+
 /* =============================== sensor pin declaration ============================= */
 int ps1 = 0;   // A0 left analog pin used to connect the sharp sensor A0
 int ps2 = 1;   // A1 right bottom
@@ -99,13 +104,15 @@ float shortRangeDistance(int analogValue)
 /* =============================== Effective Long Range Distance is 20cm - 70cm ============================= */
 float longRangeDistance(int analogValue)
 {
-  float distanceInCm = (8687.689/(analogValue - 75.9339));
+  //float distanceInCm = (8687.689/(analogValue - 75.9339));
 
-  if (distanceInCm > 70 || distanceInCm < 0)
+  float distanceInCM = exp(log((LONGLEFTA-analogValue)/LONGLEFTB)/LONGLEFTC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
   {
-    distanceInCm = 70;
+    distanceInCM = 70;
   }
-  return distanceInCm;
+  return distanceInCM;
 }
 
 
@@ -120,16 +127,16 @@ void getSensorDist()
   right_front_inDistanceCM = shortRangeDistance(right_front_analog);
 
   right_back_analog = rawIRSensorMedian(50, 1);
-  right_back_inDistanceCM = shortRangeDistance(right_back_analog) + 5;
+  right_back_inDistanceCM = shortRangeDistance(right_back_analog);
 
   front_center_analog = rawIRSensorMedian(50, 4);
   front_center_inDistanceCM = shortRangeDistance(front_center_analog);
 
   front_left_analog = rawIRSensorMedian(50, 2);
-  front_left_inDistanceCM = longRangeDistance(front_left_analog) -3 ;
+  front_left_inDistanceCM = longRangeDistance(front_left_analog) ;
 
   front_right_analog = rawIRSensorMedian(50, 5);
-  front_right_inDistanceCM = shortRangeDistance(front_right_analog) - 3;
+  front_right_inDistanceCM = shortRangeDistance(front_right_analog);
 
   //adds to the the array
   sensorDist[0] = left_inDistanceCM;
