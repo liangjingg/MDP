@@ -77,9 +77,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  getSensorDist();
-  delay(100);
   vroom();
+  getSensorDist();
+
+  Serial.println(sensorDist[0]);
+  delay(1000);
+  //vroom();
   
 }
 

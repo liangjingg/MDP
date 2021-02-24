@@ -5,10 +5,34 @@
 // ------------------------------------------------------------
 
 #include <math.h>
-#define LONGLEFTA 4618.42
-#define LONGLEFTB 3374.61
-#define LONGLEFTC 0.0655686
 
+//FRONT DEFINE
+#define FRONTLEFTA 4618.42
+#define FRONTLEFTB 3374.61
+#define FRONTLEFTC 0.0655686
+
+#define FRONTCENTERA 4618.42
+#define FRONTCENTERB 3374.61
+#define FRONTCENTERC 0.0655686
+
+#define FRONTRIGHTA 4618.42
+#define FRONTRIGHTB 3374.61
+#define FRONTRIGHTC 0.0655686
+
+//LEFT DEFINE
+#define LEFTA 4618.42
+#define LEFTB 3374.61
+#define LEFTC 0.0655686
+
+
+//RIGHT DEFINE
+#define RIGHTFRONTA 4618.42
+#define RIGHTFRONTB 3374.61
+#define RIGHTFRONTC 0.0655686
+
+#define RIGHTBACKA 4618.42
+#define RIGHTBACKB 3374.61
+#define RIGHTBACKC 0.0655686
 /* =============================== sensor pin declaration ============================= */
 int ps1 = 0;   // A0 left analog pin used to connect the sharp sensor A0
 int ps2 = 1;   // A1 right bottom
@@ -90,23 +114,70 @@ int rawIRSensorMedian(int sample_size, int pin)
   return reading[sample_size];
 }
 
-/* =============================== Effective Short Range Distance is 10cm - 40cm ============================= */
-float shortRangeDistance(int analogValue)
+
+/* =============================== Front Sensors ============================= */
+float getDistanceFrontLeft(int analogValue)
 {
-  float distanceInCm = (3867.508/(analogValue - 130.319));
-  if (distanceInCm > 70 || distanceInCm < 0)
+  float distanceInCM = exp(log((FRONTLEFTA-analogValue)/FRONTLEFTB)/FRONTLEFTC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
   {
-    distanceInCm = 70;
+    distanceInCM = 70;
   }
-  return distanceInCm;
+  return distanceInCM;
 }
 
-/* =============================== Effective Long Range Distance is 20cm - 70cm ============================= */
-float longRangeDistance(int analogValue)
-{
-  //float distanceInCm = (8687.689/(analogValue - 75.9339));
 
-  float distanceInCM = exp(log((LONGLEFTA-analogValue)/LONGLEFTB)/LONGLEFTC);
+float getDistanceFrontRight(int analogValue)
+{
+  float distanceInCM = exp(log((FRONTRIGHTA-analogValue)/FRONTRIGHTB)/FRONTRIGHTC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
+  {
+    distanceInCM = 70;
+  }
+  return distanceInCM;
+}
+float getDistanceFrontCenter(int analogValue)
+{
+  float distanceInCM = exp(log((FRONTCENTERA-analogValue)/FRONTCENTERB)/FRONTCENTERC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
+  {
+    distanceInCM = 70;
+  }
+  return distanceInCM;
+}
+
+/* =============================== Right Sensors ============================= */
+float getDistanceRightFront(int analogValue)
+{
+  float distanceInCM = exp(log((RIGHTFRONTA-analogValue)/RIGHTFRONTB)/RIGHTFRONTC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
+  {
+    distanceInCM = 70;
+  }
+  return distanceInCM;
+}
+
+
+float getDistanceRightBack(int analogValue)
+{
+  float distanceInCM = exp(log((RIGHTBACKA-analogValue)/RIGHTBACKB)/RIGHTBACKC);
+
+  if (distanceInCM > 70 || distanceInCM < 0)
+  {
+    distanceInCM = 70;
+  }
+  return distanceInCM;
+}
+
+/* =============================== Left Sensor ============================= */
+
+float getDistanceLeft(int analogValue)
+{
+  float distanceInCM = exp(log((LEFTA-analogValue)/LEFTB)/LEFTC);
 
   if (distanceInCM > 70 || distanceInCM < 0)
   {
@@ -121,22 +192,22 @@ void getSensorDist()
 {
   
   left_analog = rawIRSensorMedian(50, 0);
-  left_inDistanceCM = longRangeDistance(left_analog);
+  left_inDistanceCM = getDistanceLeft(left_analog);
 
   right_front_analog = rawIRSensorMedian(50, 3);
-  right_front_inDistanceCM = shortRangeDistance(right_front_analog);
+  right_front_inDistanceCM = getDistanceRightFront(right_front_analog);
 
   right_back_analog = rawIRSensorMedian(50, 1);
-  right_back_inDistanceCM = shortRangeDistance(right_back_analog);
+  right_back_inDistanceCM = getDistanceRightBack(right_back_analog);
 
   front_center_analog = rawIRSensorMedian(50, 4);
-  front_center_inDistanceCM = shortRangeDistance(front_center_analog);
+  front_center_inDistanceCM = getDistanceFrontCenter(front_center_analog);
 
   front_left_analog = rawIRSensorMedian(50, 2);
-  front_left_inDistanceCM = longRangeDistance(front_left_analog) ;
+  front_left_inDistanceCM = getDistanceFrontLeft(front_left_analog) ;
 
   front_right_analog = rawIRSensorMedian(50, 5);
-  front_right_inDistanceCM = shortRangeDistance(front_right_analog);
+  front_right_inDistanceCM = getDistanceFrontRight(front_right_analog);
 
   //adds to the the array
   sensorDist[0] = left_inDistanceCM;
@@ -146,33 +217,18 @@ void getSensorDist()
   sensorDist[4] = front_left_inDistanceCM;
   sensorDist[5] = front_right_inDistanceCM;
 
-  Serial.println(front_left_inDistanceCM);
-  //counter = (counter+1)%2;
-  
-//
-//  
-//  Serial.println("TopLeft Front TopRight");
-//  Serial.print(topLeft_distanceInCm);
-//  Serial.print("\t");
-//  Serial.print(front_distanceInCm);
-//  Serial.print("\t");
-//  Serial.println(topRight_distanceInCm);
-//  Serial.println("    Left Back Right   ");
-//  Serial.print(left_distanceInCm);
-//  Serial.print("\t");
-//  Serial.print(back_distanceInCm);
-//  Serial.print("\t");
-//  Serial.println(right_distanceInCm);
-
-  //Serial.println(sensorDist[0], sensorDist[1]);
-  //Serial.println("1");
-  //Serial.println(sensorDist[1]);
-  //Serial.println(sensorDist[2]);
-  //delay(1000);
-  //for (int i = 0; i < 6; i++){
-  //  Serial.println(sensorDist[i]);
-  //  delay(100);
-  //}
+//  Serial.print("Left Sensor");
+//  Serial.println(sensorDist[0]);
+//  Serial.print("Right Front Sensor");
+//  Serial.println(sensorDist[1]);
+//  Serial.print("Right Back Sensor");
+//  Serial.println(sensorDist[2]);
+//  Serial.print("Front Center Sensor");
+//  Serial.println(sensorDist[3]);
+//  Serial.print("Front Left Sensor");
+//  Serial.println(sensorDist[4]);
+//  Serial.print("Front Right Sensor");
+//  Serial.println(sensorDist[5]);
 }
 
 /* =============================== Return Distance Message ============================= */
