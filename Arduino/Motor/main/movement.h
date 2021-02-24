@@ -4,15 +4,15 @@
 #include <PID_v2.h>
 #include <ArduinoSort.h>
 
-
 #define LEFT_ENCODER 5 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 13 //right motor encoder A to pin 13
-
+#define FASTSPEED 200
+#define SLOWSPEED 200
 
 
 
 //ticks parameters for PID
-double leftEncoderValue = 0;
+double leftEncoderValue = 0;S0
 double rightEncoderValue = 0;
 double difference;                // Use to find the difference
 double Setpoint, Input, Output;
@@ -76,7 +76,7 @@ void goStraight(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff: ");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));      
-        md.setSpeeds((400),(400+Output));
+        md.setSpeeds((FASTSPEED),(FASTSPEED+Output));
       }
         md.setBrakes(400,400);
         delay(100);
@@ -100,7 +100,7 @@ void goBack(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff: ");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));      
-        md.setSpeeds(-(400),-(400+Output));
+        md.setSpeeds(-(FASTSPEED),-(FASTSPEED+Output));
       }
         md.setBrakes(400,400);
         delay(100);
@@ -118,7 +118,7 @@ void turnLeft(double ticks){
   {
     leftPID.Compute();
    
-    md.setSpeeds(-(400),(400+Output));
+    md.setSpeeds(-(FASTSPEED),(FASTSPEED+Output));
   }
   md.setBrakes(400, 400);
   delay(100);
@@ -139,7 +139,7 @@ void turnRight(double ticks){
 //    Serial.print(rightEncoderValue);
 //    Serial.print(", Diff:");
 //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));  
-    md.setSpeeds((400),-(400+Output));
+    md.setSpeeds((FASTSPEED),-(FASTSPEED+Output));
   }
   md.setBrakes(400, 400);
   delay(100);

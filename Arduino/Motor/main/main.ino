@@ -33,7 +33,7 @@
 #include <ArduinoSort.h>
 #include "movement.h"         //includes the header for the files of going straight,back,left,right
 #include "controls.h"         //allows input from the serial monitor
-#include "sensor.h"
+//#include "sensor.h"
 
 /*
  * ==============================
@@ -78,9 +78,6 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   vroom();
-  getSensorDist();
-
-  Serial.println(sensorDist[0]);
   delay(1000);
   //vroom();
   

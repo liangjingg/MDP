@@ -1,7 +1,7 @@
 // dont need to include movement.h here because main is calling controls.h and already has an include for movement
 int cmd_in,cmd_out;
 char cmd[100];
-
+#include "sensor.h"
 
 
 #define W01  100
@@ -356,10 +356,11 @@ void vroom(){
     while (cmd_out < cmd_in)
     { // execute each command until the last char has been executed
       executeFastestPathCommand();
+      getSensorDist();
       cmd_out++;
     }
     // reset cmd_out counter
     cmd_out = 0;
   }
-  delay(50);
+  delay(500);
 }

@@ -217,18 +217,18 @@ void getSensorDist()
   sensorDist[4] = front_left_inDistanceCM;
   sensorDist[5] = front_right_inDistanceCM;
 
-//  Serial.print("Left Sensor");
-//  Serial.println(sensorDist[0]);
-//  Serial.print("Right Front Sensor");
-//  Serial.println(sensorDist[1]);
-//  Serial.print("Right Back Sensor");
-//  Serial.println(sensorDist[2]);
-//  Serial.print("Front Center Sensor");
-//  Serial.println(sensorDist[3]);
-//  Serial.print("Front Left Sensor");
-//  Serial.println(sensorDist[4]);
-//  Serial.print("Front Right Sensor");
-//  Serial.println(sensorDist[5]);
+  Serial.print("Left Sensor");
+  Serial.println(sensorDist[0]);
+  Serial.print("Right Front Sensor");
+  Serial.println(sensorDist[1]);
+  Serial.print("Right Back Sensor");
+  Serial.println(sensorDist[2]);
+  Serial.print("Front Center Sensor");
+  Serial.println(sensorDist[3]);
+  Serial.print("Front Left Sensor");
+  Serial.println(sensorDist[4]);
+  Serial.print("Front Right Sensor");
+  Serial.println(sensorDist[5]);
 }
 
 /* =============================== Return Distance Message ============================= */
