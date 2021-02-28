@@ -10,32 +10,36 @@ import java.util.concurrent.TimeUnit;
 
 public class FastestPath {
     public int[] FastestPath(Robot robot, int[] waypoint, int[] goal, int speed, boolean on_grid, boolean move) {
+        // on_grid is true in exploration but not image recognition exploration and not
+        // phase 3 of exploration (back to the start)and false in fastest path
+        // could represent the sensors i guess
         AStarPathFinder astar = new AStarPathFinder();
-        astar.set_direction(robot.getDirection());
-        astar.set_first(true);
+        astar.setDirection(robot.getDirection());
+        astar.setFirst(true); // wtf -> this is set in the old code when the open list is empty? -> means no
+                              // possible path
         int[] path, path1, path2;
 
-        if (astar.is_valid(robot, waypoint)) {
+        if (astar.isValid(robot, waypoint)) { // If valid waypoint
             // move is false when running fastest path
             // removing first turn penalty to find fastest path due to initial calibration
             // before timing
-            if (!move) {
-                astar.set_first_turn_penalty(false);
+            if (!move) {// ????
+                astar.setFirstTurnPenalty(false);
             }
 
             // if way point was set: go to way point first
-            path = astar.AStarPathFinder(robot, robot.getPosition(), waypoint, on_grid);
+            path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), waypoint, on_grid);
             if (path != null) {
-                astar.set_first_turn_penalty(true);
+                astar.setFirstTurnPenalty(true);
                 path1 = path;
-                path2 = astar.AStarPathFinder(robot, waypoint, goal, on_grid);
+                path2 = astar.AStarPathFinderAlgo(robot, waypoint, goal, on_grid);
                 path = new int[path1.length + path2.length];
                 System.arraycopy(path1, 0, path, 0, path1.length);
                 System.arraycopy(path2, 0, path, path1.length, path2.length);
             }
         } else {
-            astar.set_first_turn_penalty(true);
-            path = astar.AStarPathFinder(robot, robot.getPosition(), goal, on_grid);
+            astar.setFirstTurnPenalty(true);
+            path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), goal, on_grid);
         }
 
         if ((path != null) && move) {
@@ -60,7 +64,11 @@ public class FastestPath {
             if (direction == Constant.FORWARD) {
                 count++;
             } else if (count > 0) {
-                sb.append("W").append(count).append("|");
+                if (count < 10) {
+                    sb.append("W").append("0").append(count).append("|");
+                } else if (count >= 10) {
+                    sb.append("W").append(count).append("|");
+                }
                 if (direction == Constant.RIGHT) {
                     sb.append(Constant.TURN_RIGHT);
                     count = 1;
@@ -85,7 +93,7 @@ public class FastestPath {
     }
 
     private void move(Robot robot, int[] path, int speed) {
-        Exploration ex = new Exploration();
+        // Exploration ex = new Exploration(); // change isfrontempty to robot method?
 
         // Move the robot based on the path
         for (int direction : path) {
@@ -98,42 +106,43 @@ public class FastestPath {
             }
 
             if (direction == Constant.FORWARD) {
-                if (ex.isFrontEmpty(robot)) {
-                    robot.forward(1);
-                } else {
-                    return;
-                }
+                // if (ex.isFrontEmpty(robot)) {
+                robot.forward(1);
+                // } else {
+                // return;
+                // }
             } else if (direction == Constant.RIGHT) {
-                robot.updateMap();
+                // robot.updateMap(); // Is this needed ? -> No sensors needed right... ->Only
+                // simulatedMap
                 robot.rotateRight();
-                if (ex.isFrontEmpty(robot)) {
-                    robot.forward(1);
-                } else {
-                    return;
-                }
+                // if (ex.isFrontEmpty(robot)) {
+                robot.forward(1);
+                // } else {
+                // return;
+                // }
             } else if (direction == Constant.LEFT) {
-                robot.updateMap();
+                // robot.updateMap();
                 robot.rotateLeft();
-                if (ex.isFrontEmpty(robot)) {
-                    robot.forward(1);
-                } else {
-                    return;
-                }
+                // if (ex.isFrontEmpty(robot)) {
+                robot.forward(1);
+                // } else {
+                // return;
+                // }
             } else if (direction == Constant.BACKWARD) {
-                robot.updateMap();
+                // robot.updateMap();
                 robot.rotateRight();
-                robot.updateMap();
+                // robot.updateMap();
                 robot.rotateRight();
-                if (ex.isFrontEmpty(robot)) {
-                    robot.forward(1);
-                } else {
-                    return;
-                }
+                // if (ex.isFrontEmpty(robot)) {
+                robot.forward(1);
+                // } else {
+                // return;
+                // }
             } else {
                 return;
             }
         }
 
-        robot.updateMap();
+        // robot.updateMap();
     }
 }

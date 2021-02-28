@@ -3,6 +3,9 @@ package map;
 import java.util.Random;
 
 import config.Constant;
+import java.io.File;
+import java.io.PrintWriter;
+import java.math.BigInteger;
 
 public class Map {
 
@@ -15,7 +18,7 @@ public class Map {
 	private double[][] dist = new double[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
 	private int[] waypoint = new int[] { -1, -1 };
 	private String[] MDPString = new String[3];
-	private boolean changed = true;
+	private boolean changed = true; // WTF IS THIS
 
 	// Only used for simulation
 	public static Random r = new Random();
@@ -51,7 +54,7 @@ public class Map {
 	public String print() {
 		String s = "";
 		s += "The current map is: \n\n";
-		System.out.println("The current map is: \n");
+		// System.out.println("The current map is: \n");
 
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -127,11 +130,12 @@ public class Map {
 	public void resetMap() {
 
 		/*
-		 * According to the algorithm_briefing_19S1(1).pdf, start point is always 3x3
-		 * grid at the top left corner and end point is always 3x3 grid diagonally
-		 * opposite the start point
+		 * Start point is always 3x3 grid at the bottom left corner and end point is
+		 * always 3x3 grid diagonally opposite the start point (top right)
 		 */
 
+		// new String[]{"Unexplored", "Explored", "Obstacle",
+		// "Waypoint", "Startpoint", "Endpoint"};
 		for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				// Set the start point grids
@@ -171,8 +175,11 @@ public class Map {
 			return;
 		}
 
-		for (int i = 0; i < Constant.POSSIBLEGRIDLABELS.length; i++) {
-			if (command.toUpperCase().compareTo(Constant.POSSIBLEGRIDLABELS[i].toUpperCase()) == 0) {
+		for (int i = 0; i < Constant.POSSIBLEGRIDLABELS.length; i++) { // new String[]{"Unexplored", "Explored",
+																		// "Obstacle", "Waypoint", "Startpoint",
+																		// "Endpoint"};
+			if (command.toUpperCase().compareTo(Constant.POSSIBLEGRIDLABELS[i].toUpperCase()) == 0) { // If they are
+																										// equal
 				changed = true;
 				if (i == 3) {
 					setWayPoint(x, y);
@@ -283,6 +290,57 @@ public class Map {
 			}
 		}
 		return true;
+	}
+
+	public void decodeMDFString(String MDFHexStringP1, String MDFHexStringP2) throws Exception {
+		String[][] grid = new String[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
+		String MDFBitStringP2;
+		try {
+			MDFBitStringP2 = new BigInteger(MDFHexStringP2, 16).toString(2);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		int unPaddedLength = MDFBitStringP2.length();
+		// System.out.println(unPaddedLength);
+		for (int i = 0; i < MDFHexStringP2.length() * 4 - unPaddedLength; i++) {
+			MDFBitStringP2 = "0" + MDFBitStringP2;
+		}
+		// System.out.println(MDFBitStringP2);
+		MDFBitStringP2 = MDFBitStringP2.substring(0, MDFBitStringP2.length() - 4);
+		// System.out.println(MDFBitStringP2.length());
+		for (int x = 0; x < Constant.BOARDWIDTH; x++) {
+			for (int y = 0; y < Constant.BOARDHEIGHT; y++) {
+				// System.out.printf(" %d, %d \n", x, y);
+				if (MDFBitStringP2.charAt(x * Constant.BOARDHEIGHT + y) == '1') {
+					grid[x][y] = Constant.POSSIBLEGRIDLABELS[2];
+				} else {
+					grid[x][y] = Constant.POSSIBLEGRIDLABELS[1];
+				}
+			}
+		}
+		try {
+			File file = new File(Constant.FOLDER_TO_WRITE + "\\map.txt");
+			PrintWriter out = new PrintWriter(file);
+			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
+				for (int i = 0; i < Constant.BOARDWIDTH; i++) {
+					if (i < Constant.STARTPOINTWIDTH && j < Constant.STARTPOINTHEIGHT) {
+						out.print("S");
+					} else if (i >= Constant.BOARDWIDTH - Constant.ENDPOINTWIDTH
+							&& j >= Constant.BOARDHEIGHT - Constant.ENDPOINTHEIGHT) {
+						out.print("E");
+					} else if (grid[i][j].equals(Constant.EXPLORED)) {
+						out.print("U");
+					} else if (grid[i][j].equals(Constant.OBSTACLE)) {
+						out.print("O");
+					}
+				}
+				out.println();
+			}
+			out.close();
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		// System.out.println(s);
 	}
 
 	// Check if the MDF string stored has changed and make the mdf string if it did

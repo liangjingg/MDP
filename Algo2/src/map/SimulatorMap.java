@@ -60,18 +60,10 @@ public class SimulatorMap {
 	public void initializeMapOnUI(JFrame frame) {
 		for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
-				String gridvalue = map.getGrid(i, j);
-				if (gridToImagePath.containsKey(gridvalue)) {
-					createUIGrid(i, j, gridToImagePath.get(gridvalue));
-				}
+				String gridValue = map.getGrid(i, j); // explored/obstacle wtv
+				createUIGrid(i, j, gridToImagePath.get(gridValue));
 			}
 		}
-	}
-
-	// Allow the caller to set and update the UI with the map object
-	public void setMap(Map map) {
-		updateMapOnUI(this.map, map);
-		this.map = map.copy();
 	}
 
 	// Create the Grid Image Component for UI Display
@@ -105,6 +97,12 @@ public class SimulatorMap {
 
 	public Map getMap() {
 		return map;
+	}
+
+	// Allow the caller to set and update the UI with the map object
+	public void setMap(Map map) {
+		updateMapOnUI(this.map, map);
+		this.map = map.copy();
 	}
 
 }

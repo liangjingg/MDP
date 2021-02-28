@@ -15,45 +15,50 @@ import connection.ConnectionSocket;
 import map.Map;
 import sensor.RealSensor;
 
-public class RealRobot extends Robot{
+public class RealRobot extends Robot {
 	private ConnectionSocket connectionSocket = ConnectionSocket.getInstance();
 	private static RealRobot r = null;
 	private int numOfCount = 0;
 	private SimulatorRobot sr = null;
-	
+
 	private RealRobot(boolean simulator) {
 		super();
 		this.map = new Map();
-		initialise(1,1,Constant.SOUTH);
+		initialise(1, 1, Constant.SOUTH);
 		this.sensor = new RealSensor();
 		if (simulator) {
 			JFrame frame = new JFrame("RealRun");
-			frame.setIconImage(new ImageIcon(Constant.SIMULATORICONIMAGEPATH).getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+			frame.setIconImage(new ImageIcon(Constant.SIMULATORICONIMAGEPATH).getImage().getScaledInstance(20, 20,
+					Image.SCALE_DEFAULT));
 			frame.setLayout(null);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			frame.setSize(Constant.MARGINLEFT + Constant.GRIDWIDTH * Constant.BOARDWIDTH + 100, Constant.MARGINTOP + Constant.GRIDHEIGHT * Constant.BOARDHEIGHT + 100);
+			frame.setSize(Constant.MARGINLEFT + Constant.GRIDWIDTH * Constant.BOARDWIDTH + 100,
+					Constant.MARGINTOP + Constant.GRIDHEIGHT * Constant.BOARDHEIGHT + 100);
 			sr = new SimulatorRobot(frame, this.x, this.y, this.getDirection());
 			frame.setVisible(true);
 			sr.displayMessage("Disabled all buttons for the real run.", 2);
 		}
 	}
-	
-	// Singleton and accept a boolean variable to decide if the simulator UI will be displayed
+
+	// Singleton and accept a boolean variable to decide if the simulator UI will be
+	// displayed
 	public static RealRobot getInstance(boolean simulator) {
 		if (r == null) {
 			r = new RealRobot(simulator);
 		}
 		return r;
 	}
-	
-	// Difference between this function and acknowledge is that it returns the sensor value arr after sending sense message to Ardurino
+
+	// Difference between this function and acknowledge is that it returns the
+	// sensor value arr after sending sense message to Ardurino
 	@Override
 	protected String[] getSensorValues() {
 		// FR, FM, FL, RB, RF, LF is the arrangement of our sensor values
 		// Accept only all integer sensor values or all double sensor values
 		Pattern sensorPattern = Pattern.compile("\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+");
-		Pattern sensorPattern2 = Pattern.compile("\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+");
+		Pattern sensorPattern2 = Pattern.compile(
+				"\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+");
 		String s;
 		String[] arr = null;
 		connectionSocket.sendMessage(Constant.SENSE_ALL);
@@ -75,11 +80,12 @@ public class RealRobot extends Robot{
 		this.sensePosition[2] = getDirection();
 		return arr;
 	}
-	
+
 	// Receive sensor values to acknowledge the action had performed by the Ardurino
-	private boolean acknowledge(){
+	private boolean acknowledge() {
 		Pattern sensorPattern = Pattern.compile("\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+[|]{1}\\d+");
-		Pattern sensorPattern2 = Pattern.compile("\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+");
+		Pattern sensorPattern2 = Pattern.compile(
+				"\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+[.]\\d+[|]{1}\\d+");
 		String s;
 		String[] arr = null;
 
@@ -99,65 +105,66 @@ public class RealRobot extends Robot{
 				break;
 			}
 		}
-		
-		// 1 indicates the Ardurino has performed the action successfully and hence return true
+
+		// 1 indicates the Ardurino has performed the action successfully and hence
+		// return true
 		if (Integer.parseInt(arr[6]) == 1) {
 			System.arraycopy(arr, 0, sensorValues, 0, 6);
 			this.sensorValues = arr;
 			this.sensePosition[0] = x;
 			this.sensePosition[1] = y;
 			this.sensePosition[2] = getDirection();
-			sendMDPString();
+			sendMDFString();
 			return true;
 		}
-		
-		// 0 indicates the Ardurino has failed to performed the action and hence return true
+
+		// 0 indicates the Ardurino has failed to performed the action and hence return
+		// true
 		System.arraycopy(arr, 0, sensorValues, 0, 6);
 		this.sensePosition[0] = x;
 		this.sensePosition[1] = y;
 		this.sensePosition[2] = getDirection();
-		sendMDPString();
+		sendMDFString();
 		return false;
-		
+
 	}
-	
+
 	// Send the mdf string every 4 times we receive the sensor value
-	public void sendMDPString() {
+	public void sendMDFString() {
 		if (this.numOfCount > 3) {
 			String[] arr2 = this.getMDFString();
-			connectionSocket.sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1] + ",\"obstacle\":\"" + arr2[2] +
-					"\"}]}");
+			connectionSocket.sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
+					+ ",\"obstacle\":\"" + arr2[2] + "\"}]}");
 			if (sr != null) {
-				sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1] + ",\"obstacle\":\"" + arr2[2] +
-					"\"}]}", 1);
+				sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
+						+ ",\"obstacle\":\"" + arr2[2] + "\"}]}", 1);
 			}
 			this.numOfCount = 0;
-		}
-		else {
+		} else {
 			this.numOfCount++;
 		}
 	}
-	
+
 	// Send the forward message with how many steps and update the robot position
 	@Override
 	public void forward(int step) {
-		connectionSocket.sendMessage("W" + Integer.toString(step)+ "|");
-		this.x = checkValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
-		this.y = checkValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
+		connectionSocket.sendMessage("W" + Integer.toString(step) + "|");
+		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
+		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
 		if (sr != null) {
 			sr.forward(step);
-			sr.displayMessage("Sent message: W" + Integer.toString(step)+ "|", 1);
+			sr.displayMessage("Sent message: W" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
 		if (!acknowledge()) {
-			this.x = checkValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
-			this.y = checkValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
+			this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
+			this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
 			if (sr != null) {
 				sr.backward(step);
 			}
 		}
 	}
-	
+
 	// Send the rotate right message and update the robot direction
 	@Override
 	public void rotateRight() {
@@ -169,7 +176,7 @@ public class RealRobot extends Robot{
 		}
 		acknowledge();
 	}
-	
+
 	// Send the rotate left message and update the robot direction
 	@Override
 	public void rotateLeft() {
@@ -181,32 +188,32 @@ public class RealRobot extends Robot{
 		}
 		acknowledge();
 	}
-	
+
 	// Send the image position and the command to take picture
 	public boolean captureImage(int[][] image_pos) {
-		connectionSocket.sendMessage("C["+ image_pos[0][1] + "," + image_pos[0][0] + "|" + image_pos[1][1] + "," + image_pos[1][0] +
-				"|" + image_pos[2][1] + "," + image_pos[2][0] + "]"); // This is left middle right. x and y is inverted in Real Run.
-		
+		connectionSocket.sendMessage("C[" + image_pos[0][1] + "," + image_pos[0][0] + "|" + image_pos[1][1] + ","
+				+ image_pos[1][0] + "|" + image_pos[2][1] + "," + image_pos[2][0] + "]"); // This is left middle right.
+																							// x and y is inverted in
+																							// Real Run.
+
 		if (sr != null) {
 			sr.captureImage(image_pos);
-			sr.displayMessage("Sent message: C["+ image_pos[0][1] + "," + image_pos[0][0] + "|" + image_pos[1][1] + "," + image_pos[1][0] +
-				"|" + image_pos[2][1] + "," + image_pos[2][0] + "]", 1);
+			sr.displayMessage("Sent message: C[" + image_pos[0][1] + "," + image_pos[0][0] + "|" + image_pos[1][1] + ","
+					+ image_pos[1][0] + "|" + image_pos[2][1] + "," + image_pos[2][0] + "]", 1);
 		}
 		boolean completed = false;
 		String s;
-		ArrayList <String> buffer = ConnectionManager.getBuffer();
+		ArrayList<String> buffer = ConnectionManager.getBuffer();
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
 			completed = checkImageAcknowledge(s);
 			if (completed && s.equals(Constant.IMAGE_ACK)) {
 				System.out.println(s);
 				return false;
-			}
-			else if (completed && s.equals(Constant.IMAGE_STOP)){
+			} else if (completed && s.equals(Constant.IMAGE_STOP)) {
 				System.out.println(s);
 				return true;
-			}
-			else {
+			} else {
 				for (int i = 0; i < buffer.size(); i++) {
 					completed = checkImageAcknowledge(buffer.get(i));
 					if (completed) {
@@ -219,7 +226,7 @@ public class RealRobot extends Robot{
 		}
 		return false;
 	}
-	
+
 	// Get the image acknowledgement from RPI
 	private boolean checkImageAcknowledge(String s) {
 		if (s.equals(Constant.IMAGE_ACK) || s.equals(Constant.IMAGE_STOP)) {
@@ -227,7 +234,7 @@ public class RealRobot extends Robot{
 		}
 		return false;
 	}
-	
+
 	// Send the calibrate command
 	public void calibrate() {
 		connectionSocket.sendMessage(Constant.CALIBRATE);
@@ -245,23 +252,22 @@ public class RealRobot extends Robot{
 		}
 		acknowledge();
 	}
-	
+
 	// This will override the update map from the robot class
 	public int[] updateMap() {
 		int[] isObstacle = super.updateMap();
-		
+
 		// If there is a simulator, this will display the robot movement on screen
 		if (sr != null) {
 			sr.setMap(this.getMap());
 		}
 		return isObstacle;
 	}
-	
+
 	public void displayMessage(String s, int mode) {
 		if (sr != null) {
 			sr.displayMessage(s, mode);
-		}
-		else {
+		} else {
 			System.out.println(s);
 		}
 	}

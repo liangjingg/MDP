@@ -11,7 +11,7 @@ import map.*;
 import imagecomponent.RobotImageComponent;
 import imagecomponent.ImageComponent;
 import sensor.SimulatorSensor;
-import simulator.AddJButtonActionListener;
+import simulator.SetUpUI;
 import timertask.MoveImageTask;
 
 public class SimulatorRobot extends Robot {
@@ -19,15 +19,17 @@ public class SimulatorRobot extends Robot {
 	private ImageComponent robotImage;
 	private JFrame frame;
 	private SimulatorMap smap;
-	private AddJButtonActionListener buttonListener;
+	private SetUpUI buttonListener;
 	private Timer t = new Timer();
 	private int delay = Constant.DELAY;
 
 	public SimulatorRobot(JFrame frame, int x, int y, int direction) {
 		super();
-		initialise(x, y, direction);
+		System.out.println(" Simulate robot!");
+		initialise(x, y, direction); // From Robot parent class (This sets the x, y and direction of the robot ->
+										// From start (0, 19, 1))
 		this.frame = frame;
-		this.sensor = new SimulatorSensor();
+		this.sensor = new SimulatorSensor(); // This uses its own map which is all explored
 
 		/*
 		 * THE ORDER OF ADDING THE ROBOT INTO THE FRAME MATTERS OTHERWISE IT WILL APPEAR
@@ -45,7 +47,7 @@ public class SimulatorRobot extends Robot {
 		smap = SimulatorMap.getInstance(frame, map.copy());
 
 		// Add the buttons onto the UI
-		buttonListener = new AddJButtonActionListener(frame, this);
+		buttonListener = new SetUpUI(frame, this, map);
 
 	}
 
@@ -62,9 +64,10 @@ public class SimulatorRobot extends Robot {
 
 	// Resets the robot position on the UI
 	public void resetRobotPositionOnUI() {
-		this.x = checkValidX(1);
-		this.y = checkValidY(1);
+		this.x = setValidX(1);
+		this.y = setValidY(1);
 		toggleValid();
+		// TODO: Set this as a constant value
 		robotImage.setLocation(
 				Constant.MARGINLEFT + (Constant.GRIDWIDTH * 3 - Constant.ROBOTWIDTH) / 2 + (x - 1) * Constant.GRIDWIDTH,
 				Constant.MARGINTOP + (Constant.GRIDHEIGHT * 3 - Constant.ROBOTHEIGHT) / 2
@@ -93,9 +96,9 @@ public class SimulatorRobot extends Robot {
 	}
 
 	public void setWaypoint(int x, int y) {
-		int[] old_waypoint = this.getWaypoint().clone();
-		super.setWaypoint(x, y);
-		if (!Arrays.equals(old_waypoint, this.getWaypoint())) {
+		int[] oldWaypoint = this.getWaypoint().clone();
+		super.setWaypoint(x, y); // Sets the map that is attribute of the robot
+		if (!Arrays.equals(oldWaypoint, this.getWaypoint())) {
 			smap.setMap(map);
 			if (Arrays.equals(new int[] { -1, -1 }, this.getWaypoint())) {
 				buttonListener.displayMessage("Removed waypoint.", 1);
@@ -129,8 +132,8 @@ public class SimulatorRobot extends Robot {
 
 	// Reset the robot
 	public void restartRobot() {
-		this.x = checkValidX(0);
-		this.y = checkValidY(0);
+		this.x = setValidX(0);
+		this.y = setValidY(0);
 		robotImage.setLocation(
 				Constant.MARGINLEFT + (Constant.GRIDWIDTH * 3 - Constant.ROBOTWIDTH) / 2 + (x - 1) * Constant.GRIDWIDTH,
 				Constant.MARGINTOP + (Constant.GRIDHEIGHT * 3 - Constant.ROBOTHEIGHT) / 2
@@ -145,8 +148,8 @@ public class SimulatorRobot extends Robot {
 	@Override
 	public void forward(int step) {
 		String s;
-		this.x = checkValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
-		this.y = checkValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
+		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
+		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
 		switch (this.getDirection()) {
 			case Constant.NORTH:
 				s = "Up";
@@ -173,9 +176,9 @@ public class SimulatorRobot extends Robot {
 	// from Ardurino
 	public void backward(int step) {
 		String s;
-		this.x = checkValidX(this.x + Constant.SENSORDIRECTION[(this.getDirection() + 2) % 4][0]); // Move back without
+		this.x = setValidX(this.x + Constant.SENSORDIRECTION[(this.getDirection() + 2) % 4][0]); // Move back without
 																									// turning
-		this.y = checkValidX(this.y + Constant.SENSORDIRECTION[(this.getDirection() + 2) % 4][1]);
+		this.y = setValidX(this.y + Constant.SENSORDIRECTION[(this.getDirection() + 2) % 4][1]);
 		switch (this.getDirection()) {
 			case Constant.NORTH:
 				s = "Up";

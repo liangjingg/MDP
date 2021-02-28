@@ -7,7 +7,7 @@ import robot.SimulatorRobot;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ExplorationThread extends Thread{
+public class ExplorationThread extends Thread {
 	private Robot r;
 	private int time;
 	private int percentage;
@@ -27,29 +27,27 @@ public class ExplorationThread extends Thread{
 		this.image_recognition = image_recognition;
 		start();
 	}
-	
+
 	public void run() {
 		running.set(true);
-		
+
 		// Check if it is the simulator mode
 		boolean isSimulated = r.getClass().equals(SimulatorRobot.class);
 		Exploration e = new Exploration();
-		e.Exploration(r, time, percentage, speed, image_recognition);
+		e.ExplorationAlgo(r, time, percentage, speed, image_recognition);
 		if (running.get()) {
 			completed.set(true);
-		}
-		else {
+		} else {
 			completed.set(false);
 		}
 		stopThread();
 		if (ConnectionSocket.checkConnection()) {
 			// Send the MDF String at the end when it is completed
 			String[] arr2 = r.getMDFString();
-			ConnectionSocket.getInstance().sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1] + ",\"obstacle\":\"" + arr2[2] +
-					"\"}]}");
+			ConnectionSocket.getInstance().sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":"
+					+ arr2[1] + ",\"obstacle\":\"" + arr2[2] + "\"}]}");
 			ConnectionSocket.getInstance().sendMessage(Constant.END_TOUR);
-		}
-		else {
+		} else {
 			// Display onto the User Interface, it is completed when it is the simulator
 			if (isSimulated) {
 				SimulatorRobot sr = (SimulatorRobot) r;
@@ -58,7 +56,8 @@ public class ExplorationThread extends Thread{
 		}
 	}
 
-	public static ExplorationThread getInstance(Robot r, int time, int percentage, int speed, boolean image_recognition) {
+	public static ExplorationThread getInstance(Robot r, int time, int percentage, int speed,
+			boolean image_recognition) {
 		if (thread == null) {
 			thread = new ExplorationThread(r, time, percentage, speed, image_recognition);
 		}
