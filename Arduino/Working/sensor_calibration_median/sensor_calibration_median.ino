@@ -58,61 +58,77 @@ void setup()
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
   Serial.println("start");                // a personal quirk
-
-  leftPID.SetOutputLimits(-50,50);
-  leftPID.SetMode(AUTOMATIC);
-  rightPID.SetOutputLimits(-50,50);
-  rightPID.SetMode(AUTOMATIC); 
-  straightPID.SetOutputLimits(-50,50);
-  straightPID.SetMode(AUTOMATIC);
-  //rightEncoderRes();
-  //leftEncoderRes();
 }
 
 void loop()
 {
+  
   left_analog = rawIRSensorMedian(50, 0);
-  left_distanceInCm = shortRangeDistance(left_analog);
+  left_distanceInCm = longRangeDistance(left_analog);
   
   right_analog = rawIRSensorMedian(50, 1);
   right_distanceInCm = shortRangeDistance(right_analog);
   
   back_analog = rawIRSensorMedian(50, 2);
-  back_distanceInCm = longRangeDistance(back_analog) + 5;
+  back_distanceInCm = longRangeDistanceL(back_analog);
   
   front_analog = rawIRSensorMedian(50, 3);
-  front_distanceInCm = longRangeDistance(front_analog);
+  front_distanceInCm = shortRangeDistance(front_analog);
   
   topLeft_analog = rawIRSensorMedian(50, 4);
-  topLeft_distanceInCm = shortRangeDistance(topLeft_analog) -3 ;
+  topLeft_distanceInCm = shortRangeDistance(topLeft_analog) ;
   
   topRight_analog = rawIRSensorMedian(50, 5);
-  topRight_distanceInCm = shortRangeDistance(topRight_analog) - 3;
-  
+  topRight_distanceInCm = shortRangeDistance(topRight_analog);
+
   Serial.println("TopLeft Front TopRight");
+  Serial.print(back_distanceInCm);
+  Serial.print("\t");
   Serial.print(topLeft_distanceInCm);
+  Serial.print("\t");
+  Serial.println(topRight_distanceInCm);
+  Serial.println("    Left RFront RBack   ");
+  Serial.print(left_distanceInCm);
   Serial.print("\t");
   Serial.print(front_distanceInCm);
   Serial.print("\t");
-  Serial.println(topRight_distanceInCm);
-  Serial.println("    Left Back Right   ");
-  Serial.print(left_distanceInCm);
-  Serial.print("\t");
-  Serial.print(back_distanceInCm);
-  Serial.print("\t");
   Serial.println(right_distanceInCm);
-  
-  if (topLeft_distanceInCm >= 10&&front_distanceInCm >= 20&&topRight_distanceInCm >= 10)
-  {
-    Serial.println("Moving Forward one box!");
-    Serial.println("");
-    moveForward();
-  }else{
-    Serial.println("Too close to obstacle!");
-    Serial.println("");
-    turnRight(380);
-    md.setSpeeds(0,0);
+
+  //moveForward(5000);
+  //delay(5000);
+
+  // left center right 
+  if (back_distanceInCm < 25 || topLeft_distanceInCm < 25|| topRight_distanceInCm < 25){
+    Serial.println("hello");
+    //skew left 
+    if(back_distanceInCm < 20 && topLeft_distanceInCm < 20){
+      Serial.println("Going Right");
+        turnRight();
+        moveForward(1000);
+        turnLeft();
+        moveForward(2000);
+        turnLeft();
+        moveForward(1000);
+        turnRight();
+        moveForward(1000);
+        delay(3000);
+      
+    }
+    //skew right
+    if ( topLeft_distanceInCm < 20 && topRight_distanceInCm < 20){
+      Serial.println("Going Left");
+        turnLeft();
+        moveForward(2000);
+        turnRight();
+        moveForward(4000);
+        turnRight();
+        moveForward(2000);
+        turnLeft();
+        moveForward(2000);
+        delay(3000);
+    }
   }
+  
 }
 
 //calculate median of sample size values
@@ -167,9 +183,9 @@ void sort(int arr[],int n) {
 float shortRangeDistance(int analogValue)
 {
   float distanceInCm = (3867.508/(analogValue - 130.319));
-  if (distanceInCm > 70 || distanceInCm < 0)
+  if (distanceInCm > 40 || distanceInCm < 0)
   {
-    distanceInCm = 70;
+    distanceInCm = 40;
   }
   return distanceInCm;
 }
@@ -177,7 +193,18 @@ float shortRangeDistance(int analogValue)
 /*Effective Distance is 20cm to 70cm*/
 float longRangeDistance(int analogValue)
 {
-  float distanceInCm = (8687.689/(analogValue - 75.9339));
+  float distanceInCm = (8687.689/(analogValue - 75.9339)) +5 ;
+
+  if (distanceInCm > 70 || distanceInCm < 0)
+  {
+    distanceInCm = 70;
+  }
+  return distanceInCm;
+}
+
+float longRangeDistanceL(int analogValue)
+{
+  float distanceInCm = (8687.689/(analogValue - 75.9339)) ;
 
   if (distanceInCm > 70 || distanceInCm < 0)
   {
@@ -211,26 +238,26 @@ void avg(int sample, int pin)
   Serial.println(avg_val);
 }
 
-void moveForward()
+void moveForward(int dist)
 {
-    md.setM1Speed(200*0.85);
-    md.setM2Speed(200 *(1));
-    delay(590);
+    md.setM1Speed(300*0.98);
+    md.setM2Speed(300 *(1));
+    delay(dist);
     md.setM1Speed(0);
     md.setM2Speed(0);
 }
-/*
+
 void turnLeft()
 {
   md.setSpeeds(-(200),(200));
-  delay(750);
+  delay(800);
   md.setSpeeds(0,0);
 }
 
 void turnRight()
 {
   md.setSpeeds((200),-(200));
-  delay(750);
+  delay(800);
   md.setSpeeds(0,0);
+  delay(2000);
 }
-*/
