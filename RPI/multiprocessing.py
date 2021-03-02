@@ -104,8 +104,8 @@ class MultiProcessCommunication:
 
 			print('Comms started. Reading from algo and android and arduino and imagerec.')
 
-			# self.image_process.start()
-			# print("Image server connected!")
+			 self.image_process.start()
+			 print("Image server connected!")
 
 		except Exception as err:
 			raise err
