@@ -7,16 +7,16 @@ from ImageRecognition import ImageRecognition
 
 from socket import error as SocketError
 
-# from picamera import PiCamera
+from picamera import PiCamera
 import socket
-# import cv2
-# import imagezmq
-# from imutils.video import VideoStream
+import cv2
+import imagezmq
+from imutils.video import VideoStream
 
 ANDROID_HEADER = 'AND'.encode()
 ARDUINO_HEADER = 'ARD'.encode()
 ALGORITHM_HEADER = 'ALG'.encode()
-IMAGEREC_HEADER = 'IREC'.encode()
+#IMAGEREC_HEADER = 'IREC'.encode()
 
 NEWLINE = '\n'.encode()
 
@@ -40,9 +40,11 @@ RESULT = 'R'
 
 
 #Image Rec IP addresses
-image_processing_server_url = 'tcp://192.168.33.217:5555' #Wei Xuan
+#image_processing_server_url = 'tcp://192.168.33.217:5555' #Wei Xuan
 #image_processing_server_url = 'tcp://192.168.33.96:5555' #Xiao Qing
 #image_processing_server_url = 'tcp://192.168.33.76:5555'    # Marcus
+image_processing_server_url = 'tcp://192.168.11.11.5051'
+
 class MultiProcessCommunication:
 	def __init__(self):
 		#Connect to Arduino, Algo and Android and ImageRecPC
@@ -73,25 +75,25 @@ class MultiProcessCommunication:
 		self.dropped_connection = Value('i',0)
         
 		#For image rec
-		#self.image_process = Process(target=self._process_pic)
+		self.image_process = Process(target=self._process_pic)
 
 		
  
        	#Pictures taken by RPICAM put in this queue to avoid sending all at once
-		#self.image_queue = self.manager.Queue()
+		self.image_queue = self.manager.Queue()
 
 	def start(self):
 		try:
 			#Connect to arduino, algo, imagerecpc and android
 			self.arduino.connect()
 			self.algorithm.connect()
-			self.imagerecognition.connect()
+			#self.imagerecognition.connect()
 			self.android.connect()
 			
 			#Start the process to listen and read from algo, android, imagerecpc and arduino
 			self.read_arduino_process.start()
 			self.read_algorithm_process.start()
-			self.read_imagerec_process.start()
+			#self.read_imagerec_process.start()
 			self.read_android_process.start()
 
 			#Start the process to write to algo and arduino and imagerec
@@ -175,7 +177,7 @@ class MultiProcessCommunication:
 				break
 
 
-        def _read_imagerec(self):
+        '''def _read_imagerec(self):
             while True:
                 try:
                     raw_message = self.imagerecognition.read()
@@ -198,7 +200,7 @@ class MultiProcessCommunication:
             if len(message) <= 0:
 			return
 	    else:
-                self.to_android_message_queue.put_nowait(message)
+                self.to_android_message_queue.put_nowait(message)'''
 	    
             
 	def _read_algorithm(self):
@@ -218,10 +220,10 @@ class MultiProcessCommunication:
 						continue
 
 					elif (message[0] == 'C'): #for ours is C send message to imagerecPC to capture image
-						#image = picam.read()
-						#self.image_queue.put_nowait([image, message[1:].encode()])
+                                                image = picam.read()
+						self.image_queue.put_nowait([image, message[1:].encode()])
                                                 print(message) #for testing
-                                                self.message_queue.put_nowait(self._format_for(self._format_for(IMAGEREC_HEADER, message + NEWLINE))
+                                                #self.message_queue.put_nowait(self._format_for(self._format_for(IMAGEREC_HEADER, message + NEWLINE))
 
 					elif (message == 'EF'): #maybe useless
 						image = picam.read()
@@ -239,6 +241,7 @@ class MultiProcessCommunication:
 						self.message_queue.put_nowait(self._format_for(ARDUINO_HEADER, message[1:].encode()))
 					else:
 						print('from _read_algo = {}'.format(message))
+						message = message + ','
 						self.algorithm_to_android(message.encode())
 						self.message_queue.put_nowait(self._format_for(ARDUINO_HEADER, message.encode()))
 
@@ -298,8 +301,8 @@ class MultiProcessCommunication:
 						self.algorithm.write(payload)
 					elif target == ARDUINO_HEADER:
 						self.arduino.write(payload)
-					elif target == IMAGEREC_HEADER:
-                                                self.imagerecognition.write(payload)
+					#elif target == IMAGEREC_HEADER:
+                                        #        self.imagerecognition.write(payload)
 			except Exception as err:
 				print('failed {}'.format(err))
 				break
@@ -314,7 +317,7 @@ class MultiProcessCommunication:
 				print('Process write_android failed: ' + str(error))
 				break
 
-	def _process_pic(self): #this was their function i not sure if we will use this
+	def _process_pic(self): 
 		image_sender = imagezmq.ImageSender(connect_to=image_processing_server_url)
 		image_id_list = []
 
