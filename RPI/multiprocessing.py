@@ -43,7 +43,7 @@ RESULT = 'R'
 #image_processing_server_url = 'tcp://192.168.33.217:5555' #Wei Xuan
 #image_processing_server_url = 'tcp://192.168.33.96:5555' #Xiao Qing
 #image_processing_server_url = 'tcp://192.168.33.76:5555'    # Marcus
-image_processing_server_url = 'tcp://192.168.11.11.5051'
+image_processing_server_url = 'tcp://192.168.11.11:5051'
 
 class MultiProcessCommunication:
 	def __init__(self):
