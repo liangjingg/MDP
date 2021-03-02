@@ -176,31 +176,30 @@ class MultiProcessCommunication:
 				print("_read_arduino failed - {}".format(str(err)))
 				break
 
+	#def _read_imagerec(self):
+         #   while True:
+          #      try:
+           #         raw_message = self.imagerecognition.read()
+            #        if raw_message is None:
+             #           continue
 
-        '''def _read_imagerec(self):
-            while True:
-                try:
-                    raw_message = self.imagerecognition.read()
-                    if raw_message is None:
-                        continue
+ #                   result_list = raw_message.decode().split("|")
+  #                  if (len(result_list)>2): #idk how long the string gonna b from imagerec.py lmao
+   #                     print(result_list)
+    #                    
+     #               for result in result_list:
+      #                  if len(result) <= 0:
+       #                     continue
+        #                else:
+         #                   self.imagerecPC_to_android(result)
 
-                    result_list = raw_message.decode().split("|")
-                    if (len(result_list)>2): #idk how long the string gonna b from imagerec.py lmao
-                        print(result_list)
-                        
-                    for result in result_list:
-                        if len(result) <= 0:
-                            continue
-                        else:
-                            self.imagerecPC_to_android(result)
-
-        def imagerecPC_to_android(self, message): 
+        #def imagerecPC_to_android(self, message): 
             #to send coordinates results from imagerecPC to android
 
-            if len(message) <= 0:
-			return
-	    else:
-                self.to_android_message_queue.put_nowait(message)'''
+ #           if len(message) <= 0:
+#			return
+#	    else:
+ #               self.to_android_message_queue.put_nowait(message)'''
 	    
             
 	def _read_algorithm(self):
