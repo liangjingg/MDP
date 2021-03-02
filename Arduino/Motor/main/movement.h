@@ -3,6 +3,7 @@
 #include <EnableInterrupt.h>
 #include <PID_v2.h>
 #include <ArduinoSort.h>
+#include "sensor.h"
 
 #define LEFT_ENCODER 13 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
@@ -65,9 +66,13 @@ void goStraight(double ticks) {
 
 straightPID.Compute();
 float offset = 0.1;
-
-  while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)){
+getSensorDist();
+//Serial.println(sensorDist[3]);
+//Serial.println("Sensor Dist");
+  if (front_left_inDistanceCM > 15){
+  while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks )){
     straightPID.Compute();
+    //getSensorDist();
     float LeftEncoderFixed = leftEncoderValue;
     float LeftEncoderOutput = leftEncoderValue + Output;
     float RightEncoderOutput = rightEncoderValue - Output;
@@ -84,9 +89,13 @@ float offset = 0.1;
     //md.setSpeeds(50, 350); //left,right
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(100);
+  delay(500);
   rightEncoderRes();
   leftEncoderRes();
+  }else{
+    Serial.println(front_left_inDistanceCM);
+    Serial.println("Too Close!!");
+  }
 
 }
 
@@ -108,7 +117,7 @@ void goBack(double ticks) {
     md.setSpeeds(-(FASTSPEED +Output), -(FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(100);
+  delay(500);
   rightEncoderRes();
   leftEncoderRes();
 
@@ -126,7 +135,7 @@ void turnLeft(double ticks) {
     md.setSpeeds(-(FASTSPEED+ Output), (FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(100);
+  delay(500);
   rightEncoderRes();
   leftEncoderRes();
 }
@@ -147,7 +156,7 @@ void turnRight(double ticks) {
     md.setSpeeds((FASTSPEED + Output), -(FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(100);
+  delay(500);
   leftEncoderRes();
   rightEncoderRes();
 }
