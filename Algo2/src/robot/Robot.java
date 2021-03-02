@@ -64,7 +64,7 @@ public abstract class Robot {
 	public abstract void right_align();
 
 	public abstract void displayMessage(String s, int mode);
-
+	
 	public void setDirection(int direction) {
 		this.direction = direction;
 		toggleValid();
@@ -304,7 +304,15 @@ public abstract class Robot {
 	public void setTrueMap(Map map) {
 		this.sensor.setTrueMap(map);
 	}
+	
+	public Map getTrueMap() {
+		return this.sensor.getTrueMap();
+	}
 
+	public void setMap(Map map) {
+		this.map = map;
+	}
+	
 	public String[] getMDFString() {
 		return map.getMDFString();
 	}

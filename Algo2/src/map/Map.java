@@ -2,7 +2,10 @@ package map;
 
 import java.util.Random;
 
+import astarpathfinder.FastestPathThread;
 import config.Constant;
+import connection.ConnectionSocket;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -340,6 +343,9 @@ public class Map {
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
+//		if (ConnectionSocket.checkConnection() && !FastestPathThread.getRunning()) {
+//			
+//		}
 		// System.out.println(s);
 	}
 

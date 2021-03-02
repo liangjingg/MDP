@@ -102,7 +102,7 @@ public class Constant {
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
 	// public static final String IP_ADDRESS = "192.168.15.15";
-	public static final int PORT = 5045;
+	public static final int PORT = 4000;
 	public static final int BUFFER_SIZE = 512;
 
 	public static final String START_EXPLORATION = "ES|";
@@ -117,8 +117,12 @@ public class Constant {
 	public static final String CALIBRATE = "L|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\Desktop\\NTU\\Year 3\\Semester 2\\CZ3004 Multidisciplinary Project\\Algo2\\MDP_Integrated\\Algo\\sample arena";
-
+	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\OneDrive\\Desktop\\NTU\\Year 3\\MDP\\MDP\\Algo2\\sample arena";
+	public static final String SETMDF = "MDF";
+	
+	// MDF Strings
+	public static final String P1String = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+	
 	// Connection Acknowledge
 	public static final String IMAGE_ACK = "D";
 }

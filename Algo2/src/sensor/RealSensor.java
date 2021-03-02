@@ -8,6 +8,7 @@ public class RealSensor extends Sensor {
 	private int x;
 	private int y;
 	private int direction;
+	private Map trueMap;
 	private String arr[] = new String[6];
 
 	public RealSensor() {
@@ -34,13 +35,14 @@ public class RealSensor extends Sensor {
 	@Override
 	// In the real run, the robot cannot know what is the true map.
 	public Map getTrueMap() {
-		return null;
+		//return null;
+		return trueMap;
 	}
 
 	@Override
 	// This is not valid action for the robot
 	public void setTrueMap(Map map) {
-
+		this.trueMap = map;
 	}
 
 }

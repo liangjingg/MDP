@@ -471,9 +471,9 @@ public class SetUpUI implements ActionListener {
 
 		// Disable all button during the real runs as they are not meant to work for the
 		// Real Run
-		if (ConnectionSocket.checkConnection()) {
-			this.disableButtons();
-		}
+//		if (ConnectionSocket.checkConnection()) {
+//			this.disableButtons();
+//		}
 	}
 
 	public void printConsole(String s, JScrollBar vbar) {
@@ -812,8 +812,7 @@ public class SetUpUI implements ActionListener {
 				displayMessage("Invalid waypoint - Waypoint is an obstacle!", 2);
 				return;
 			}
-			waypoint = r.getWaypoint();
-			System.out.printf("New Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
+
 			if (!FastestPathThread.getRunning()) {
 				displayMessage("Fastest Path Started", 1);
 				FastestPathThread.getInstance(r, waypoint, chosenSpeed);

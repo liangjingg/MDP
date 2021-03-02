@@ -37,7 +37,7 @@ public class RealRobot extends Robot {
 					Constant.MARGINTOP + Constant.GRIDHEIGHT * Constant.BOARDHEIGHT + 100);
 			sr = new SimulatorRobot(frame, this.x, this.y, this.getDirection());
 			frame.setVisible(true);
-			sr.displayMessage("Disabled all buttons for the real run.", 2);
+			//sr.displayMessage("Disabled all buttons for the real run.", 2);
 		}
 	}
 
@@ -48,6 +48,10 @@ public class RealRobot extends Robot {
 			r = new RealRobot(simulator);
 		}
 		return r;
+	}
+	
+	public SimulatorRobot getSimulatorRobot() {
+		return sr;
 	}
 
 	// Difference between this function and acknowledge is that it returns the
@@ -148,12 +152,12 @@ public class RealRobot extends Robot {
 	// Send the forward message with how many steps and update the robot position
 	@Override
 	public void forward(int step) {
-		connectionSocket.sendMessage("W" + Integer.toString(step) + "|");
+		connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
 		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
 		if (sr != null) {
 			sr.forward(step);
-			sr.displayMessage("Sent message: W" + Integer.toString(step) + "|", 1);
+			sr.displayMessage("Sent message: W0" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
 		if (!acknowledge()) {
@@ -270,5 +274,9 @@ public class RealRobot extends Robot {
 		} else {
 			System.out.println(s);
 		}
+	}
+	
+	public Map getTrueMap() {
+		return this.sensor.getTrueMap();
 	}
 }

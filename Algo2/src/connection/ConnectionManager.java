@@ -1,5 +1,7 @@
 package connection;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -8,11 +10,13 @@ import java.util.regex.Pattern;
 import astarpathfinder.FastestPathThread;
 import config.Constant;
 import exploration.ExplorationThread;
+import map.Map;
 import robot.RealRobot;
 
 // This is the connection manager thread that communicates with the Rpi
 public class ConnectionManager extends Thread{
 	private static RealRobot robot;
+	private static Map map;
 	private static ConnectionManager connectionManager = null;
 	private ConnectionSocket connectionSocket = ConnectionSocket.getInstance();
 	private static Thread thread = null;
@@ -35,6 +39,8 @@ public class ConnectionManager extends Thread{
 		if (robot == null){
 			robot = RealRobot.getInstance(simulate);
 		}
+		System.out.println(robot.getSimulatorRobot());
+		System.out.println(robot.getSimulatorRobot().getTrueMap());
 			
 		return connectionSocket.connectToRPI();
 	}
@@ -87,6 +93,7 @@ public class ConnectionManager extends Thread{
 		// Check if received a valid message
 		while (!complete) {
 			robot.displayMessage("Waiting for orders", 2);
+			System.out.println(robot.getMap().print());
 			s = this.connectionSocket.receiveMessage().trim();
 			robot.displayMessage("Received message: " + s, 2);
 			
@@ -128,7 +135,15 @@ public class ConnectionManager extends Thread{
 			else if (!ExplorationThread.getRunning() && !FastestPathThread.getRunning() && s.equals(Constant.FASTEST_PATH) ){
 				thread = FastestPathThread.getInstance(robot, robot.getWaypoint(), 1);
 				thread.setPriority(Thread.MAX_PRIORITY);
-				
+//				Map map = robot.getTrueMap();
+				//need to robot.setMap() here
+				//loadMap only runs setTrueMap() of simulator robot -> sets simulated sensor of simulator robot
+				if (robot.getSimulatorRobot() != null) {
+					Map map = robot.getSimulatorRobot().getTrueMap();
+					robot.setMap(map);
+				}
+				// run map
+				System.out.println(robot.getMap().print());
 				s = "Fastest Path started";
 				try {
 					thread.join();
@@ -137,6 +152,9 @@ public class ConnectionManager extends Thread{
 				catch(Exception e) {
 					System.out.println("Error in fastest path in ConnectionManager");
 				}
+				//Set map
+				//robot.setTrueMap(map);
+				//robot.getMap();
 				complete = true;
 			}
 			
@@ -152,9 +170,11 @@ public class ConnectionManager extends Thread{
 					String tmp = s.replace(Constant.SETWAYPOINT + " (", "");
 					tmp = tmp.replace(")", "");
 					String[] arr = tmp.trim().split(",");
+					//x , y
 					robot.setWaypoint(Integer.parseInt(arr[1]), Integer.parseInt(arr[0]));
 					s = "Successfully received the waypoint: " + Integer.parseInt(arr[0]) + 
 							"," + Integer.parseInt(arr[1]);
+					System.out.printf("Waypoint: %d, %d \n", robot.getWaypoint()[0], robot.getWaypoint()[1]);
 					robot.displayMessage(s, 2);
 				}
 			}
@@ -175,6 +195,21 @@ public class ConnectionManager extends Thread{
 				buffer.add(s);
 				System.out.println("Placed command" + s + " into buffer");
 			}
+			
+			else if (s.equals(Constant.SETMDF)) {
+				map = robot.getMap();
+				if (map != null) {
+					Pattern mdfString = Pattern.compile(Constant.SETMDF + " \\[A-Fa-f0-9]\\)");
+					String mdf = s.replace(Constant.SETMDF, "");
+					try {
+						map.decodeMDFString(Constant.P1String, mdf);
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+					System.out.println(map.getMDFString());
+				}
+			}
+			
 			else {
 				System.out.println("Unknown command: " + s);
 			}

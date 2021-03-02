@@ -45,6 +45,7 @@ public class FastestPath {
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
                 realFPmove(path, robot);
+                //move(robot, path, speed);
             } else {
                 move(robot, path, speed);
             }
@@ -88,6 +89,7 @@ public class FastestPath {
             sb.append("W").append(count).append("|");
         }
         String msg = sb.toString();
+        msg = "W03|D|W03|D|D";
         robot.displayMessage("Message sent for FastestPath real run: " + msg, 2);
         ConnectionSocket.getInstance().sendMessage(msg);
     }
