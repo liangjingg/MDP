@@ -3,7 +3,7 @@ import socket
 LOCALE = 'UTF-8'
 AlgoBufferSize = 512 
 WIFI_IP = '192.168.11.11'
-WIFI_PORT = 5040
+WIFI_PORT = 5555
 
 class ImageRecognition:
     def __init__(self, host=WIFI_IP, port=WIFI_PORT):
