@@ -4,39 +4,39 @@ char cmd[100];
 #include "sensor.h"
 
 
-#define W01  100
-#define W02  200
-#define W03  300
-#define W04  400
-#define W05  100
-#define W06  100
-#define W07  100
-#define W08  100
-#define W09  100
-#define W10  100
-#define W11  100
-#define W12  100
-#define W13  100
-#define W14  100
-#define W15  100
-#define W16  100
-#define W17  100
-#define W18  100
-#define W19  100
+#define W01  300
+#define W02  610
+#define W03  880
+#define W04  1230
+#define W05  1520
+#define W06  1850
+#define W07  2180
+#define W08  8*300
+#define W09  9*300
+#define W10  10*300
+#define W11  11*300
+#define W12  12*300
+#define W13  13*300
+#define W14  14*300
+#define W15  15*300
+#define W16  16*300
+#define W17  17*300
+#define W18  18*300
+#define W19  19*300
 
 
-#define S01  100
-#define S02  200
-#define S03  300
-#define S04  400
-#define S05  100
-#define S06  100
-#define S07  100
-#define S08  100
-#define S09  100
-#define S10  100
-#define S11  100
-#define S12  100
+#define S01  300
+#define S02  600
+#define S03  900
+#define S04  1200
+#define S05  1500
+#define S06  1800
+#define S07  2100
+#define S08  2400
+#define S09  2700
+#define S10  3000
+#define S11  3300
+#define S12  3600
 #define S13  100
 #define S14  100
 #define S15  100
@@ -45,7 +45,7 @@ char cmd[100];
 #define S18  100
 #define S19  100
 
-#define A01  100
+#define A01  384
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[100];
 #define A09  900
 #define A10  1000
 
-#define D01  100
+#define D01  385
 #define D02  200
 #define D03  300
 #define D04  400
@@ -93,21 +93,33 @@ bool readCommand()
 
 void executeFastestPathCommand(){
   char letter = cmd[cmd_out];
+//  Serial.println("index");
+//  Serial.println(cmd_out);
 
   // MOVE FOWARD
    if (letter == 'W')
  {
+//  Serial.println("W' Removing :");
+//       Serial.println(cmd[cmd_out]);
     cmd_out++;
+    
     char firstDigit = cmd[cmd_out];
     if (firstDigit == '0'){
+//      Serial.println("0' Removing :");
+//       Serial.println(cmd[cmd_out]);
        cmd_out++;
        char secondDigit = cmd[cmd_out];
+//       Serial.println("Second' Removing :");
+//       Serial.println(cmd[cmd_out]);
+       cmd_out++;
+//       Serial.println(cmd[cmd_out]);
        switch(secondDigit){
          case '1': 
            goStraight(W01);
            break;
          case '2': 
            goStraight(W02);
+//           Serial.println("RUNNING W02");
            break;
          case '3': 
            goStraight(W03);
@@ -131,8 +143,8 @@ void executeFastestPathCommand(){
            goStraight(W09);
            break;
          default:
-           Serial.println("Nothing Matches!");
-           Serial.println(secondDigit);
+//           Serial.println("Nothing Matches!");
+//           Serial.println(secondDigit);
 
            break;    
        }
@@ -140,6 +152,7 @@ void executeFastestPathCommand(){
     else if (firstDigit == '1'){
        cmd_out++;
        char secondDigit = cmd[cmd_out];
+       cmd_out++;
        switch(secondDigit){
          case '1': 
            goStraight(W11);
@@ -177,11 +190,18 @@ void executeFastestPathCommand(){
  }
    else if (letter == 'S')
  {
+//  Serial.println("S' Removing :");
+//       Serial.println(cmd[cmd_out]);
     cmd_out++;
     char firstDigit = cmd[cmd_out];
     if (firstDigit == '0'){
+//       Serial.println("Removing :");
+//       Serial.println(cmd[cmd_out]);
        cmd_out++;
+//       Serial.println("Removing :");
+//       Serial.println(cmd[cmd_out]);
        char secondDigit = cmd[cmd_out];
+       cmd_out++;
        switch(secondDigit){
          case '1': 
            goBack(S01);
@@ -212,7 +232,7 @@ void executeFastestPathCommand(){
            break;
          default:
            Serial.println("Nothing Matches!");
-           Serial.println(secondDigit);
+//           Serial.println(secondDigit);
 
            break;    
        }
@@ -220,6 +240,7 @@ void executeFastestPathCommand(){
     else if (firstDigit == '1'){
        cmd_out++;
        char secondDigit = cmd[cmd_out];
+       cmd_out++;
        switch(secondDigit){
          case '1': 
            goBack(S11);
@@ -259,93 +280,23 @@ void executeFastestPathCommand(){
     else if (letter == 'A')
  {
     cmd_out++;
-    char firstDigit = cmd[cmd_out];
-    if (firstDigit == '0'){
-       cmd_out++;
-       char secondDigit = cmd[cmd_out];
-       switch(secondDigit){
-         case '1': 
-           turnLeft(A01);
-           break;
-         case '2': 
-           turnLeft(A02);
-           break;
-         case '3': 
-           turnLeft(A03);
-           break;
-         case '4': 
-           turnLeft(A04);
-           break;
-         case '5': 
-           turnLeft(A05);
-           break;
-         case '6': 
-           turnLeft(A06);
-           break;
-         case '7': 
-           turnLeft(A07);
-           break;
-         case '8': 
-           turnLeft(A08);
-           break;
-         case '9': 
-           turnLeft(A09);
-           break;
-         default:
-           Serial.println("Nothing Matches!");
-           Serial.println(secondDigit);
-
-           break;    
-       }
-    }
+    turnLeft(A01);
     cmd_out++;
  }
 
      else if (letter == 'D')
  {
+//  Serial.println("Removing :");
+     //  Serial.println(cmd[cmd_out]);
     cmd_out++;
-    char firstDigit = cmd[cmd_out];
-    if (firstDigit == '0'){
-       cmd_out++;
-       char secondDigit = cmd[cmd_out];
-       switch(secondDigit){
-         case '1': 
-           turnRight(D01);
-           break;
-         case '2': 
-           turnRight(D02);
-           break;
-         case '3': 
-           turnRight(D03);
-           break;
-         case '4': 
-           turnRight(D04);
-           break;
-         case '5': 
-           turnRight(D05);
-           break;
-         case '6': 
-           turnRight(D06);
-           break;
-         case '7': 
-           turnRight(D07);
-           break;
-         case '8': 
-           turnRight(D08);
-           break;
-         case '9': 
-           turnRight(D09);
-           break;
-         default:
-           Serial.println("Nothing Matches!");
-           Serial.println(secondDigit);
+    turnRight(D01);
+    cmd_out++;
 
-           break;    
-       }
-    }
-    cmd_out++;
  }
-
+ else{
+  cmd_out++;
+  cmd_out++;
+ }
  
 
 }
@@ -356,11 +307,13 @@ void vroom(){
     while (cmd_out < cmd_in)
     { // execute each command until the last char has been executed
       executeFastestPathCommand();
-      getSensorDist();
-      cmd_out++;
+       Serial.print("Servicing Command: ");
+       Serial.println(cmd);
+    //de   Serial.println(cmd[cmd_out]);
+      //cmd_out++;
     }
     // reset cmd_out counter
     cmd_out = 0;
   }
-  delay(500);
+
 }

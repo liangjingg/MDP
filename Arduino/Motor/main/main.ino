@@ -78,7 +78,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   vroom();
-  delay(1000);
+  delay(100);
   //vroom();
   
 }
