@@ -188,13 +188,12 @@ double getDistanceLeft(int analogValue)
 /* =============================== define distance arr from obstacle for each sensor ============================= */
 void getSensorDist()
 {
-  left_analog = rawIRSensorMedian(50, 0);
-  right_front_analog = rawIRSensorMedian(50, 3);
-  right_back_analog = rawIRSensorMedian(50, 1);
-  front_center_analog = rawIRSensorMedian(50, 4);
-  front_left_analog = rawIRSensorMedian(50, 2);
-  front_right_analog = rawIRSensorMedian(50, 5);
-  
+  left_analog = rawIRSensorMedian(5, 0);
+  right_front_analog = rawIRSensorMedian(5, 3);
+  right_back_analog = rawIRSensorMedian(5, 1);
+  front_center_analog = rawIRSensorMedian(5, 4);
+  front_left_analog = rawIRSensorMedian(5, 2);
+  front_right_analog = rawIRSensorMedian(5, 5);
   left_inDistanceCM = getDistanceLeft(left_analog);
   right_front_inDistanceCM = getDistanceRightFront(right_front_analog);
   right_back_inDistanceCM = getDistanceRightBack(right_back_analog);
@@ -203,38 +202,43 @@ void getSensorDist()
   front_right_inDistanceCM = getDistanceFrontRight(front_right_analog);
 
   delay(100);
-  
-
+ 
   //adds to the the array
-  sensorDist[0] = left_inDistanceCM;
-  sensorDist[1] = right_front_inDistanceCM;
-  sensorDist[2] = right_back_inDistanceCM;
-  sensorDist[3] = front_center_inDistanceCM;
-  sensorDist[4] = front_left_inDistanceCM;
-  sensorDist[5] = front_right_inDistanceCM;
+//  sensorDist[0] = left_inDistanceCM;
+//  delay(100);
+//  sensorDist[1] = right_front_inDistanceCM;
+//  delay(100);
+//  sensorDist[2] = right_back_inDistanceCM;
+//  delay(100);
+//  sensorDist[3] = front_center_inDistanceCM;
+//  delay(100);
+//  sensorDist[4] = front_left_inDistanceCM;
+//  delay(100);
+//  sensorDist[5] = front_right_inDistanceCM;
+//  delay(100);
   
   Serial.print("Left Sensor ");
-  Serial.println(sensorDist[0]);
+  //Serial.println(sensorDist[0]);
   Serial.println(left_inDistanceCM);
   
   Serial.print("Right Front Sensor ");
-  Serial.println(sensorDist[1]);
+  //Serial.println(sensorDist[1]);
   Serial.println(right_front_inDistanceCM);
   
   Serial.print("Right Back Sensor ");
-  Serial.println(sensorDist[2]);
+  //Serial.println(sensorDist[2]);
   Serial.println(right_back_inDistanceCM);
   
   Serial.print("Front Center Sensor ");
-  Serial.println(sensorDist[3]);
+  //Serial.println(sensorDist[3]);
   Serial.println(front_center_inDistanceCM);
   
   Serial.print("Front Left Sensor ");
-  Serial.println(sensorDist[4]);
+  //Serial.println(sensorDist[4]);
   Serial.println(front_left_inDistanceCM);
   
   Serial.print("Front Right Sensor ");
-  Serial.println(sensorDist[5]);
+  //Serial.println(sensorDist[5]);
   Serial.println(front_right_inDistanceCM);
 
 }
