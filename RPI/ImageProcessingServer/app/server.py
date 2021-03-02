@@ -54,13 +54,13 @@ class ImageProcessingServer:
             YOLO_BATCH_SIZE
         )
 
-    def image_detection(image, network, class_names, class_colors, thresh):
+    def image_detection(self, image):
         # Darknet doesn't accept numpy images.
         # Create one with image we reuse for each detect
         #Modified from darknet_images.py
         #Takes in direct image instead of path
-        width = darknet.network_width(network)
-        height = darknet.network_height(network)
+        width = darknet.network_width(self.network)
+        height = darknet.network_height(self.network)
         darknet_image = darknet.make_image(width, height, 3)
 
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -68,9 +68,9 @@ class ImageProcessingServer:
                                    interpolation=cv2.INTER_LINEAR)
 
         darknet.copy_image_from_bytes(darknet_image, image_resized.tobytes())
-        detections = darknet.detect_image(network, class_names, darknet_image, thresh=thresh)
+        detections = darknet.detect_image(self.network, self.class_names, darknet_image, thresh=THRESH)
         darknet.free_image(darknet_image)
-        image = darknet.draw_boxes(detections, image_resized, class_colors)
+        image = darknet.draw_boxes(detections, image_resized, self.class_colors)
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
     def show_all_images(frame_list):
@@ -113,7 +113,7 @@ class ImageProcessingServer:
             cut_width = 3
             cut_height = 3
             start_time = timeit.default_timer()
-            image, detections = self.image_detection(frame, self.network, self.class_names, self.class_colors, THRESH)
+            image, detections = self.image_detection(frame)
             reply = []
 
             for i in detections:
