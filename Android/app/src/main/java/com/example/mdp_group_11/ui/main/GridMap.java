@@ -1,4 +1,4 @@
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +21,8 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
 
-import com.example.mdp_android_grp15.MainActivity;
-import com.example.mdp_android_grp15.R;
+import com.example.mdp_group_11.R;
+import com.example.mdp_group_11.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -435,7 +435,7 @@ public class GridMap extends View {
         row = this.convertRow(row);
         cells[col][row].setType("waypoint");
 
-        MainActivity.printMessage("waypoint", waypointCoord[0]-1, waypointCoord[1]-1);
+        MainActivity.printMessage("waypoint", waypointCoord[1]-1,waypointCoord[0]-1);
         showLog("Exiting setWaypointCoord");
     }
 
@@ -828,6 +828,7 @@ public class GridMap extends View {
                     }
                     break;
                 case "move":
+                    message = "works, kinda";
                     infoJsonArray = mapInformation.getJSONArray("move");
                     infoJsonObject = infoJsonArray.getJSONObject(0);
                     if (canDrawRobot)

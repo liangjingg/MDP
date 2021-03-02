@@ -1,6 +1,4 @@
-//need to change the package name as well !!
-
-package com.example.mdp_android_grp15;
+package com.example.mdp_group_11;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,14 +21,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 //need to change name here !!
-import com.example.mdp_android_grp15.ui.main.BluetoothConnectionService;
-import com.example.mdp_android_grp15.ui.main.BluetoothPopUp;
-import com.example.mdp_android_grp15.ui.main.CommsFragment;
-import com.example.mdp_android_grp15.ui.main.GridMap;
-import com.example.mdp_android_grp15.ui.main.MapInformation;
-import com.example.mdp_android_grp15.ui.main.MapTabFragment;
-import com.example.mdp_android_grp15.ui.main.ReconfigureFragment;
-import com.example.mdp_android_grp15.ui.main.SectionsPagerAdapter;
+import com.example.mdp_group_11.ui.main.BluetoothConnectionService;
+import com.example.mdp_group_11.ui.main.BluetoothPopUp;
+import com.example.mdp_group_11.ui.main.CommsFragment;
+import com.example.mdp_group_11.ui.main.GridMap;
+import com.example.mdp_group_11.ui.main.MapInformation;
+import com.example.mdp_group_11.ui.main.MapTabFragment;
+import com.example.mdp_group_11.ui.main.ReconfigureFragment;
+import com.example.mdp_group_11.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;

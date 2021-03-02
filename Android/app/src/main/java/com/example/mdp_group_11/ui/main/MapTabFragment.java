@@ -1,4 +1,4 @@
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.mdp_android_grp15.MainActivity;
-import com.example.mdp_android_grp15.R;
+import com.example.mdp_group_11.R;
+import com.example.mdp_group_11.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -211,6 +211,8 @@ public class MapTabFragment extends Fragment {
             }
         });
 
+
+        //MANUAL UPDATE OF MAP?????????
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

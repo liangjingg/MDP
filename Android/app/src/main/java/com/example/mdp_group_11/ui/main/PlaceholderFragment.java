@@ -1,4 +1,4 @@
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.mdp_android_grp15.R;
+import com.example.mdp_group_11.R;
+import com.example.mdp_group_11.MainActivity;
 
 /**
  * A placeholder fragment containing a simple view.

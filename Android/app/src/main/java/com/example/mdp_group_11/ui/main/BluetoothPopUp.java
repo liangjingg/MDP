@@ -1,4 +1,4 @@
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -28,7 +28,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.mdp_android_grp15.R;
+
+import com.example.mdp_group_11.R;
 
 import java.util.ArrayList;
 import java.util.Set;

@@ -1,5 +1,5 @@
 //need to change the package name as well !!
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;

@@ -1,4 +1,4 @@
-package com.example.mdp_android_grp15.ui.main;
+package com.example.mdp_group_11.ui.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,8 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.mdp_android_grp15.MainActivity;
-import com.example.mdp_android_grp15.R;
+
+import com.example.mdp_group_11.R;
+import com.example.mdp_group_11.MainActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,10 +46,10 @@ public class ControlFragment extends Fragment implements SensorEventListener {
     SharedPreferences.Editor editor;
 
     // Control Button
-    ImageButton moveForwardImageBtn, turnRightImageBtn, moveBackImageBtn, turnLeftImageBtn, exploreResetButton, fastestResetButton;
-    private static long exploreTimer, fastestTimer;
-    ToggleButton exploreButton, fastestButton;
-    TextView exploreTimeTextView, fastestTimeTextView, robotStatusTextView;
+    ImageButton moveForwardImageBtn, turnRightImageBtn, moveBackImageBtn, turnLeftImageBtn, exploreResetButton, fastestResetButton, imageResetButton;
+    private static long exploreTimer, fastestTimer, imageTimer;
+    ToggleButton exploreButton, fastestButton, imageButton;
+    TextView exploreTimeTextView, fastestTimeTextView, robotStatusTextView, imageTimeTextView;
     Switch phoneTiltSwitch;
     static Button calibrateButton;
     private static GridMap gridMap;
@@ -71,6 +72,20 @@ public class ControlFragment extends Fragment implements SensorEventListener {
             secondsExplore = secondsExplore % 60;
 
             exploreTimeTextView.setText(String.format("%02d:%02d", minutesExplore, secondsExplore));
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
+
+    Runnable timerRunnableImage = new Runnable() {
+        @Override
+        public void run() {
+            long millisImage = System.currentTimeMillis() - imageTimer;
+            int secondsImage = (int) (millisImage / 1000);
+            int minutesImage = secondsImage / 60;
+            secondsImage = secondsImage % 60;
+
+            imageTimeTextView.setText(String.format("%02d:%02d", minutesImage, secondsImage));
 
             timerHandler.postDelayed(this, 500);
         }
@@ -127,10 +142,13 @@ public class ControlFragment extends Fragment implements SensorEventListener {
         moveBackImageBtn = root.findViewById(R.id.backImageBtn);
         turnLeftImageBtn = root.findViewById(R.id.leftImageBtn);
         exploreTimeTextView = root.findViewById(R.id.exploreTimeTextView);
+        imageTimeTextView = root.findViewById(R.id.imageTimeTextView);
         fastestTimeTextView = root.findViewById(R.id.fastestTimeTextView);
         exploreButton = root.findViewById(R.id.exploreToggleBtn);
+        imageButton = root.findViewById(R.id.imageToggleBtn);
         fastestButton = root.findViewById(R.id.fastestToggleBtn);
         exploreResetButton = root.findViewById(R.id.exploreResetImageBtn);
+        imageResetButton = root.findViewById(R.id.imageResetImageBtn);
         fastestResetButton = root.findViewById(R.id.fastestResetImageBtn);
         phoneTiltSwitch = root.findViewById(R.id.phoneTiltSwitch);
         calibrateButton = root.findViewById(R.id.calibrateButton);
@@ -138,6 +156,7 @@ public class ControlFragment extends Fragment implements SensorEventListener {
         robotStatusTextView = MainActivity.getRobotStatusTextView();
         fastestTimer = 0;
         exploreTimer = 0;
+        imageTimer=0;
 
         mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -260,6 +279,29 @@ public class ControlFragment extends Fragment implements SensorEventListener {
                 showLog("Exiting exploreToggleBtn");
             }
         });
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLog("Clicked imageToggleBtn");
+                ToggleButton imageToggleBtn = (ToggleButton) v;
+                if (imageToggleBtn.getText().equals("IMAGE")) {
+                    showToast("Image timer stop!");
+                    robotStatusTextView.setText("Image recognition Stopped");
+                    timerHandler.removeCallbacks(timerRunnableImage);
+                }
+                else if (imageToggleBtn.getText().equals("STOP")) {
+                    showToast("Image timer start!");
+                    MainActivity.printMessage("IS|");
+                    robotStatusTextView.setText("Image recognition Started");
+                    imageTimer = System.currentTimeMillis();
+                    timerHandler.postDelayed(timerRunnableImage, 0);
+                }
+                else {
+                    showToast("Else statement: " + imageToggleBtn.getText());
+                }
+                showLog("Exiting imageToggleBtn");
+            }
+        });
 
         fastestButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,11 +338,24 @@ public class ControlFragment extends Fragment implements SensorEventListener {
                 showLog("Exiting exploreResetImageBtn");            }
         });
 
+        imageResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLog("Clicked imageResetImageBtn");
+                showToast("Resetting image recognition time...");
+                imageTimeTextView.setText("00:00");
+                robotStatusTextView.setText("Not Available");
+                if(imageButton.isChecked())
+                    imageButton.toggle();
+                timerHandler.removeCallbacks(timerRunnableImage);
+                showLog("Exiting imageResetImageBtn");            }
+        });
+
         fastestResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLog("Clicked fastestResetImageBtn");
-                showToast("ResetTing fastest time...");
+                showToast("Resetting fastest time...");
                 fastestTimeTextView.setText("00:00");
                 robotStatusTextView.setText("Not Available");
                 if (fastestButton.isChecked())
