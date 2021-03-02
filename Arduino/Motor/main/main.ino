@@ -1,6 +1,6 @@
 
 /*
- * Version: 1.0
+ * Version: 1.7 2 March 2021
  * 
  * Description:
  * This code is written for integration testing of Arduino Robot Hardware to Rpi via serial communication. 
@@ -11,6 +11,8 @@
  * Rotate Left/Right
  * Calibration Front (WIP)
  * Calibration right wall (WIP)
+ * 
+ * This is the code that was most recently updated to gihub
  * 
  */
 
@@ -77,9 +79,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  //vroom();
+  //delay(1000);
   vroom();
   delay(100);
-  //vroom();
+  //getSensorDist();
+  //getDistanceMsg();
+  //delay(3000);
+  
   
 }
 

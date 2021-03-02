@@ -45,7 +45,7 @@ char cmd[100];
 #define S18  100
 #define S19  100
 
-#define A01  378
+#define A01  384
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[100];
 #define A09  900
 #define A10  1000
 
-#define D01  378
+#define D01  385
 #define D02  200
 #define D03  300
 #define D04  400
@@ -102,7 +102,7 @@ void executeFastestPathCommand(){
 //  Serial.println("W' Removing :");
 //       Serial.println(cmd[cmd_out]);
     cmd_out++;
-    
+
     char firstDigit = cmd[cmd_out];
     if (firstDigit == '0'){
 //      Serial.println("0' Removing :");
@@ -297,7 +297,7 @@ void executeFastestPathCommand(){
   cmd_out++;
   cmd_out++;
  }
- 
+
 
 }
 

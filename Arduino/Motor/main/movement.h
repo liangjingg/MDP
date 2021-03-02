@@ -4,8 +4,8 @@
 #include <PID_v2.h>
 #include <ArduinoSort.h>
 
-#define LEFT_ENCODER 13 //left motor encoder A to pin 5
-#define RIGHT_ENCODER 5//right motor encoder A to pin 13
+#define LEFT_ENCODER 5 //left motor encoder A to pin 5
+#define RIGHT_ENCODER 13 //right motor encoder A to pin 13
 #define FASTSPEED 350
 #define SLOWSPEED 200
 
@@ -18,7 +18,7 @@ double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.8, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.1, 0.10, 0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.9, 0.6, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 2.4, 0.5, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -50,7 +50,7 @@ void movementSetup() {          //setup files used in the main
   leftPID.SetMode(AUTOMATIC);
   rightPID.SetOutputLimits(-50, 50);
   rightPID.SetMode(AUTOMATIC);
-  straightPID.SetOutputLimits(-50, 50);
+  straightPID.SetOutputLimits(-60, 60);
   straightPID.SetMode(AUTOMATIC);
   rightEncoderRes();
   leftEncoderRes();
@@ -64,26 +64,24 @@ void movementSetup() {          //setup files used in the main
 void goStraight(double ticks) {
 
 straightPID.Compute();
-float offset = 0.1;
 
-  while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)){
+  while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
     straightPID.Compute();
     float LeftEncoderFixed = leftEncoderValue;
     float LeftEncoderOutput = leftEncoderValue + Output;
-    float RightEncoderOutput = rightEncoderValue - Output;
-
-    Serial.print("Output Left: ");
+    float RightEncoderOutput = rightEncoderValue;
+    Serial.print("Left: ");
+    Serial.print(LeftEncoderFixed);
+    Serial.print(", Output Left: ");
     Serial.print(LeftEncoderOutput);
-    Serial.print(", Output Right: ");
+    Serial.print(", Right: ");
     Serial.print(RightEncoderOutput);
     Serial.print(", Diff: ");
     Serial.println(RightEncoderOutput - LeftEncoderOutput);
     Serial.println(Output);
-    md.setSpeeds(((FASTSPEED + Output)), ((FASTSPEED - Output)));
-
-    //md.setSpeeds(50, 350); //left,right
+    md.setSpeeds((FASTSPEED), (FASTSPEED + Output));
   }
-  md.setBrakes(FASTSPEED, FASTSPEED);
+  md.setBrakes(FASTSPEED, FASTSPEED+Output);
   delay(100);
   rightEncoderRes();
   leftEncoderRes();
@@ -105,7 +103,7 @@ void goBack(double ticks) {
     //    Serial.print(rightEncoderValue);
     //    Serial.print(", Diff: ");
     //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));
-    md.setSpeeds(-(FASTSPEED +Output), -(FASTSPEED - Output));
+    md.setSpeeds(-(FASTSPEED), -(FASTSPEED + Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
   delay(100);
@@ -123,7 +121,7 @@ void turnLeft(double ticks) {
   {
     leftPID.Compute();
 
-    md.setSpeeds(-(FASTSPEED+ Output), (FASTSPEED - Output));
+    md.setSpeeds(-(FASTSPEED), (FASTSPEED + Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
   delay(100);
@@ -144,7 +142,7 @@ void turnRight(double ticks) {
     //    Serial.print(rightEncoderValue);
     //    Serial.print(", Diff:");
     //    Serial.println(rightEncoderValue-(leftEncoderValue+Output));
-    md.setSpeeds((FASTSPEED + Output), -(FASTSPEED - Output));
+    md.setSpeeds((FASTSPEED), -(FASTSPEED + Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
   delay(100);
