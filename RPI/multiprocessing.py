@@ -43,7 +43,7 @@ RESULT = 'R'
 #image_processing_server_url = 'tcp://192.168.33.217:5555' #Wei Xuan
 #image_processing_server_url = 'tcp://192.168.33.96:5555' #Xiao Qing
 #image_processing_server_url = 'tcp://192.168.33.76:5555'    # Marcus
-image_processing_server_url = 'tcp://192.168.11.11:5051'
+image_processing_server_url = 'tcp://192.168.11.11.5051'
 
 class MultiProcessCommunication:
 	def __init__(self):
@@ -104,8 +104,8 @@ class MultiProcessCommunication:
 
 			print('Comms started. Reading from algo and android and arduino and imagerec.')
 
-			self.image_process.start()
-			print("Image server connected!")
+			#self.image_process.start()
+			#print("Image server connected!")
 
 		except Exception as err:
 			raise err
@@ -177,30 +177,30 @@ class MultiProcessCommunication:
 				break
 
 
-        #def _read_imagerec(self):
-        #    while True:
-        #        try:
-        #            raw_message = self.imagerecognition.read()
-        #            if raw_message is None:
-        #                continue
+        '''def _read_imagerec(self):
+            while True:
+                try:
+                    raw_message = self.imagerecognition.read()
+                    if raw_message is None:
+                        continue
 
-        #            result_list = raw_message.decode().split("|")
-        #            if (len(result_list)>2): #idk how long the string gonna b from imagerec.py lmao
-        #                print(result_list)
-        #                
-        #            for result in result_list:
-        #                if len(result) <= 0:
-        #                    continue
-        #                else:
-        #                    self.imagerecPC_to_android(result)
+                    result_list = raw_message.decode().split("|")
+                    if (len(result_list)>2): #idk how long the string gonna b from imagerec.py lmao
+                        print(result_list)
+                        
+                    for result in result_list:
+                        if len(result) <= 0:
+                            continue
+                        else:
+                            self.imagerecPC_to_android(result)
 
-        #def imagerecPC_to_android(self, message): 
-        #    #to send coordinates results from imagerecPC to android
+        def imagerecPC_to_android(self, message): 
+            #to send coordinates results from imagerecPC to android
 
-        #    if len(message) <= 0:
-	#		return
-	#    else:
-        #        self.to_android_message_queue.put_nowait(message)'''
+            if len(message) <= 0:
+			return
+	    else:
+                self.to_android_message_queue.put_nowait(message)'''
 	    
             
 	def _read_algorithm(self):
@@ -223,7 +223,7 @@ class MultiProcessCommunication:
                                                 image = picam.read()
 						self.image_queue.put_nowait([image, message[1:].encode()])
                                                 print(message) #for testing
-                                                #self.message_queue.put_nowait(self._format_for(self._format_for(IMAGEREC_HEADER, message + NEWLINE))
+                                                self.message_queue.put_nowait(self._format_for(self._format_for(IMAGEREC_HEADER, message + NEWLINE))
 
 					elif (message == 'EF'): #maybe useless
 						image = picam.read()
