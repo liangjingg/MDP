@@ -74,6 +74,7 @@ void setup() {
   Serial.println("Connected");
   
   movementSetup();        //pulls the setup files from movement.h
+  sensorSetup();
   
 }
 

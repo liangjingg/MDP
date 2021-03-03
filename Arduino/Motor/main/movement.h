@@ -19,7 +19,7 @@ double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.8, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.7, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.9, 0.6, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 2.4, 0.5, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -66,10 +66,10 @@ void goStraight(double ticks) {
 
 straightPID.Compute();
 float offset = 0.1;
-getSensorDist();
+//getSensorDist();
 //Serial.println(sensorDist[3]);
 //Serial.println("Sensor Dist");
-  if (front_left_inDistanceCM > 15){
+  //if (front_left_inDistanceCM > 15){
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks )){
     straightPID.Compute();
     //getSensorDist();
@@ -92,10 +92,10 @@ getSensorDist();
   delay(500);
   rightEncoderRes();
   leftEncoderRes();
-  }else{
-    Serial.println(front_left_inDistanceCM);
-    Serial.println("Too Close!!");
-  }
+//  }else{
+//    Serial.println(front_left_inDistanceCM);
+//    Serial.println("Too Close!!");
+//  }
 
 }
 
@@ -218,4 +218,27 @@ void moveLeftStep(double steps) {
   Serial.print("Turning right: ");
   Serial.print(steps);
   Serial.println(" blocks");
+}
+
+/* =============================== Go Straight Until Obstacle Encountered ============================= */
+void goStraightObstacle(double ticks) {
+  straightPID.Compute();
+  getSensorDist();
+  
+  if (front_center_inDistanceCM < 15 || front_left_inDistanceCM < 15 || front_right_inDistanceCM < 15 ){
+    Serial.println("");
+  }
+  else{
+    while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
+      straightPID.Compute();
+      float LeftEncoderFixed = leftEncoderValue;
+      float LeftEncoderOutput = leftEncoderValue + Output;
+      float RightEncoderOutput = rightEncoderValue;
+      md.setSpeeds((FASTSPEED), (FASTSPEED + Output));
+    }
+    md.setBrakes(FASTSPEED, FASTSPEED+Output);
+    delay(100);
+    rightEncoderRes();
+    leftEncoderRes();
+  }
 }

@@ -45,7 +45,7 @@ char cmd[100];
 #define S18  100
 #define S19  100
 
-#define A01  376
+#define A01  384
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[100];
 #define A09  900
 #define A10  1000
 
-#define D01  376
+#define D01  360
 #define D02  200
 #define D03  300
 #define D04  400
@@ -66,8 +66,6 @@ char cmd[100];
 #define D08  800
 #define D09  900
 #define D10  1000
-
-
 
 
 bool readCommand()
@@ -116,6 +114,7 @@ void executeFastestPathCommand(){
        switch(secondDigit){
          case '1': 
            goStraight(W01);
+           //goStraightObstacle(W01);
            break;
          case '2': 
            goStraight(W02);
@@ -293,6 +292,19 @@ void executeFastestPathCommand(){
     cmd_out++;
 
  }
+     else if (letter == 'Q')
+ {
+    cmd_out++;
+    turnLeft(A01/2);
+    cmd_out++;
+ }
+
+      else if (letter == 'E')
+ {
+    cmd_out++;
+    turnRight(D01/2.2);
+    cmd_out++;
+ }
  else{
   cmd_out++;
   cmd_out++;
@@ -314,7 +326,6 @@ void vroom(){
     }
     // reset cmd_out counter
     cmd_out = 0;
-    memset(&cmd[0],0,sizeof(cmd));
   }
 
 }
