@@ -1,6 +1,6 @@
 from multiprocessing import Process, Value, Queue, Manager
 
-from Algorithm import Algorithm
+from Algorithms import Algorithm
 from Arduino import Arduino
 from Android import Android
 #from ImageRecognition import ImageRecognition
