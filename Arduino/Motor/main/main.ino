@@ -80,10 +80,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //vroom();
-  //delay(1000);
   vroom();
+  //delay(1000);
+  //vroom();
   delay(100);
+  //getSensorDist();
+  //delay(2000);
   //getSensorDist();
   //getDistanceMsg();
   //delay(3000);

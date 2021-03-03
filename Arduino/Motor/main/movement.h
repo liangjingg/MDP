@@ -5,7 +5,7 @@
 #include <ArduinoSort.h>
 #include "sensor.h"
 
-#define LEFT_ENCODER 13 //left motor encoder A to pin 5
+#define LEFT_ENCODER 11 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
 #define FASTSPEED 350
 #define SLOWSPEED 200

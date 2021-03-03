@@ -126,7 +126,7 @@ int rawIRSensorMedian(int sample_size, int pin)
 /* =============================== Front Sensors ============================= */
 double getDistanceFrontLeft(int analogValue)
 {
-  double distanceInCM = (8687.689/(analogValue - 75.9339))-5;
+  double distanceInCM = (8687.689/(analogValue - 75.9339));
   if (distanceInCM > 70 || distanceInCM <= -0.00)
   {
     distanceInCM = 70;
@@ -137,7 +137,7 @@ double getDistanceFrontLeft(int analogValue)
 
 double getDistanceFrontRight(int analogValue)
 {
-  double distanceInCM = (3867.508/(analogValue - 130.319)) - 2;
+  double distanceInCM = (3867.508/(analogValue - 130.319));
   
   if (distanceInCM > 40 || distanceInCM <= -0.00)
   {
@@ -147,7 +147,7 @@ double getDistanceFrontRight(int analogValue)
 }
 double getDistanceFrontCenter(int analogValue)
 {
-  double distanceInCM = (3867.508/(analogValue - 130.319)) - 2;
+  double distanceInCM = (3867.508/(analogValue - 130.319));
 
   if (distanceInCM > 40 || distanceInCM <= -0.00)
   {
@@ -184,7 +184,7 @@ double getDistanceRightBack(int analogValue)
 
 double getDistanceLeft(int analogValue)
 {
-  double distanceInCM = (8687.689/(analogValue - 75.9339));
+  double distanceInCM = (8687.689/(analogValue - 75.9339))+4;
 
   if (distanceInCM > 70 || distanceInCM <= -0.00)
   {
@@ -201,30 +201,30 @@ int getLeftAnalog(){
 }
 
 int getRFAnalog(){
-  right_front_analog = rawIRSensorMedian(30, 3);
+  right_front_analog = rawIRSensorMedian(50, 3);
   return right_front_analog;
 }
 
 int getRBAnalog(){
-  right_back_analog = rawIRSensorMedian(30, 1);
+  right_back_analog = rawIRSensorMedian(50, 1);
   return right_back_analog;
 }
 
 int getFCAnalog(){
-  front_center_analog = rawIRSensorMedian(30, 4);
+  front_center_analog = rawIRSensorMedian(50, 4);
   return front_center_analog;
 }
 
 //SOMETHING IS WRONG WITH THIS 
 int getFLAnalog(){
-  front_left_analog = rawIRSensorMedian(30, 2);
+  front_left_analog = rawIRSensorMedian(50, 2);
   Serial.println(front_left_analog);
   Serial.println("Completed! :-) "); 
   return front_left_analog;
 }
 
 int getFRAnalog(){
-  front_right_analog = rawIRSensorMedian(30, 5);
+  front_right_analog = rawIRSensorMedian(50, 5);
   return front_right_analog;
 }
 

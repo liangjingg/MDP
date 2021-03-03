@@ -4,15 +4,15 @@ char cmd[100];
 //#include "sensor.h"
 
 
-#define W01  300
-#define W02  610
-#define W03  880
-#define W04  1230
-#define W05  1520
-#define W06  1850
-#define W07  2180
-#define W08  8*300
-#define W09  9*300
+#define W01  250
+#define W02  500
+#define W03  820
+#define W04  1120
+#define W05  1380
+#define W06  1380+390
+#define W07  1380+390+270
+#define W08  1380+390+270+250
+#define W09  1380+390+270+250+250
 #define W10  10*300
 #define W11  11*300
 #define W12  12*300
@@ -25,15 +25,15 @@ char cmd[100];
 #define W19  19*300
 
 
-#define S01  300
-#define S02  600
-#define S03  900
-#define S04  1200
-#define S05  1500
-#define S06  1800
-#define S07  2100
-#define S08  2400
-#define S09  2700
+#define S01  250
+#define S02  550
+#define S03  820
+#define S04  1120
+#define S05  1380
+#define S06  1380+390
+#define S07  1380+390+270
+#define S08  1380+390+270+250
+#define S09  1380+390+270+250+250
 #define S10  3000
 #define S11  3300
 #define S12  3600
@@ -45,7 +45,7 @@ char cmd[100];
 #define S18  100
 #define S19  100
 
-#define A01  384
+#define A01  366
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[100];
 #define A09  900
 #define A10  1000
 
-#define D01  360
+#define D01  366
 #define D02  200
 #define D03  300
 #define D04  400
@@ -314,7 +314,7 @@ void executeFastestPathCommand(){
 }
 
 void vroom(){
-  if (readCommand() == true)
+if (readCommand() == true)
   { // if there are commands that are available
     while (cmd_out < cmd_in)
     { // execute each command until the last char has been executed
