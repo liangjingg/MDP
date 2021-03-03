@@ -1,9 +1,9 @@
 from multiprocessing import Process, Value, Queue, Manager
 
-from Algorithm import Algorithm
+from Algorithms import Algorithm
 from Arduino import Arduino
 from Android import Android
-from ImageRecognition import ImageRecognition
+#from ImageRecognition import ImageRecognition
 
 from socket import error as SocketError
 
@@ -51,7 +51,7 @@ class MultiProcessCommunication:
 		self.arduino = Arduino()
 		self.algorithm = Algorithm()
 		self.android = Android()
-		self.imagerecognition = ImageRecognition()
+		#self.imagerecognition = ImageRecognition()
 
 		self.manager = Manager()
 		self.MDF_LIST = self.manager.list([0])
@@ -66,7 +66,7 @@ class MultiProcessCommunication:
 		self.read_arduino_process = Process(target=self._read_arduino)
 		self.read_algorithm_process = Process(target = self._read_algorithm)
 		self.read_android_process = Process(target=self._read_android)
-		self.read_imagerec_process = Process(target=self._read_imagerec)
+		#self.read_imagerec_process = Process(target=self._read_imagerec)
 
 		self.write_process = Process(target=self._write_target)
 		self.write_android_process = Process(target=self._write_android)
