@@ -51,7 +51,7 @@ class MultiProcessCommunication:
 		self.arduino = Arduino()
 		self.algorithm = Algorithm()
 		self.android = Android()
-		self.imagerecognition = ImageRecognition()
+		#self.imagerecognition = ImageRecognition()
 
 		self.manager = Manager()
 		self.MDF_LIST = self.manager.list([0])
