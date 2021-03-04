@@ -22,9 +22,9 @@ public class Node implements Comparable<Node> {
         else if (this.cost > o.cost)
             return 1;
         else {
-            if (h_cost < o.h_cost)
+            if (this.h_cost < o.h_cost)
                 return -1;
-            if (h_cost > o.h_cost)
+            if (this.h_cost > o.h_cost)
                 return 1;
             else
                 return 0;

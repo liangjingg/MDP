@@ -17,9 +17,9 @@ public class AStarPathFinder {
 
     public int[] AStarPathFinderAlgo(Robot robot, int[] start_pos, int[] end_pos, boolean on_grid) {
         // Node start = new Node(start_pos);
-    	initialDirection = robot.getDirection();
+        initialDirection = robot.getDirection();
         Node cur = null;
-        
+
         System.out.printf("End pos: x: %d, y: %d \n", end_pos[0], end_pos[1]);
 
         // matrix indicating whether is on open list or not
@@ -56,21 +56,17 @@ public class AStarPathFinder {
         boolean pathFound = false;
 
         while (!openQueue.isEmpty()) {
-             System.out.println("Priority Queue: ");
-             for (Node node : openQueue) {
-//             if (node.parent != null) {
-//             System.out.printf("Node: Pos: x: %d, y: %d, parent-x: %d, parent-y: %d, cost:
-//             %d \n", node.pos[0],
-//             node.pos[1], node.parent.pos[0], node.parent.pos[1], node.cost);
-//             } else {
-             System.out.printf("Node: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d \n", node.pos[0],
-             node.pos[1], node.g_cost, node.h_cost, node.cost);
-//             }
-             }
+            // System.out.println("Priority Queue: ");
+            // PriorityQueue<Node> queueCopy = new PriorityQueue<Node>(openQueue);
+            // while (queueCopy.size() != 0) {
+            // Node temp = queueCopy.poll();
+            // System.out.printf("x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d \n",
+            // temp.pos[0], temp.pos[1],
+            // temp.g_cost, temp.h_cost, temp.cost);
+            // }
             cur = openQueue.poll();
-            System.out.printf("x: %d, y: %d, g_cost: %d, h_cost: %d \n", cur.pos[0], cur.pos[1], 
-            		nodeDetails[cur.pos[0]][cur.pos[1]].g_cost, 
-            		nodeDetails[cur.pos[0]][cur.pos[1]].h_cost );
+            System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n", cur.pos[0], cur.pos[1],
+                    nodeDetails[cur.pos[0]][cur.pos[1]].g_cost, nodeDetails[cur.pos[0]][cur.pos[1]].h_cost);
 
             if (((!on_grid) && (canReach(cur.pos, end_pos, first)))
                     || ((on_grid) && (Arrays.equals(cur.pos, end_pos)))) {
@@ -84,37 +80,52 @@ public class AStarPathFinder {
                 if (neighbour != null) {
                     neighbour.parent = cur;
                     calculateCosts(neighbour, end_pos, robot);
-                     System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d\n",
-                     neighbour.pos[0], neighbour.pos[1],
-                     neighbour.g_cost, neighbour.h_cost, neighbour.cost);
-                    nodeDetails[neighbour.pos[0]][neighbour.pos[1]] = neighbour;
+                    if (neighbour.pos[0] == 3 && neighbour.pos[1] == 1) {
+                        System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d\n",
+                                neighbour.pos[0], neighbour.pos[1], neighbour.g_cost, neighbour.h_cost, neighbour.cost);
+                    }
+                    // System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d,
+                    // cost: %d\n",
+                    // neighbour.pos[0], neighbour.pos[1], neighbour.g_cost, neighbour.h_cost,
+                    // neighbour.cost);
+                    // nodeDetails[neighbour.pos[0]][neighbour.pos[1]] = neighbour; -> Removed this
+                    // and fastest path worked
                     if (closedList[neighbour.pos[0]][neighbour.pos[1]])
                         continue;
+                    // if (openList[neighbour.pos[0]][neighbour.pos[1]]) {
+                    // Node temp = nodeDetails[neighbour.pos[0]][neighbour.pos[1]];
+                    // System.out.printf(
+                    // "Current in node details: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost:
+                    // %d\n",
+                    // temp.pos[0], temp.pos[1], temp.g_cost, temp.h_cost, temp.cost);
+                    // }
                     if (!openList[neighbour.pos[0]][neighbour.pos[1]]
-                            || neighbour.cost < nodeDetails[neighbour.pos[0]][neighbour.pos[1]].cost) {
+                            || neighbour.cost < nodeDetails[neighbour.pos[0]][neighbour.pos[1]].cost) { // shd update if
+                                                                                                        // h_cost
+                                                                                                        // lower??
                         openList[neighbour.pos[0]][neighbour.pos[1]] = true;
                         nodeDetails[neighbour.pos[0]][neighbour.pos[1]] = neighbour;
-                        openQueue.add(neighbour);
+                        openQueue.add(neighbour); // need replace the old one??
                     }
                 }
             }
         }
 
         if (pathFound) {
-        	 int[] path = reversePath(cur);
-             System.out.println(Arrays.toString(path));
-             updateDirection(path);
-             System.out.println("Path Found");
-             return path;
-        	
+            int[] path = reversePath(cur);
+            System.out.println(Arrays.toString(path));
+            updateDirection(path);
+            System.out.println("Path Found");
+            return path;
+
         } else {
-        	return null;
+            return null;
         }
-//        int[] path = reversePath(cur);
-//        System.out.println(Arrays.toString(path));
-//        updateDirection(path);
-//        System.out.println("Path Found");
-//        return path;
+        // int[] path = reversePath(cur);
+        // System.out.println(Arrays.toString(path));
+        // updateDirection(path);
+        // System.out.println("Path Found");
+        // return path;
 
         // while (true) {
         // cur = lowestCost(open);
@@ -333,20 +344,12 @@ public class AStarPathFinder {
         int[][] robotPos = { { x - 1, y + 1 }, { x, y + 1 }, { x + 1, y + 1 }, { x - 1, y }, { x, y }, { x + 1, y },
                 { x - 1, y - 1 }, { x, y - 1 }, { x + 1, y - 1 } };
 
-//        int[][] robotPos2 = { { x - 1, y - 3 }, { x, y - 3 }, { x + 1, y - 3 }, { x + 3, y - 1 }, { x + 3, y },
-//            { x + 3, y + 1 }, { x + 1, y + 3 }, { x, y + 3 }, { x - 1, y + 3 }, { x - 3, y + 1 }, { x - 3, y },
-//            { x - 3, y - 1 } };
         if ((x > 0) && (x < Constant.BOARDWIDTH - 1) && (y > 0) && (y < Constant.BOARDHEIGHT - 1)) {
             for (int[] coordinates : robotPos) {
                 if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
                     return false;
                 }
             }
-//            for (int[] coordinates: robotPos2) {
-//            	 if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
-//                     return false;
-//                 }
-//            }
             return true;
         } else {
             return false;
@@ -408,7 +411,6 @@ public class AStarPathFinder {
         }
         Node first = second.parent;
         if (first == null) { // This is only 1 grid away from the start
-        	System.out.printf("second.pos: %d, %d, cur.pos: %d, %d \n", second.pos[0], second.pos[1], cur.pos[0], cur.pos[1]);
             if (second.pos[0] == cur.pos[0]) {
                 if (second.pos[1] > cur.pos[1]) {
                     if (direction == Constant.NORTH) {
@@ -522,10 +524,15 @@ public class AStarPathFinder {
         }
 
         while (cur.parent != null) {
-            if (directionToGo(cur) >= 0) {
+            // System.out.printf("reverse Path cur: x: %d, y: %d \n", cur.pos[0],
+            // cur.pos[1]);
+            // System.out.printf("reverse Path cur PARENT: x: %d, y: %d \n",
+            // cur.parent.pos[0], cur.parent.pos[1]);
+            int direction = directionToGo(cur);
+            if (direction >= 0) {
                 int[] temp_path = new int[path.length + 1];
                 System.arraycopy(path, 0, temp_path, 1, path.length);
-                temp_path[0] = directionToGo(cur);
+                temp_path[0] = direction;
                 path = temp_path;
                 cur = cur.parent;
             }
