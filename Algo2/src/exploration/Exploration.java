@@ -370,10 +370,10 @@ public class Exploration {
 
         for (int m = 0; m < 3; m++) {
             // There is an obstacle
-            if (!(Arrays.equals(obs_pos[m], default_pos))) { // Only left those that are already not checked
+            if (!(Arrays.equals(obs_pos[m], default_pos))) { // Only left those that are already not checked and obstacle
                 if (isFrontEmpty(robot)) {
-                    checked_obstacles[0][0] = m + 1;
-                }
+                    checked_obstacles[0][0] = m + 1; //this is the initial array {{0}}
+                } //wazz dis
                 if ((checked_obstacles[0][0] > 2) || (!isFrontEmpty(robot))) {
                     take_pic = true;
                 }
@@ -383,7 +383,7 @@ public class Exploration {
         if (take_pic) {
             for (int[] obs : obs_pos) {
                 if (!(Arrays.equals(obs, default_pos))) {
-                    int len = checked_obstacles.length;
+                    int len = checked_obstacles.length; //adds to the checked obstacles -> change to arrya list?? LOL
                     int[][] temp = new int[len + 1][3];
                     System.arraycopy(checked_obstacles, 0, temp, 0, len);
                     temp[len] = obs;
@@ -398,7 +398,7 @@ public class Exploration {
     }
 
     private boolean within_map(int x, int y) {
-        return (x <= 19) && (x >= 0) && (y <= 14) && (y >= 0);
+        return (x < Constant.BOARDWIDTH) && (x >= 0) && (y < Constant.BOARDHEIGHT) && (y >= 0);
     }
 
     private boolean right_wall(Robot robot) {

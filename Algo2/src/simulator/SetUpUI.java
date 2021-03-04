@@ -808,10 +808,10 @@ public class SetUpUI implements ActionListener {
 			int[] waypoint = r.getWaypoint();
 			System.out.printf("Old Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
 			r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
-			if (loadedMap.getGrid(chosenWaypoint[0], chosenWaypoint[1]).equals(Constant.OBSTACLE)) {
-				displayMessage("Invalid waypoint - Waypoint is an obstacle!", 2);
-				return;
-			}
+//			if (loadedMap.getGrid(chosenWaypoint[0], chosenWaypoint[1]).equals(Constant.OBSTACLE)) {
+//				displayMessage("Invalid waypoint - Waypoint is an obstacle!", 2);
+//				return;
+//			}
 
 			if (!FastestPathThread.getRunning()) {
 				displayMessage("Fastest Path Started", 1);

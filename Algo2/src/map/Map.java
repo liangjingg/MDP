@@ -1,12 +1,17 @@
 package map;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import astarpathfinder.FastestPathThread;
 import config.Constant;
 import connection.ConnectionSocket;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 
@@ -322,7 +327,9 @@ public class Map {
 			}
 		}
 		try {
-			File file = new File(Constant.FOLDER_TO_WRITE + "\\map.txt");
+			File folder = new File(Constant.FOLDER_TO_WRITE);
+			int numOfFiles = folder.list().length;
+			File file = new File(Constant.FOLDER_TO_WRITE + "\\samplearena" + (numOfFiles-1) + ".txt");
 			PrintWriter out = new PrintWriter(file);
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				for (int i = 0; i < Constant.BOARDWIDTH; i++) {

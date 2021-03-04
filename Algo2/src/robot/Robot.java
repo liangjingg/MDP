@@ -117,6 +117,7 @@ public abstract class Robot {
 		// robot position and it is a real run
 		System.out.printf(" sensePosition[0]: %d, sensePosition[1]: %d \n", sensePosition[0], sensePosition[1]);
 		System.out.printf("x: %d, y: %d \n", x, y);
+		//whats w this error checking...
 		if (!(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction)
 				|| !ConnectionSocket.checkConnection()) {
 			System.out.println(" Here");

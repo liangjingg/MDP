@@ -12,6 +12,7 @@ import config.Constant;
 import exploration.ExplorationThread;
 import map.Map;
 import robot.RealRobot;
+import robot.SimulatorRobot;
 
 // This is the connection manager thread that communicates with the Rpi
 public class ConnectionManager extends Thread{
@@ -36,6 +37,7 @@ public class ConnectionManager extends Thread{
 	
 	// Initialise the realrobot here and connect to RPI
 	public boolean connectToRPi(boolean simulate) {
+		System.out.println("Connect to RPI");
 		if (robot == null){
 			robot = RealRobot.getInstance(simulate);
 		}
@@ -93,7 +95,8 @@ public class ConnectionManager extends Thread{
 		// Check if received a valid message
 		while (!complete) {
 			robot.displayMessage("Waiting for orders", 2);
-			System.out.println(robot.getMap().print());
+//			System.out.println(ConnectionSocket.checkConnection());
+//			System.out.println(robot.getMap().print());
 			s = this.connectionSocket.receiveMessage().trim();
 			robot.displayMessage("Received message: " + s, 2);
 			
@@ -139,8 +142,12 @@ public class ConnectionManager extends Thread{
 				//need to robot.setMap() here
 				//loadMap only runs setTrueMap() of simulator robot -> sets simulated sensor of simulator robot
 				if (robot.getSimulatorRobot() != null) {
-					Map map = robot.getSimulatorRobot().getTrueMap();
+					SimulatorRobot sr = robot.getSimulatorRobot();
+					Map map = sr.getTrueMap();
 					robot.setMap(map);
+					sr.setSimulatorMap(map);
+					sr.toggleMap();
+					sr.toggleMap();
 				}
 				// run map
 				System.out.println(robot.getMap().print());

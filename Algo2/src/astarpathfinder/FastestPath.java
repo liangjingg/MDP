@@ -18,6 +18,7 @@ public class FastestPath {
         astar.setFirst(true); // wtf -> this is set in the old code when the open list is empty? -> means no
                               // possible path
         int[] path, path1, path2;
+        System.out.printf("Fastest path waypoint: %d, %d \n",  waypoint[0], waypoint[1]);
 
         if (astar.isValid(robot, waypoint)) { // If valid waypoint
             // move is false when running fastest path
@@ -45,8 +46,11 @@ public class FastestPath {
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
                 realFPmove(path, robot);
-                //move(robot, path, speed);
+                System.out.println("Finsh sending");
+                move(robot, path, speed);
             } else {
+            	//get realPath
+            	System.out.println(getRealPath(path));
                 move(robot, path, speed);
             }
         }
@@ -55,6 +59,55 @@ public class FastestPath {
         System.out.println("Finished Fastest Path");
         return path;
     }
+    
+    private String getRealPath(int[] path) {
+    	 StringBuilder sb = new StringBuilder();
+         int count = 0;
+         for (int direction : path) {
+             if (direction == Constant.FORWARD) {
+                 count++;
+             } else if (count > 0) {
+                 if (count < 10) {
+                     sb.append("W").append("0").append(count).append("|");
+                 } else if (count >= 10) {
+                     sb.append("W").append(count).append("|");
+                 }
+                 if (direction == Constant.RIGHT) {
+                     sb.append(Constant.TURN_RIGHT);
+                     count = 1;
+                 } else if (direction == Constant.LEFT) {
+                     sb.append(Constant.TURN_LEFT);
+                     count = 1;
+                 } else if (direction == Constant.BACKWARD) {
+                     sb.append(Constant.TURN_RIGHT).append(Constant.TURN_RIGHT);
+                     count = 1;
+                 } else {
+                     System.out.println("Error!");
+                     return null;
+                 }
+             } else  {
+            	if (direction == Constant.RIGHT) {
+                    sb.append(Constant.TURN_RIGHT);
+                    count = 1;
+                } else if (direction == Constant.LEFT) {
+                    sb.append(Constant.TURN_LEFT);
+                    count = 1;
+                } else if (direction == Constant.BACKWARD) {
+                    sb.append(Constant.TURN_RIGHT).append(Constant.TURN_RIGHT);
+                    count = 1;
+                } 
+            }
+         }
+         if (count < 10) {
+             sb.append("W").append("0").append(count).append("|");
+         }
+         if (count >= 10) {
+             sb.append("W").append(count).append("|");
+         }
+         String msg = sb.toString();
+         System.out.println("Actual msg! " + msg);
+         return msg;
+    }
 
     private void realFPmove(int[] path, Robot robot) {
 
@@ -62,6 +115,7 @@ public class FastestPath {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         for (int direction : path) {
+        	System.out.printf("count: %d, direction: %d\n", count, direction);
             if (direction == Constant.FORWARD) {
                 count++;
             } else if (count > 0) {
@@ -83,20 +137,36 @@ public class FastestPath {
                     System.out.println("Error!");
                     return;
                 }
+            } else  {
+            	if (direction == Constant.RIGHT) {
+                    sb.append(Constant.TURN_RIGHT);
+                    count = 1;
+                } else if (direction == Constant.LEFT) {
+                    sb.append(Constant.TURN_LEFT);
+                    count = 1;
+                } else if (direction == Constant.BACKWARD) {
+                    sb.append(Constant.TURN_RIGHT).append(Constant.TURN_RIGHT);
+                    count = 1;
+                } 
             }
         }
-        if (count > 0) {
+        if (count < 10) {
+            sb.append("W").append("0").append(count).append("|");
+        }
+        if (count >= 10) {
             sb.append("W").append(count).append("|");
         }
         String msg = sb.toString();
-        msg = "W03|D|W03|D|D";
+        System.out.println("Actual msg! " + msg);
+        //[1, 0, 1, 0, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1]
+        //Map 1: W02|A|W09|D|W08|A|W02|A|W02|D|W06|D|W4
+//        msg = "W03|D|W03|D|D";
         robot.displayMessage("Message sent for FastestPath real run: " + msg, 2);
         ConnectionSocket.getInstance().sendMessage(msg);
     }
 
     private void move(Robot robot, int[] path, int speed) {
         // Exploration ex = new Exploration(); // change isfrontempty to robot method?
-
         // Move the robot based on the path
         for (int direction : path) {
             if (!connection.ConnectionSocket.checkConnection()) {
