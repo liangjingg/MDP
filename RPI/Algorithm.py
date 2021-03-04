@@ -3,7 +3,7 @@ import socket
 LOCALE = 'UTF-8'
 AlgoBufferSize = 512 
 WIFI_IP = '192.168.11.11'
-WIFI_PORT = 5040
+WIFI_PORT = 4000
 
 #To kill port: sudo lsof -i:5040 -> sudo kill -9 <pid>
 class Algorithm:

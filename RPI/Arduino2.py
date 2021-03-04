@@ -1,7 +1,7 @@
 import serial
 
 SERIAL_PORT = "/dev/ttyACM0"
-BAUD_RATE = '9600'
+BAUD_RATE = '115200'
 LOCALE = 'UTF-8'
 
 class Arduino:

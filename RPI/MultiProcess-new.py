@@ -6,11 +6,11 @@ from Android import Android
 
 from socket import error as SocketError
 
-from picamera import PiCamera
+#from picamera import PiCamera
 import socket
-import cv2
-import imagezmq
-from imutils.video import VideoStream
+#import cv2
+#import imagezmq
+#from imutils.video import VideoStream
 
 ANDROID_HEADER = 'AND'.encode()
 ARDUINO_HEADER = 'ARD'.encode()
