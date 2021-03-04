@@ -146,8 +146,7 @@ public class ConnectionManager extends Thread{
 					Map map = sr.getTrueMap();
 					robot.setMap(map);
 					sr.setSimulatorMap(map);
-					sr.toggleMap();
-					sr.toggleMap();
+//					sr.toggleMap();
 				}
 				// run map
 				System.out.println(robot.getMap().print());
@@ -181,7 +180,7 @@ public class ConnectionManager extends Thread{
 					robot.setWaypoint(Integer.parseInt(arr[1]), Integer.parseInt(arr[0]));
 					s = "Successfully received the waypoint: " + Integer.parseInt(arr[0]) + 
 							"," + Integer.parseInt(arr[1]);
-					System.out.printf("Waypoint: %d, %d \n", robot.getWaypoint()[0], robot.getWaypoint()[1]);
+					System.out.printf("Waypoint: x: %d, y: %d \n", robot.getWaypoint()[0], robot.getWaypoint()[1]);
 					robot.displayMessage(s, 2);
 				}
 			}

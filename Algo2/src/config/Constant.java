@@ -102,7 +102,7 @@ public class Constant {
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
 	// public static final String IP_ADDRESS = "192.168.15.15";
-	public static final int PORT = 4000;
+	public static final int PORT = 5050;
 	public static final int BUFFER_SIZE = 512;
 
 	public static final String START_EXPLORATION = "ES|";
