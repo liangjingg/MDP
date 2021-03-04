@@ -471,9 +471,9 @@ public class SetUpUI implements ActionListener {
 
 		// Disable all button during the real runs as they are not meant to work for the
 		// Real Run
-//		if (ConnectionSocket.checkConnection()) {
-//			this.disableButtons();
-//		}
+		// if (ConnectionSocket.checkConnection()) {
+		// this.disableButtons();
+		// }
 	}
 
 	public void printConsole(String s, JScrollBar vbar) {
@@ -534,7 +534,7 @@ public class SetUpUI implements ActionListener {
 	// Reads all the txt file from the directory sample arena. Returns the array of
 	// the file name in the directory.
 	public String[] getArenaMapFileNames() {
-		File folder = new File("./sample arena");
+		File folder = new File(Constant.FOLDER_TO_WRITE + "\\sample arena");
 		filePath = new HashMap<String, String>();
 		for (File file : folder.listFiles()) {
 			if (file.getName().endsWith(".txt")) {
@@ -808,10 +808,11 @@ public class SetUpUI implements ActionListener {
 			int[] waypoint = r.getWaypoint();
 			System.out.printf("Old Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
 			r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
-//			if (loadedMap.getGrid(chosenWaypoint[0], chosenWaypoint[1]).equals(Constant.OBSTACLE)) {
-//				displayMessage("Invalid waypoint - Waypoint is an obstacle!", 2);
-//				return;
-//			}
+			// if (loadedMap.getGrid(chosenWaypoint[0],
+			// chosenWaypoint[1]).equals(Constant.OBSTACLE)) {
+			// displayMessage("Invalid waypoint - Waypoint is an obstacle!", 2);
+			// return;
+			// }
 
 			if (!FastestPathThread.getRunning()) {
 				displayMessage("Fastest Path Started", 1);
