@@ -218,6 +218,10 @@ public class SimulatorRobot extends Robot {
 		this.map = map;
 		smap.setMap(map);
 	}
+	
+	public void setSimulatorMap(Map map) {
+		smap.setMap(map);
+	}
 
 	// Restart the timer so it does not make the image move
 	public void restartRobotUI() {
@@ -261,4 +265,5 @@ public class SimulatorRobot extends Robot {
 	public void displayMessage(String s, int mode) {
 		buttonListener.displayMessage(s, mode);
 	}
+	
 }
