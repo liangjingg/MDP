@@ -64,7 +64,7 @@ public abstract class Robot {
 	public abstract void right_align();
 
 	public abstract void displayMessage(String s, int mode);
-
+	
 	public void setDirection(int direction) {
 		this.direction = direction;
 		toggleValid();
@@ -117,6 +117,7 @@ public abstract class Robot {
 		// robot position and it is a real run
 		System.out.printf(" sensePosition[0]: %d, sensePosition[1]: %d \n", sensePosition[0], sensePosition[1]);
 		System.out.printf("x: %d, y: %d \n", x, y);
+		//whats w this error checking...
 		if (!(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction)
 				|| !ConnectionSocket.checkConnection()) {
 			System.out.println(" Here");
@@ -304,7 +305,15 @@ public abstract class Robot {
 	public void setTrueMap(Map map) {
 		this.sensor.setTrueMap(map);
 	}
+	
+	public Map getTrueMap() {
+		return this.sensor.getTrueMap();
+	}
 
+	public void setMap(Map map) {
+		this.map = map;
+	}
+	
 	public String[] getMDFString() {
 		return map.getMDFString();
 	}
