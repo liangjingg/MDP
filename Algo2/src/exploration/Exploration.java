@@ -1,7 +1,9 @@
 package exploration;
 
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import astarpathfinder.FastestPath;
 import robot.Robot;
@@ -95,11 +97,12 @@ public class Exploration {
     private void normalExploration(Robot robot) {
         do {
             move(robot, 1, null);
+            //robot.right_align();
             // corner_calibration(robot);
         } while (!atPosition(robot, Constant.START));
 
         int[] unexplored = nearestUnexplored(robot, robot.getPosition()); // Returns the
-
+        System.out.println("Unexplored: "  +  Arrays.toString(unexplored));
         while (unexplored != null) {
             // fastest path to nearest unexplored square
             System.out.println("Phase 2");
@@ -144,7 +147,7 @@ public class Exploration {
 
         if (!this.image_stop) {
             need_take = pictureTaken(robot, robot.getPosition(), checked_obstacles);
-            go_to = next_to_obstacle(robot, need_take);
+            go_to = nextToObstacle(robot, need_take);
         }
 
         if (go_to == null) {
@@ -178,7 +181,7 @@ public class Exploration {
 
             unexplored = false;
             need_take = pictureTaken(robot, robot.getPosition(), checked_obstacles);
-            go_to = next_to_obstacle(robot, need_take);
+            go_to = nextToObstacle(robot, need_take);
 
             if (go_to == null) {
                 unexplored = true;
@@ -442,12 +445,37 @@ public class Exploration {
                 position[0] += 2; // Increase x by 2
                 break;
         }
+        // List<int[]> coordinates = new ArrayList<>();
+        // if (direction == Constant.EAST) {
+        //     coordinates.add(new int[]{position[0]-1, position[1] + 2});
+        //     coordinates.add(new int[]{position[0], position[1] + 2});
+        //     coordinates.add(new int[]{position[0]+1, position[1] + 2});
+        // } else if (direction == Constant.WEST) {
+        //     coordinates.add(new int[]{position[0]-1, position[1]- 2});
+        //     coordinates.add(new int[]{position[0], position[1] - 2});
+        //     coordinates.add(new int[]{position[0]+1, position[1] - 2});
+        // } else if (direction == Constant.SOUTH) {
+        //     coordinates.add(new int[]{position[0]-2, position[1] -1});
+        //     coordinates.add(new int[]{position[0]-2, position[1]});
+        //     coordinates.add(new int[]{position[0]-2, position[1] + 1});
+        // } else if (direction == Constant.NORTH) {
+        //     coordinates.add(new int[]{position[0]+2, position[1] -1});
+        //     coordinates.add(new int[]{position[0]+2, position[1]});
+        //     coordinates.add(new int[]{position[0]+2, position[1] + 1});
+        // }
 
+        // for (int[] coordinate: coordinates) {
+        //     if (map.getGrid(coordinate[0], coordinate[1]).equals(Constant.EXPLORED)
+        //     || map.getGrid(coordinate[0], coordinate[1]).equals(Constant.STARTPOINT)
+        //     || map.getGrid(coordinate[0], coordinate[1]).equals(Constant.ENDPOINT)) {
+        //         continue;
+        //     }
+        //     return false;
+        // }
+        // return true;
         return map.getGrid(position[0], position[1]).equals(Constant.EXPLORED)
                 || map.getGrid(position[0], position[1]).equals(Constant.STARTPOINT)
-                || map.getGrid(position[0], position[1]).equals(Constant.ENDPOINT); // basically if it is
-        // obstacle/unexplored or waypoint ->
-        // dont go
+                || map.getGrid(position[0], position[1]).equals(Constant.ENDPOINT); 
     }
 
     public boolean isFrontEmpty(Robot robot) {
@@ -592,7 +620,7 @@ public class Exploration {
         return cheapest_pos;
     }
 
-    private int[] next_to_obstacle(Robot robot, int[] next) {
+    private int[] nextToObstacle(Robot robot, int[] next) {
         if (next == null) {
             return null;
         }

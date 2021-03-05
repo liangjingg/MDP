@@ -122,8 +122,8 @@ public abstract class Robot {
 				|| !ConnectionSocket.checkConnection()) {
 			System.out.println(" Here");
 			this.sensorValues = getSensorValues(); // THIS VALUES IS BY CM (GRID * 10)
+			System.out.println("Got sensor values"  + this.sensorValues[0]);
 		}
-
 		int[][] sensorLocation = Sensor.sensorLocation;
 		int[][] sensorDirection = Sensor.sensorDirection;
 		int sensorDirectionValueX, sensorDirectionValueY;
@@ -199,31 +199,34 @@ public abstract class Robot {
 				System.out.printf("Value: %f, Threshold: %f \n", value, sensorThreshold[h]);
 				// Detected an obstacle
 				if (value <= sensorThreshold[h]) {
-
+					System.out.println("Potential obstacle!");
 					/*
 					 * If it is the far sensor, it has a lower accuracy than the short range sensor.
 					 * Only update if the obstacle is determined to be more accurate.
 					 */
-					if (i == 5) {
-						if (moreAccurate(g + 2, oldDist)) {
+					if (i == 5 || i == 2) { //for far sensors
+						if (moreAccurate(g + 2, oldDist)) { //check if new dist < old dist
+							System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i+1, g, x, y);
 							newMap.setGrid(x, y, Constant.OBSTACLE);
 							newMap.setDist(x, y, g + 2);
 						}
 					} else {
 						if (moreAccurate(g, oldDist)) {
+							System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
 							newMap.setGrid(x, y, Constant.OBSTACLE);
 							newMap.setDist(x, y, g);
 						}
 					}
 
 					isObstacle[i] = g;
+					System.out.printf("Set sensor %d at offset %d \n", i+1, g);
 					break; // Stop the moment there is an obstacle in the path
 				}
 
 				// No obstacle
 				else {
 					/* Similar to detecting an obstacle */
-					if (i == 5) {
+					if (i == 5 || i == 2) {
 						if (moreAccurate(g + 1, oldDist)) {
 							newMap.setGrid(x, y, Constant.EXPLORED);
 							newMap.setDist(x, y, g + 1);

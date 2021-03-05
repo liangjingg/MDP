@@ -167,7 +167,9 @@ public class SimulatorRobot extends Robot {
 				s = "Error";
 		}
 		toggleValid();
+		// System.out.println("Move simulator by " + step);
 		for (int i = 0; i < step * Constant.GRIDWIDTH; i++) {
+			// System.out.printf("MOVE IMAGE by %d, x: %d, y: %d, i: %d \n", step, this.getPosition()[0], this.getPosition()[1], i);
 			t.schedule(new MoveImageTask(robotImage, s, 1), delay * (i + 1));
 		}
 	}
