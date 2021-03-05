@@ -2,7 +2,7 @@ package robot;
 
 import java.awt.Image;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
@@ -73,10 +73,31 @@ public class RealRobot extends Robot {
 
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
-			if (sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches()) {
+			System.out.println("Send from arduino: " + s);
+			// System.out.println(sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches());
+			try {
 				arr = s.split("\\|");
-				break;
+				for (int i = 0; i < arr.length; i++) {
+					try {
+						double d = Double.parseDouble(arr[i]);
+					}
+					 catch (NumberFormatException e) {
+					System.out.println(e.getMessage());
+				}
 			}
+				System.out.println(Arrays.toString(arr));
+				System.out.println(arr.length);
+				if (arr.length == 6) {
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception: " + e.getMessage());
+			}
+			// if (sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches()) {
+			// 	System.out.println("Sensor values: " + s);
+			// 	arr = s.split("|");
+			// 	break;
+			// }
 		}
 		System.arraycopy(arr, 0, sensorValues, 0, 6);
 		this.sensePosition[0] = x;
@@ -160,13 +181,13 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: W0" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
-		if (!acknowledge()) {
-			this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
-			this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
-			if (sr != null) {
-				sr.backward(step);
-			}
-		}
+		// if (!acknowledge()) {
+		// 	this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
+		// 	this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
+		// 	if (sr != null) {
+		// 		sr.backward(step);
+		// 	}
+		// }
 	}
 
 	// Send the rotate right message and update the robot direction
@@ -178,7 +199,7 @@ public class RealRobot extends Robot {
 			sr.rotateRight();
 			sr.displayMessage("Sent message: " + Constant.TURN_RIGHT, 1);
 		}
-		acknowledge();
+		// acknowledge();
 	}
 
 	// Send the rotate left message and update the robot direction
@@ -190,7 +211,7 @@ public class RealRobot extends Robot {
 			sr.rotateLeft();
 			sr.displayMessage("Sent message: " + Constant.TURN_LEFT, 1);
 		}
-		acknowledge();
+		// acknowledge();
 	}
 
 	// Send the image position and the command to take picture
