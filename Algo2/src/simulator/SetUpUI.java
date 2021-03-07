@@ -112,7 +112,7 @@ public class SetUpUI implements ActionListener {
 
 		JButton update = new JButton();
 		JButton checkMap = new JButton();
-		// JButton toggleMap = new JButton();
+		JButton toggleMap = new JButton();
 
 		// Robot controls
 		JLabel mcLabel = new JLabel("Manual Control:");
@@ -150,6 +150,7 @@ public class SetUpUI implements ActionListener {
 		decodeMDF.setText("Decode MDF");
 		genRandMap.setText("Generate Map");
 		returnToStart.setText("Return To Start");
+		toggleMap.setText("Toggle Map");
 
 		// For the Button to do something, you need to add the button to this Action
 		// Listener and set the command for the ActionListener to receive
@@ -204,8 +205,8 @@ public class SetUpUI implements ActionListener {
 		up.setActionCommand("Up");
 		update.addActionListener(this);
 		update.setActionCommand("Update");
-		// toggleMap.addActionListener(this);
-		// toggleMap.setActionCommand("Toggle Map");
+		toggleMap.addActionListener(this);
+		toggleMap.setActionCommand("Toggle Map");
 		resetRobot.addActionListener(this);
 		resetRobot.setActionCommand("Restart");
 		returnToStart.addActionListener(this);
@@ -219,59 +220,61 @@ public class SetUpUI implements ActionListener {
 		// Exploration things
 		explorationLabel.setBounds(x, y - 100, 110, 50);
 		exploration.setBounds(x + 200, y - 100, 110, 50);
-		time.setBounds(x + 200, y - 25, 50, 30);
-		timeLabel.setBounds(x, y - 25, 300, 30);
-		percentage.setBounds(x + 200, y + 25, 50, 30);
-		percentageLabel.setBounds(x, y + 25, 300, 30);
-		speed.setBounds(x + 150, y + 75, 50, 30);
-		speedLabel.setBounds(x, y + 75, 200, 30);
-		imageRec.setBounds(x + 275, y + 75, 175, 30);
+		time.setBounds(x + 200, y - 50, 50, 30);
+		timeLabel.setBounds(x, y - 50, 300, 30);
+		percentage.setBounds(x + 200, y - 20, 50, 30);
+		percentageLabel.setBounds(x, y - 20, 300, 30);
+		speed.setBounds(x + 150, y + 10, 50, 30);
+		speedLabel.setBounds(x, y + 10, 200, 30);
+		imageRec.setBounds(x + 275, y + 10, 175, 30);
 
 		explorationLabel.setLocation(x, y - 100);
 		exploration.setLocation(x + 200, y - 100);
-		time.setLocation(x + 200, y - 25);
-		timeLabel.setLocation(x, y - 25);
-		percentage.setLocation(x + 200, y + 25);
-		percentageLabel.setLocation(x, y + 25);
-		speed.setLocation(x + 150, y + 75);
-		speedLabel.setLocation(x, y + 75);
-		imageRec.setLocation(x + 275, y + 75);
+		time.setLocation(x + 200, y - 50);
+		timeLabel.setLocation(x, y - 50);
+		percentage.setLocation(x + 200, y - 20);
+		percentageLabel.setLocation(x, y - 20);
+		speed.setLocation(x + 150, y + 10);
+		speedLabel.setLocation(x, y + 10);
+		imageRec.setLocation(x + 275, y + 10);
 
 		// Fastest Path things
-		fastestPathLabel.setBounds(x, y + 125, 110, 50);
-		fastestPath.setBounds(x + 200, y + 125, 110, 50);
-		waypointX.setBounds(x + 85, y + 200, 50, 30);
-		waypointY.setBounds(x + 150, y + 200, 50, 30);
-		setWaypointLabel.setBounds(x, y + 200, 300, 30);
-		invalidWaypoint.setBounds(x + 150, y + 200, 300, 30);
+		fastestPathLabel.setBounds(x, y + 50, 110, 50);
+		fastestPath.setBounds(x + 200, y + 50, 110, 50);
+		waypointX.setBounds(x + 85, y + 100, 50, 30);
+		waypointY.setBounds(x + 150, y + 100, 50, 30);
+		setWaypointLabel.setBounds(x, y + 100, 300, 30);
+		invalidWaypoint.setBounds(x + 150, y + 100, 300, 30);
 
-		fastestPathLabel.setLocation(x, y + 125);
-		fastestPath.setLocation(x + 200, y + 125);
-		waypointX.setLocation(x + 85, y + 200);
-		waypointY.setLocation(x + 150, y + 200);
-		setWaypointLabel.setLocation(x, y + 200);
-		invalidWaypoint.setLocation(x + 150, y + 200);
+		fastestPathLabel.setLocation(x, y + 50);
+		fastestPath.setLocation(x + 200, y + 50);
+		waypointX.setLocation(x + 85, y + 100);
+		waypointY.setLocation(x + 150, y + 100);
+		setWaypointLabel.setLocation(x, y + 100);
+		invalidWaypoint.setLocation(x + 150, y + 100);
 
 		// Map things
-		p1StringLabel.setBounds(x, y + 250, 50, 30);
-		p1String.setBounds(x + 50, y + 250, 100, 30);
-		p2StringLabel.setBounds(x + 175, y + 250, 50, 30);
-		p2String.setBounds(x + 225, y + 250, 100, 30);
-		loadMapLabel.setBounds(x, y + 300, 300, 50);
-		arenaMap.setBounds(x + 200, y + 300, 120, 30);
-		printMDF.setBounds(x, y + 350, 150, 50);
-		decodeMDF.setBounds(x + 200, y + 350, 150, 50);
-		genRandMap.setBounds(x + 400, y + 350, 150, 50);
+		p1StringLabel.setBounds(x, y + 130, 50, 30);
+		p1String.setBounds(x + 50, y + 130, 100, 30);
+		p2StringLabel.setBounds(x + 175, y + 130, 50, 30);
+		p2String.setBounds(x + 225, y + 130, 100, 30);
+		loadMapLabel.setBounds(x, y + 160, 300, 50);
+		arenaMap.setBounds(x + 200, y + 160, 120, 30);
+		printMDF.setBounds(x, y + 200, 150, 50);
+		decodeMDF.setBounds(x + 175, y + 200, 150, 50);
+		genRandMap.setBounds(x + 350, y + 200, 150, 50);
+		toggleMap.setBounds(x, y + 250, 150, 50);
 
-		p1StringLabel.setLocation(x, y + 250);
-		p1String.setLocation(x + 50, y + 250);
-		p2StringLabel.setLocation(x + 175, y + 250);
-		p2String.setLocation(x + 225, y + 250);
-		loadMapLabel.setLocation(x, y + 300);
-		arenaMap.setLocation(x + 200, y + 300);
-		printMDF.setLocation(x, y + 350);
-		decodeMDF.setLocation(x + 200, y + 350);
-		genRandMap.setLocation(x + 400, y + 350);
+		p1StringLabel.setLocation(x, y + 130);
+		p1String.setLocation(x + 50, y + 130);
+		p2StringLabel.setLocation(x + 175, y + 130);
+		p2String.setLocation(x + 225, y + 130);
+		loadMapLabel.setLocation(x, y + 160);
+		arenaMap.setLocation(x + 200, y + 160);
+		printMDF.setLocation(x, y + 200);
+		decodeMDF.setLocation(x + 175, y + 200);
+		genRandMap.setLocation(x + 350, y + 200);
+		toggleMap.setLocation(x, y + 250);
 
 		// Robot controls
 
@@ -282,13 +285,13 @@ public class SetUpUI implements ActionListener {
 		checkMap.setBounds(x, y - 25, 100, 50);
 
 		// toggleMap.setBounds(x + 150, y - 25, 110, 50);
-		resetRobot.setBounds(x, y + 500, 100, 50);
+		resetRobot.setBounds(x + 175, y + 250, 150, 50);
 		robotView.setBounds(x - 600, y - 185, 200, 50);
 		simulatedMap.setBounds(x + 100, y - 100, 300, 50);
 		returnToStart.setBounds(x + 300, y + 50, 140, 50);
 
 		status.setBounds(x, y + 360, 50, 30);
-		scrollPane.setBounds(x + 200, y + 425, 500, 163);
+		scrollPane.setBounds(x, y + 300, 500, 163);
 		mcLabel.setBounds(x, y - 100, 100, 50);
 
 		left.setLocation(x + 100, y - 100);
@@ -296,15 +299,14 @@ public class SetUpUI implements ActionListener {
 		up.setLocation(x + 150, y - 100);
 		update.setLocation(x + 275, y - 100);
 		checkMap.setLocation(x, y - 25);
-		// toggleMap.setLocation(x + 150, y - 25);
-		resetRobot.setLocation(x, y + 500);
+		resetRobot.setLocation(x + 175, y + 250);
 		robotView.setLocation(x - 600, y - 185);
 		simulatedMap.setLocation(x - 600, y - 185);
 
 		mcLabel.setLocation(x, y - 100);
 		returnToStart.setLocation(x + 300, y + 50);
 		status.setLocation(x, y + 360);
-		scrollPane.setLocation(x + 200, y + 425);
+		scrollPane.setLocation(x, y + 300);
 
 		// Set fonts for the labels
 		explorationLabel.setFont(new Font(robotView.getFont().getName(), Font.BOLD, 20));
@@ -364,7 +366,7 @@ public class SetUpUI implements ActionListener {
 		// frame.add(up);
 		// frame.add(update);
 		// frame.add(checkMap);
-		// frame.add(toggleMap);
+		frame.add(toggleMap);
 		frame.add(resetRobot);
 		frame.add(robotView);
 		frame.add(simulatedMap);
@@ -411,7 +413,7 @@ public class SetUpUI implements ActionListener {
 		// up.setVisible(true);
 		// update.setVisible(true);
 		// checkMap.setVisible(true);
-		// toggleMap.setVisible(true);
+		toggleMap.setVisible(true);
 		resetRobot.setVisible(true);
 		robotView.setVisible(true);
 		simulatedMap.setVisible(false);
