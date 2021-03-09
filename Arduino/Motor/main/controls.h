@@ -1,7 +1,7 @@
 // dont need to include movement.h here because main is calling controls.h and already has an include for movement
 int cmd_in,cmd_out;
-char cmd[100];
-//#include "sensor.h"
+char cmd[300];
+//##include "sensor.h"
 
 
 #define W01  250
@@ -12,17 +12,17 @@ char cmd[100];
 #define W06  1380+390
 #define W07  1380+390+270
 #define W08  1380+390+270+250
-#define W09  1380+390+270+250+250
-#define W10  10*300
-#define W11  11*300
-#define W12  12*300
-#define W13  13*300
-#define W14  14*300
-#define W15  15*300
-#define W16  16*300
-#define W17  17*300
-#define W18  18*300
-#define W19  19*300
+#define W09  1380+390+270+250+250+75
+#define W10  10*290 + 20
+#define W11  11*290 + 10
+#define W12  12*290 + 10
+#define W13  13*290 + 35
+#define W14  14*290 
+#define W15  15*290
+#define W16  16*290
+#define W17  17*290
+#define W18  18*285
+#define W19  19*285
 
 
 #define S01  250
@@ -45,7 +45,7 @@ char cmd[100];
 #define S18  100
 #define S19  100
 
-#define A01  366
+#define A01  368
 #define A02  200
 #define A03  300
 #define A04  400
@@ -79,7 +79,7 @@ bool readCommand()
     cmd_in++;
 
     // exceed buffer, stop reading additional commands
-    if (cmd_in >= 100)
+    if (cmd_in >= 300)
       break;
   }
   if (cmd_in > 0)
@@ -153,7 +153,10 @@ void executeFastestPathCommand(){
        char secondDigit = cmd[cmd_out];
        cmd_out++;
        switch(secondDigit){
-         case '1': 
+         case '0': 
+           goStraight(W10);
+           break;
+          case '1': 
            goStraight(W11);
            break;
          case '2': 
@@ -305,6 +308,41 @@ void executeFastestPathCommand(){
     turnRight(D01/2.2);
     cmd_out++;
  }
+
+      else if (letter == 'Z') //sense
+ {
+    cmd_out++;
+    sense();
+    cmd_out++;
+ }
+      else if (letter == 'B')
+ {
+    cmd_out++;
+    alignRight();
+    cmd_out++;
+ }
+
+       else if (letter == 'V')
+ {
+    cmd_out++;
+    alignFront();
+    cmd_out++;
+ }
+       else if (letter == 'X') //sense
+ {
+    cmd_out++;
+    //adjustDistanceFromWall();
+    cmd_out++;
+ }
+
+        else if (letter == 'C') //sense
+ {
+    cmd_out++;
+    //Serial.println("Align Angel");
+    //alignAngle();
+    cmd_out++;
+ }
+ 
  else{
   cmd_out++;
   cmd_out++;
@@ -319,8 +357,8 @@ if (readCommand() == true)
     while (cmd_out < cmd_in)
     { // execute each command until the last char has been executed
       executeFastestPathCommand();
-       Serial.print("Servicing Command: ");
-       Serial.println(cmd);
+       //Serial.print("Servicing Command: ");
+       //Serial.println(cmd);
     //de   Serial.println(cmd[cmd_out]);
       //cmd_out++;
     }

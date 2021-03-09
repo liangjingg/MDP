@@ -12,14 +12,14 @@
 
 
 
-//ticks parameters for PID
+//tickss parameters for PID
 double leftEncoderValue = 0;
 double rightEncoderValue = 0;
 double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.7, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.75, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.9, 0.6, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 2.4, 0.5, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -77,19 +77,19 @@ float offset = 0.1;
     float LeftEncoderOutput = leftEncoderValue + Output;
     float RightEncoderOutput = rightEncoderValue - Output;
 
-    Serial.print("Output Left: ");
-    Serial.print(LeftEncoderOutput);
-    Serial.print(", Output Right: ");
-    Serial.print(RightEncoderOutput);
-    Serial.print(", Diff: ");
-    Serial.println(RightEncoderOutput - LeftEncoderOutput);
-    Serial.println(Output);
+//    Serial.print("Output Left: ");
+//    Serial.print(LeftEncoderOutput);
+//    Serial.print(", Output Right: ");
+//    Serial.print(RightEncoderOutput);
+//    Serial.print(", Diff: ");
+//    Serial.println(RightEncoderOutput - LeftEncoderOutput);
+//    Serial.println(Output);
     md.setSpeeds(((FASTSPEED + Output)), ((FASTSPEED - Output)));
 
     //md.setSpeeds(50, 350); //left,right
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(500);
+  delay(100);
   rightEncoderRes();
   leftEncoderRes();
 //  }else{
@@ -117,7 +117,7 @@ void goBack(double ticks) {
     md.setSpeeds(-(FASTSPEED +Output), -(FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(500);
+  delay(100);
   rightEncoderRes();
   leftEncoderRes();
 
@@ -135,7 +135,7 @@ void turnLeft(double ticks) {
     md.setSpeeds(-(FASTSPEED+ Output), (FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(500);
+  delay(100);
   rightEncoderRes();
   leftEncoderRes();
 }
@@ -156,7 +156,7 @@ void turnRight(double ticks) {
     md.setSpeeds((FASTSPEED + Output), -(FASTSPEED - Output));
   }
   md.setBrakes(FASTSPEED, FASTSPEED);
-  delay(500);
+  delay(100);
   leftEncoderRes();
   rightEncoderRes();
 }
@@ -241,4 +241,97 @@ void goStraightObstacle(double ticks) {
     rightEncoderRes();
     leftEncoderRes();
   }
+}
+
+void alignRight() {
+  getSensorDist_noMsg();
+  
+  double sensor_RF;
+  double sensor_RB;
+
+  double sensorDiff;
+
+  sensor_RF = right_front_inDistanceCM;
+  sensor_RB = right_back_inDistanceCM+0.5; //increase '0.2' if robot tilted right after alignment, dont forget below
+
+  // if robot is too far from wall & there is insufficient wall to align against, don't align
+  if ((sensor_RF > 15) || (sensor_RB > 15))
+  {
+    return;
+  }
+
+  sensorDiff = abs(sensor_RF - sensor_RB);
+  Serial.println(sensorDiff);
+
+  while ((sensorDiff > 0.2) && (sensorDiff < 6)) {
+    if (sensor_RF > sensor_RB) { //tilting to the left
+      md.setSpeeds(100, -100);
+    }
+    else if (sensor_RB > sensor_RF) { //tilting to the right
+      md.setSpeeds(-100, 100);
+    }
+    //delay(30);
+    getSensorDist_noMsg();
+    sensor_RF = right_front_inDistanceCM;
+    sensor_RB = right_back_inDistanceCM;
+    sensorDiff = abs(sensor_RF - sensor_RB);
+  }
+  md.setBrakes(400, 400);
+
+}
+
+
+// ensure that the front of the robot is straight
+void alignFront() {
+  double rad2deg = 180 / 3.14159;
+
+  double sensor_R_dis;
+  double sensor_L_dis;
+
+  int count = 0;
+
+  double sensorDiff;
+
+  sensor_R_dis = front_left_inDistanceCM;
+  sensor_L_dis = front_center_inDistanceCM;
+
+  sensorDiff = abs(sensor_R_dis - sensor_L_dis);
+
+  while (sensorDiff > 0.2 && sensorDiff < 6) {
+    if (sensor_L_dis > sensor_R_dis) {
+      md.setSpeeds(100, -100);
+    }
+    else if (sensor_R_dis > sensor_L_dis) {
+      md.setSpeeds(-100, 100);
+    }
+    //delay(20);
+    sensor_R_dis = front_left_inDistanceCM;
+    sensor_L_dis = front_right_inDistanceCM;
+    sensorDiff = abs(sensor_R_dis - sensor_L_dis);
+  }
+  md.setBrakes(400, 400);
+}
+
+// robot moves forward if the robot is too far away from the wall
+void moveCloserToWall(double sensor_R_dis, double sensor_L_dis) {
+  while ((sensor_R_dis > 9.5) || (sensor_L_dis > 9.5)) {
+    md.setSpeeds(100, 100);
+    getSensorDist();
+    sensor_R_dis = front_left_inDistanceCM;
+    sensor_L_dis = front_right_inDistanceCM;
+  }
+}
+
+// robot moves backwards if the front is too close to the wall
+void adjustDistance() {
+  double sensor_R_dis = front_left_inDistanceCM;
+  double sensor_L_dis = front_center_inDistanceCM;
+
+  moveCloserToWall(sensor_R_dis, sensor_L_dis);
+  while ((sensor_R_dis < 8.9) || (sensor_L_dis < 8.9)) {
+    md.setSpeeds(-100, -100);
+    sensor_R_dis = front_left_inDistanceCM;
+    sensor_L_dis = front_center_inDistanceCM;
+  }
+  md.setBrakes(400, 400);
 }

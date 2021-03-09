@@ -7,7 +7,7 @@
 #include <math.h>
 #include <SharpIR.h>
 
-//FRONT DEFINE
+//FRONTt DEFINE
 //#define FRONTLEFTA 4618.42
 //#define FRONTLEFTB 3374.61
 //#define FRONTLEFTC 0.0655686
@@ -218,8 +218,8 @@ int getFCAnalog(){
 //SOMETHING IS WRONG WITH THIS 
 int getFLAnalog(){
   front_left_analog = rawIRSensorMedian(50, 2);
-  Serial.println(front_left_analog);
-  Serial.println("Completed! :-) "); 
+  //Serial.println(front_left_analog);
+  //Serial.println("Completed! :-) "); 
   return front_left_analog;
 }
 
@@ -248,142 +248,65 @@ void getSensorDist()
   front_left_inDistanceCM = getDistanceFrontLeft(front_left_analog) ;
   front_right_inDistanceCM = getDistanceFrontRight(front_right_analog);
   
-  Serial.print("Left Sensor: ");
+//  Serial.print("Left Sensor: ");
+//  Serial.println(left_inDistanceCM);
+//  
+//  Serial.print("Right Front Sensor: ");
+//  Serial.println(right_front_inDistanceCM);
+//  
+//  Serial.print("Right Back Sensor: ");
+//  Serial.println(right_back_inDistanceCM);
+//  
+//  Serial.print("Front Center Sensor: ");
+//  Serial.println(front_center_inDistanceCM);
+//  
+//  Serial.print("Front Left Sensor: ");
+//  Serial.println(front_left_inDistanceCM);
+//  
+//  Serial.print("Front Right Sensor: ");
+//  Serial.println(front_right_inDistanceCM);
+
+  Serial.print(front_right_inDistanceCM);
+  Serial.print("|");
+  Serial.print(front_center_inDistanceCM);
+  Serial.print("|");
+  Serial.print(front_left_inDistanceCM);
+  Serial.print("|");
+  Serial.print(right_back_inDistanceCM);
+  Serial.print("|");
+  Serial.print(right_front_inDistanceCM);
+  Serial.print("|");
   Serial.println(left_inDistanceCM);
-  
-  Serial.print("Right Front Sensor: ");
-  Serial.println(right_front_inDistanceCM);
-  
-  Serial.print("Right Back Sensor: ");
-  Serial.println(right_back_inDistanceCM);
-  
-  Serial.print("Front Center Sensor: ");
-  Serial.println(front_center_inDistanceCM);
-  
-  Serial.print("Front Left Sensor: ");
-  Serial.println(front_left_inDistanceCM);
-  
-  Serial.print("Front Right Sensor: ");
-  Serial.println(front_right_inDistanceCM);
 
 }
 
 /* =============================== Return Distance Message ============================= */
-String getDistanceMsg()
+void getDistanceMsg()
 {
   String message = String(sensorDist[0])+ "," + String(sensorDist[1])+ "," + String(sensorDist[2]) + "," + String(sensorDist[3]) + "," + String(sensorDist[4]) + "," + String(sensorDist[5]);
   //Serial.println(message);
-
   String info = ""+String(sensorDist[0])+","+String(sensorDist[1])+ "," + String(sensorDist[2]) + "," + String(sensorDist[3]) + "," + String(sensorDist[4]) + "," + String(sensorDist[5]);
-  
   Serial.println(info);
   
-  return message;
+  //return message;
 }
 
-/*
-void sendToRPi(char instruction, int arg)
-{
-  if (instruction == 'W')
-  {
-    Serial.print("W");
-    Serial.print(arg);
-  }
-  else if (instruction == 'A')
-  {
-    Serial.print("A");
-  }
-  else if (instruction == 'D')
-  {
-    Serial.print("D");
-  }
+void sense(){
+  getSensorDist();
+  String message = String(front_right_inDistanceCM)+ "|" + String(front_center_inDistanceCM)+ "|" + String(front_left_inDistanceCM);
+  //Serial.println(message);
 }
-
-// robot moves forward if the robot is too far away from the wall
-void moveCloserToWall(double sensor_R_dis, double sensor_L_dis) {
-  double mw_L_encoder = leftEncoderValue;
-  double mw_R_encoder = rightEncoderValue;
-
-  while ((sensor_R_dis > 9.5) || (sensor_L_dis > 9.5)) {
-    //forward(0.2);
-    md.setSpeeds(100, 100);
-    //delay(10);
-    sensor_R_dis = ir_sense1();
-    sensor_L_dis = ir_sense3() - 0.5;
-  }
-  leftEncoderValue = mw_L_encoder;
-  rightEncoderValue = mw_R_encoder;
-}
-
-// robot moves backwards if the front is too close to the wall
-void adjustDistance() {
-
-  double ad_L_encoder = leftEncoderValue;
-  double ad_R_encoder = rightEncoderValue;
-  double sensor_R_dis = ir_sense1();
-  double sensor_L_dis = ir_sense3() - 0.5;
-
-  moveCloserToWall(sensor_R_dis, sensor_L_dis);
-  while ((sensor_R_dis < 8.9) || (sensor_L_dis < 8.9)) {
-    md.setSpeeds(-75, -75);
-    sensor_R_dis = ir_sense1();
-    sensor_L_dis = ir_sense3() - 0.5;
-  }
-  md.setBrakes(400, 400);
-  leftEncoderValue = ad_L_encoder;
-  rightEncoderValue = ad_R_encoder;
-
-}*/
-/*
-void tooCloseToWall()
-{
-  double dis4 = ir_sense4();
-  double dis5 = ir_sense5();
-  if ((dis4 < 7.4) && (dis5 < 7.4))
-  {
-    rotateRight(90);
-    adjustDistance();
-    rotateLeft(90);
-  }
-  else if ((dis4 > 8.5 && dis4 < 13) && (dis5 > 8.5 && dis5 < 13))
-  {
-    rotateRight(90);
-    adjustDistance();
-    rotateLeft(90);
-  }
 
 // ensure that the right of the robot is straight
-void alignRight() {
-  double sensor_R_dis;
-  double sensor_L_dis;
 
-  double sensorDiff;
-
-  sensor_R_dis = ir_sense4();
-  sensor_L_dis = ir_sense5() - 0.4; //increase '0.2' if robot tilted right after alignment, dont forget below
-
-  // if robot is too far from wall & there is insufficient wall to align against, don't align
-  if ((sensor_R_dis > 11) || (sensor_L_dis > 11))
-  {
-    return;
-  }
-
-  sensorDiff = abs(sensor_R_dis - sensor_L_dis);
-
-  while ((sensorDiff > 0.2) && (sensorDiff < 6)) {
-    if (sensor_L_dis > sensor_R_dis) {
-      md.setSpeeds(50, -50);
-    }
-    else if (sensor_R_dis > sensor_L_dis) {
-      md.setSpeeds(-50, 50);
-    }
-    //delay(30);
-    sensor_R_dis = ir_sense4();
-    sensor_L_dis = ir_sense5() - 0.2;
-    sensorDiff = abs(sensor_R_dis - sensor_L_dis);
-  }
-  //delay(20);
-  md.setBrakes(400, 400);
+void getSensorDist_noMsg()
+{
+  getAnalog();
+  left_inDistanceCM = getDistanceLeft(left_analog);
+  right_front_inDistanceCM = getDistanceRightFront(right_front_analog);
+  right_back_inDistanceCM = getDistanceRightBack(right_back_analog);
+  front_center_inDistanceCM = getDistanceFrontCenter(front_center_analog);
+  front_left_inDistanceCM = getDistanceFrontLeft(front_left_analog) ;
+  front_right_inDistanceCM = getDistanceFrontRight(front_right_analog);
 
 }
-*/
