@@ -45,7 +45,7 @@ char cmd[300];
 #define S18  100
 #define S19  100
 
-#define A01  368
+#define A01  400
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[300];
 #define A09  900
 #define A10  1000
 
-#define D01  366
+#define D01  400
 #define D02  200
 #define D03  300
 #define D04  400

@@ -38,11 +38,11 @@
 
 /* =============================== sensor pin declaration ============================= */
 int ps1 = 0;   // A0 left analog pin used to connect the sharp sensor A0
-int ps2 = 1;   // A1 right bottom
-int ps3 = 4;   // A2 front left
-int ps4 = 5;   // A3 right front
-int ps5 = 3;   // A4 front center
-int ps6 = 2;   // A5 front right
+int ps2 = 4;   // A1 right bottom
+int ps3 = 3;   // A2 front left
+int ps4 = 2;   // A3 right front
+int ps5 = 1;   // A4 front center
+int ps6 = 5;   // A5 front right
 
 /* =============================== a2d values from sensor ============================= */
 int left_analog = 500;
@@ -128,9 +128,9 @@ int rawIRSensorMedian(int sample_size, int pin)
 double getDistanceFrontLeft(int analogValue)
 {
   double distanceInCM = (8687.689/(analogValue - 75.9339));
-  if (distanceInCM > 70 || distanceInCM <= -0.00)
+  if (distanceInCM > 40 || distanceInCM <= -0.00)
   {
-    distanceInCM = 70;
+    distanceInCM = 40;
   }
   return distanceInCM;
 }
@@ -177,6 +177,8 @@ double getDistanceRightBack(int analogValue)
   if (distanceInCM > 40 || distanceInCM <= -0.0)
   {
     distanceInCM = 40;
+  }else{
+    distanceInCM = distanceInCM-2;
   }
 
 //  if (distanceInCM  > 40){
@@ -205,35 +207,35 @@ double getDistanceLeft(int analogValue)
 
 /* =============================== define distance arr from obstacle for each sensor ============================= */
 int getLeftAnalog(){
-  left_analog = rawIRSensorMedian(30, 0);
+  left_analog = rawIRSensorMedian(30, ps1);
   return left_analog;
 }
 
 int getRFAnalog(){
-  right_front_analog = rawIRSensorMedian(50, 3);
+  right_front_analog = rawIRSensorMedian(50, ps4);
   return right_front_analog;
 }
 
 int getRBAnalog(){
-  right_back_analog = rawIRSensorMedian(50, 1);
+  right_back_analog = rawIRSensorMedian(50, ps2);
   return right_back_analog;
 }
 
 int getFCAnalog(){
-  front_center_analog = rawIRSensorMedian(50, 4);
+  front_center_analog = rawIRSensorMedian(50, ps5);
   return front_center_analog;
 }
 
 //SOMETHING IS WRONG WITH THIS 
 int getFLAnalog(){
-  front_left_analog = rawIRSensorMedian(50, 2);
+  front_left_analog = rawIRSensorMedian(50, ps3);
   //Serial.println(front_left_analog);
   //Serial.println("Completed! :-) "); 
   return front_left_analog;
 }
 
 int getFRAnalog(){
-  front_right_analog = rawIRSensorMedian(50, 5);
+  front_right_analog = rawIRSensorMedian(50, ps6);
   return front_right_analog;
 }
 

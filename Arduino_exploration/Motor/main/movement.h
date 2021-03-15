@@ -7,7 +7,7 @@
 
 #define LEFT_ENCODER 11 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
-#define FASTSPEED 350
+#define FASTSPEED 250
 #define SLOWSPEED 200
 
 
@@ -19,7 +19,7 @@ double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.75, 0.0, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 0.92, 0.1, 0.0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.9, 0.6, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 2.4, 0.5, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -58,9 +58,6 @@ void movementSetup() {          //setup files used in the main
 }
 
 
-
-
-
 /* =============================== Go Straight and Go Back ============================= */
 void goStraight(double ticks) {
 
@@ -84,7 +81,7 @@ float offset = 0.1;
 //    Serial.print(", Diff: ");
 //    Serial.println(RightEncoderOutput - LeftEncoderOutput);
 //    Serial.println(Output);
-    md.setSpeeds(((FASTSPEED + Output)), ((FASTSPEED - Output)));
+    md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + Output)));
 
     //md.setSpeeds(50, 350); //left,right
   }
@@ -255,7 +252,7 @@ void alignRight() {
   sensor_RB = right_back_inDistanceCM+0.5; //increase '0.2' if robot tilted right after alignment, dont forget below
 
   // if robot is too far from wall & there is insufficient wall to align against, don't align
-  if ((sensor_RF > 30) && (sensor_RB > 30))
+  if ((sensor_RF > 15) && (sensor_RB > 15))
   {
     return;
   }
@@ -263,7 +260,7 @@ void alignRight() {
   sensorDiff = abs(sensor_RF - sensor_RB);
   //Serial.println(sensorDiff);
 
-  while ((sensorDiff > 0.2) && (sensorDiff < 10)) {
+  while ((sensorDiff > 0.2) && (sensorDiff < 6)) {
     if (sensor_RF > sensor_RB) { //tilting to the left
       md.setSpeeds(100, -100);
     }
