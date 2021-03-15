@@ -18,9 +18,8 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 15.0, 35.0 }, { 14.0, 36.0 },
-			{ 18.00, 24.00, 33.00, 47.00, 65.00 }, { 12.5, 31.0 }, { 12.5, 31.0 },
-			{ 18.00, 24.00, 31.00, 43.00, 55.00 } };
+	public static final double[][] SENSOR_RANGES = { { 15.0, 35.0 }, { 14.0, 36.0 }, { 18.00, 24.00 }, { 12.5, 31.0 },
+			{ 12.5, 31.0 }, { 18.00, 24.00, 31.00, 43.00, 55.00 } };
 
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
