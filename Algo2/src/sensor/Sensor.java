@@ -27,13 +27,12 @@ public abstract class Sensor {
 
 		int[] lastDirection = Constant.SENSORDIRECTION[(direction + 2) % Constant.SENSORDIRECTION.length];
 
-		// System.out.printf("Direction : %d, (%s) \n", direction, Constant.DIRECTIONS[direction]);
+		// System.out.printf("Direction : %d, (%s) \n", direction,
+		// Constant.DIRECTIONS[direction]);
 
 		// SENSOR LOCATION
 		sensorLocation[0] = new int[] { sensorDirection[0][0] + sensorDirection[1][0],
 				sensorDirection[0][1] + sensorDirection[1][1] };
-		System.out.printf("Sensor 1 Location: %d, %d \n", sensorDirection[0][0] + sensorDirection[1][0],
-				sensorDirection[0][1] + sensorDirection[1][1]);
 		sensorLocation[1] = sensorDirection[0];
 		sensorLocation[2] = new int[] { sensorDirection[0][0] + sensorDirection[2][0],
 				sensorDirection[0][1] + sensorDirection[2][1] };
