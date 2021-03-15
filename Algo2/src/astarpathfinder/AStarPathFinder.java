@@ -66,8 +66,10 @@ public class AStarPathFinder {
             // temp.g_cost, temp.h_cost, temp.cost);
             // }
             cur = openQueue.poll();
-            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n", cur.pos[0], cur.pos[1],
-            //         nodeDetails[cur.pos[0]][cur.pos[1]].g_cost, nodeDetails[cur.pos[0]][cur.pos[1]].h_cost);
+            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n",
+            // cur.pos[0], cur.pos[1],
+            // nodeDetails[cur.pos[0]][cur.pos[1]].g_cost,
+            // nodeDetails[cur.pos[0]][cur.pos[1]].h_cost);
 
             if (((!on_grid) && (canReach(cur.pos, end_pos, first)))
                     || ((on_grid) && (Arrays.equals(cur.pos, end_pos)))) {
@@ -81,10 +83,12 @@ public class AStarPathFinder {
                 if (neighbour != null) {
                     neighbour.parent = cur;
                     calculateCosts(neighbour, end_pos, robot);
-//                    if (neighbour.pos[0] == 3 && neighbour.pos[1] == 1) {
-//                        System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d\n",
-//                                neighbour.pos[0], neighbour.pos[1], neighbour.g_cost, neighbour.h_cost, neighbour.cost);
-//                    }
+                    // if (neighbour.pos[0] == 3 && neighbour.pos[1] == 1) {
+                    // System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d,
+                    // cost: %d\n",
+                    // neighbour.pos[0], neighbour.pos[1], neighbour.g_cost, neighbour.h_cost,
+                    // neighbour.cost);
+                    // }
                     // System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d,
                     // cost: %d\n",
                     // neighbour.pos[0], neighbour.pos[1], neighbour.g_cost, neighbour.h_cost,
@@ -191,7 +195,7 @@ public class AStarPathFinder {
         int x = end[0];
         int y = end[1];
         int[][] pos;
-        System.out.println("First: " + first);
+        // System.out.println("First: " + first);
         if (first) {
             pos = new int[][] { { x - 1, y - 2 }, { x, y - 2 }, { x + 1, y - 2 }, { x + 2, y - 1 }, { x + 2, y },
                     { x + 2, y + 1 }, { x + 1, y + 2 }, { x, y + 2 }, { x - 1, y + 2 }, { x - 2, y + 1 }, { x - 2, y },
@@ -203,6 +207,8 @@ public class AStarPathFinder {
         }
 
         for (int[] coordinates : pos) {
+            System.out.printf("coordinate - x: %d, coordinate - y: %d, cur -x: %d, cur-y: %d \n", coordinates[0],
+                    coordinates[1], cur[0], cur[1]);
             if (Arrays.equals(cur, coordinates)) {
                 return true;
             }
