@@ -6,11 +6,11 @@ from Android import Android
 
 from socket import error as SocketError
 
-#from picamera import PiCamera
+from picamera import PiCamera
 import socket
-#import cv2
-#import imagezmq
-#from imutils.video import VideoStream
+import cv2
+import imagezmq
+from imutils.video import VideoStream
 
 ANDROID_HEADER = 'AND'.encode()
 ARDUINO_HEADER = 'ARD'.encode()
@@ -169,7 +169,7 @@ class MultiProcessCommunication:
 	    
             
 	def _read_algorithm(self):
-		#picam = VideoStream(usePicamera=True).start()
+		picam = VideoStream(usePicamera=True).start()
 		while True:
 			try:
 				raw_message = self.algorithm.read()
@@ -185,8 +185,8 @@ class MultiProcessCommunication:
 						continue
 
 					elif (message[0] == 'C'): #for ours is C send message to imagerecPC to capture image
-						#image = picam.read()
-						#self.image_queue.put_nowait([image, message[1:].encode()])
+						image = picam.read()
+						self.image_queue.put_nowait([image, message[2:].encode()])
 						pass
 
 					elif (message == 'EF'): #maybe useless
@@ -288,18 +288,21 @@ class MultiProcessCommunication:
 			try:
 				if not self.image_queue.empty():
 					image_msg = self.image_queue.get_nowait()
-					obstacle_coordinates = image_msg[1] #Format = (x,y)
-					reply = image_sender.send_image(obstacle_coordinates, image_msg[0])
-					reply = reply.decode('utf-8')
+					obstacle_coordinates = image_msg[1].split('(') #Format = (x,y)
+					for i in range(0,3):
+						if(obstacle_coordinates[i] == '-1,-1'):
+							continue
+						reply = image_sender.send_image(obstacle_coordinates[i], image_msg[0])
+						reply = reply.decode('utf-8')
 
-					if reply != 'End':
-						if(len(reply) != 0):
-							if reply != 'None':
-								self.IMAGE_LIST.append(reply)
-						self.to_android_message_queue.put_nowait('{s:'+reply+'|')
-						
-					else:
-						break
+						if reply != 'End':
+							if(len(reply) != 0):
+								if reply != 'None':
+									self.IMAGE_LIST.append(reply)
+							self.to_android_message_queue.put_nowait('{s:'+reply+'|')
+
+						else:
+							break
 
 			except Exception as error:
 				print("_process_pic failed: {}".format(str(error)))
