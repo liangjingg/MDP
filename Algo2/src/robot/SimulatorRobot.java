@@ -13,6 +13,7 @@ import imagecomponent.ImageComponent;
 import sensor.SimulatorSensor;
 import simulator.SetUpUI;
 import timertask.MoveImageTask;
+import datastruct.Obstacle;
 
 public class SimulatorRobot extends Robot {
 
@@ -151,25 +152,26 @@ public class SimulatorRobot extends Robot {
 		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
 		switch (this.getDirection()) {
-			case Constant.NORTH:
-				s = "Up";
-				break;
-			case Constant.EAST:
-				s = "Right";
-				break;
-			case Constant.SOUTH:
-				s = "Down";
-				break;
-			case Constant.WEST:
-				s = "Left";
-				break;
-			default:
-				s = "Error";
+		case Constant.NORTH:
+			s = "Up";
+			break;
+		case Constant.EAST:
+			s = "Right";
+			break;
+		case Constant.SOUTH:
+			s = "Down";
+			break;
+		case Constant.WEST:
+			s = "Left";
+			break;
+		default:
+			s = "Error";
 		}
 		toggleValid();
 		// System.out.println("Move simulator by " + step);
 		for (int i = 0; i < step * Constant.GRIDWIDTH; i++) {
-			// System.out.printf("MOVE IMAGE by %d, x: %d, y: %d, i: %d \n", step, this.getPosition()[0], this.getPosition()[1], i);
+			// System.out.printf("MOVE IMAGE by %d, x: %d, y: %d, i: %d \n", step,
+			// this.getPosition()[0], this.getPosition()[1], i);
 			t.schedule(new MoveImageTask(robotImage, s, 1), delay * (i + 1));
 		}
 	}
@@ -182,20 +184,20 @@ public class SimulatorRobot extends Robot {
 																									// turning
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[(this.getDirection() + 2) % 4][1]);
 		switch (this.getDirection()) {
-			case Constant.NORTH:
-				s = "Up";
-				break;
-			case Constant.EAST:
-				s = "Right";
-				break;
-			case Constant.SOUTH:
-				s = "Down";
-				break;
-			case Constant.WEST:
-				s = "Left";
-				break;
-			default:
-				s = "Error";
+		case Constant.NORTH:
+			s = "Up";
+			break;
+		case Constant.EAST:
+			s = "Right";
+			break;
+		case Constant.SOUTH:
+			s = "Down";
+			break;
+		case Constant.WEST:
+			s = "Left";
+			break;
+		default:
+			s = "Error";
 		}
 		toggleValid();
 		for (int i = 0; i < step * Constant.GRIDWIDTH; i++) {
@@ -220,7 +222,7 @@ public class SimulatorRobot extends Robot {
 		this.map = map;
 		smap.setMap(map);
 	}
-	
+
 	public void setSimulatorMap(Map map) {
 		smap.setMap(map);
 	}
@@ -233,7 +235,7 @@ public class SimulatorRobot extends Robot {
 	}
 
 	// Simulate the delay in capturing image
-	public boolean captureImage(int[][] image_pos) {
+	public boolean captureImage(Obstacle[] image_pos) {
 		buttonListener.displayMessage("Capturing image at " + Arrays.toString(getPosition()) + " now", 1);
 		System.out.println("Capturing Image");
 		try {
@@ -255,7 +257,7 @@ public class SimulatorRobot extends Robot {
 	}
 
 	// Simulate the delay in right_align
-	public void right_align() {
+	public void rightAlign() {
 		buttonListener.displayMessage("Calibrating", 1);
 		try {
 			TimeUnit.SECONDS.sleep(1);
@@ -267,5 +269,5 @@ public class SimulatorRobot extends Robot {
 	public void displayMessage(String s, int mode) {
 		buttonListener.displayMessage(s, mode);
 	}
-	
+
 }

@@ -4,6 +4,7 @@ import config.Constant;
 import connection.ConnectionSocket;
 import map.Map;
 import sensor.Sensor;
+import datastruct.Obstacle;
 
 import java.io.*;
 
@@ -57,14 +58,14 @@ public abstract class Robot {
 
 	public abstract void rotateLeft();
 
-	public abstract boolean captureImage(int[][] image_pos);
+	public abstract boolean captureImage(Obstacle[] image_pos);
 
 	public abstract void calibrate();
 
-	public abstract void right_align();
+	public abstract void rightAlign();
 
 	public abstract void displayMessage(String s, int mode);
-	
+
 	public void setDirection(int direction) {
 		this.direction = direction;
 		toggleValid();
@@ -100,7 +101,8 @@ public abstract class Robot {
 	// Update the map when called and returns the number of grids that the obstacle
 	// resides in the direction of the sensors
 	public int[] updateMap() {
-		System.out.printf("Senseposition:  %d, %d \n", sensePosition[0], sensePosition[1]);
+		// System.out.printf("Senseposition: %d, %d \n", sensePosition[0],
+		// sensePosition[1]);
 		// Check if there is a need to check for the obstacle around the robot again, it
 		// is invalid when the robot has moved or rotated
 		if (validObstacleValue) {
@@ -115,14 +117,15 @@ public abstract class Robot {
 
 		// Check the position of the stored sensor values are the same as our current
 		// robot position and it is a real run
-		System.out.printf(" sensePosition[0]: %d, sensePosition[1]: %d \n", sensePosition[0], sensePosition[1]);
-		System.out.printf("x: %d, y: %d \n", x, y);
-		//whats w this error checking...
+		// System.out.printf(" sensePosition[0]: %d, sensePosition[1]: %d \n",
+		// sensePosition[0], sensePosition[1]);
+		// System.out.printf("x: %d, y: %d \n", x, y);
+		// whats w this error checking...
 		if (!(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction)
 				|| !ConnectionSocket.checkConnection()) {
-			System.out.println(" Here");
+			// System.out.println(" Here");
 			this.sensorValues = getSensorValues(); // THIS VALUES IS BY CM (GRID * 10)
-			System.out.println("Got sensor values"  + this.sensorValues[0]);
+			// System.out.println("Got sensor values" + this.sensorValues[0]);
 		}
 		int[][] sensorLocation = Sensor.sensorLocation;
 		int[][] sensorDirection = Sensor.sensorDirection;
@@ -146,39 +149,39 @@ public abstract class Robot {
 
 		// For each of the sensor value, we will update the map accordingly.
 		for (int i = 0; i < 6; i++) {
-			System.out.printf("Currently at sensor %d \n", i + 1);
+			// System.out.printf("Currently at sensor %d \n", i + 1);
 			double value = Double.parseDouble(sensorValues[i]);
 
 			// Find the direction to update the map based on the direction of the sensor
 			switch (i) {
-				case 0:
-				case 1:
-				case 2:
-					sensorDirectionValueX = sensorDirection[0][0];
-					sensorDirectionValueY = sensorDirection[0][1];
+			case 0:
+			case 1:
+			case 2:
+				sensorDirectionValueX = sensorDirection[0][0];
+				sensorDirectionValueY = sensorDirection[0][1];
 
-					break;
-				case 3:
-				case 4:
+				break;
+			case 3:
+			case 4:
+				sensorDirectionValueX = sensorDirection[1][0];
+				sensorDirectionValueY = sensorDirection[1][1];
+
+				break;
+			case 5:
+				sensorDirectionValueX = sensorDirection[2][0];
+				sensorDirectionValueY = sensorDirection[2][1];
+
+				break;
+			default: // TODO: When will this be called?
+				if (i < sensorValues.length - 1) {
 					sensorDirectionValueX = sensorDirection[1][0];
 					sensorDirectionValueY = sensorDirection[1][1];
 
-					break;
-				case 5:
+				} else {
 					sensorDirectionValueX = sensorDirection[2][0];
 					sensorDirectionValueY = sensorDirection[2][1];
 
-					break;
-				default: // TODO: When will this be called?
-					if (i < sensorValues.length - 1) {
-						sensorDirectionValueX = sensorDirection[1][0];
-						sensorDirectionValueY = sensorDirection[1][1];
-
-					} else {
-						sensorDirectionValueX = sensorDirection[2][0];
-						sensorDirectionValueY = sensorDirection[2][1];
-
-					}
+				}
 
 			}
 
@@ -192,41 +195,42 @@ public abstract class Robot {
 				int x = this.x + sensorLocation[i][0] + sensorDirectionValueX * g; // This is to get 2 grids that
 																					// can be detected by the sensor??
 				int y = this.y + sensorLocation[i][1] + sensorDirectionValueY * g;
-				System.out.printf("x: %d, y: %d \n", x, y);
+				// System.out.printf("x: %d, y: %d \n", x, y);
 				// Get the old distance of the grid being updated
 				double oldDist = newMap.getDist(x, y);
 
-				System.out.printf("Value: %f, Threshold: %f \n", value, sensorThreshold[h]);
+				// System.out.printf("Value: %f, Threshold: %f \n", value, sensorThreshold[h]);
 				// Detected an obstacle
 				if (value <= sensorThreshold[h]) {
-					System.out.println("Potential obstacle!");
+					// System.out.println("Potential obstacle!");
 					/*
 					 * If it is the far sensor, it has a lower accuracy than the short range sensor.
 					 * Only update if the obstacle is determined to be more accurate.
 					 */
-					if (i == 5 || i == 2) { //for far sensors
-						if (moreAccurate(g + 2, oldDist)) { //check if new dist < old dist
-							System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i+1, g, x, y);
+					if (i == 5) { // for far sensors
+						if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
+							// System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1, g,
+							// x, y);
 							newMap.setGrid(x, y, Constant.OBSTACLE);
 							newMap.setDist(x, y, g + 2);
 						}
 					} else {
 						if (moreAccurate(g, oldDist)) {
-							System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
+							// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
 							newMap.setGrid(x, y, Constant.OBSTACLE);
 							newMap.setDist(x, y, g);
 						}
 					}
 
 					isObstacle[i] = g;
-					System.out.printf("Set sensor %d at offset %d \n", i+1, g);
+					// System.out.printf("Set sensor %d at offset %d \n", i + 1, g);
 					break; // Stop the moment there is an obstacle in the path
 				}
 
 				// No obstacle
 				else {
 					/* Similar to detecting an obstacle */
-					if (i == 5 || i == 2) {
+					if (i == 5) {
 						if (moreAccurate(g + 1, oldDist)) {
 							newMap.setGrid(x, y, Constant.EXPLORED);
 							newMap.setDist(x, y, g + 1);
@@ -308,7 +312,7 @@ public abstract class Robot {
 	public void setTrueMap(Map map) {
 		this.sensor.setTrueMap(map);
 	}
-	
+
 	public Map getTrueMap() {
 		return this.sensor.getTrueMap();
 	}
@@ -316,7 +320,7 @@ public abstract class Robot {
 	public void setMap(Map map) {
 		this.map = map;
 	}
-	
+
 	public String[] getMDFString() {
 		return map.getMDFString();
 	}
