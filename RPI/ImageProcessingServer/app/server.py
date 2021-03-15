@@ -18,7 +18,7 @@ from math import ceil, floor
 import wbf
 import timeit
 
-IMG_ENCODING = '.png'
+IMG_ENCODING = '.jpg'
 
 WEIGHT_FILE_PATH = 'yolov4tiny.weights'
 CONFIG_FILE_PATH = './cfg/custom-yolov4-tiny-detector.cfg'
@@ -26,7 +26,7 @@ DATA_FILE_PATH = './cfg/coco.data'
 RPI_IP = '192.168.11.11'
 MJPEG_STREAM_URL = 'http://' + RPI_IP + '/html/cam_pic_new.php'
 YOLO_BATCH_SIZE = 4
-THRESH = 0.85 #may want to lower and do filtering for specific images later
+THRESH = 0.50 #may want to lower and do filtering for specific images later
 
 IMG_WIDTH = 500
 
@@ -73,7 +73,8 @@ class ImageProcessingServer:
         image = darknet.draw_boxes(detections, image_resized, self.class_colors)
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
-    def show_all_images(frame_list):
+    def show_all_images(self):
+        frame_list = list(self.images.values())
         for index, frame in enumerate(frame_list):
             frame = imutils.resize(frame, width=400)
             cv2.imshow('Image' + str(index), frame)
@@ -87,8 +88,12 @@ class ImageProcessingServer:
         while True:
             print('Waiting for image from RPi...')
 
-            cdt,frame = self.image_hub.recv_image()
+            #cdt,frame = self.image_hub.recv_image()
 
+            # for testing purposes only
+            cdt = "10:3"
+            frame = cv2.imread(r"C:\Users\Mehul Kumar\Desktop\MDP\20S1-MDP-Image-Recognition\images\images-lab-labeled\multi_3.JPEG")
+            
             if(cdt == "END"):
                 # stitch images to show all identified obstacles
                 self.stitch_images()
@@ -149,7 +154,12 @@ class ImageProcessingServer:
             if len(reply) == 0:
                 self.image_hub.send_reply("None")
             else:
-                self.image_hub.send_reply(str(reply))
+                #self.image_hub.send_reply(str(reply))
+                self.stitch_images()
+                print("Stitching Images...")
+                self.show_all_images()
+                print("Image Processing Server Ended")
+                break
 
     def stitch_images(self):
         frameWidth = 1920
@@ -158,7 +168,7 @@ class ImageProcessingServer:
 
         # read processed_images from disk
         os.chdir('processed_images')
-        images = glob.glob("*.png")
+        images = glob.glob("*.jpg")
 
         imgWidth, imgHeight = Image.open(images[0]).size
         # set scaling factor
