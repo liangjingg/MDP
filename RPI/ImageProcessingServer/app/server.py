@@ -26,7 +26,7 @@ DATA_FILE_PATH = './cfg/coco.data'
 RPI_IP = '192.168.11.11'
 MJPEG_STREAM_URL = 'http://' + RPI_IP + '/html/cam_pic_new.php'
 YOLO_BATCH_SIZE = 4
-THRESH = 0.50 #may want to lower and do filtering for specific images later
+THRESH = 0.80 #may want to lower and do filtering for specific images later
 
 IMG_WIDTH = 500
 
@@ -91,8 +91,8 @@ class ImageProcessingServer:
             #cdt,frame = self.image_hub.recv_image()
 
             # for testing purposes only
-            cdt = "10:3"
-            frame = cv2.imread(r"C:\Users\Mehul Kumar\Desktop\MDP\20S1-MDP-Image-Recognition\images\images-lab-labeled\multi_3.JPEG")
+            cdt = "10:4:10:5:10:6"
+            frame = cv2.imread(r"C:\Users\Mehul Kumar\Desktop\MDP\20S1-MDP-Image-Recognition\images\images-lab-labeled\multi_19.JPEG")
             
             if(cdt == "END"):
                 # stitch images to show all identified obstacles
@@ -109,7 +109,7 @@ class ImageProcessingServer:
 
             # form image file path for saving
             raw_image_name = cdt.replace(":","") + IMG_ENCODING
-            raw_image_path = os.path.join('captured_images', raw_image_name)
+            raw_image_path = 'captured_images/' + raw_image_name
             # save raw image
             save_success = cv2.imwrite(raw_image_path, frame)
 
@@ -125,6 +125,11 @@ class ImageProcessingServer:
                 id = i[0] #string
                 confidence = i[1] #string
                 bbox = i[2] #tuple
+
+                x, y = self.calc_cdts(cdt_list, cut_width, bbox, image.shape[0])
+                if(x == -1):
+                    continue
+                
                 print('ID detected: ' + id, ', Confidence: ' + confidence)
                 if id in self.results:
                     print('ID has been detected before')
@@ -136,7 +141,7 @@ class ImageProcessingServer:
                         self.images[id] = image #add new result to dict
                         processed_image_path = 'processed_images/' + raw_image_name[:raw_image_name.rfind(".")] + "_processed" + IMG_ENCODING
                         save_success = cv2.imwrite(processed_image_path, image)
-                        reply.append(id + 'at' + cdt[0] + cdt[1])
+                        reply.append(id + 'at' + x+ ',' + y)
                         
                     else:
                         print('Confidence lower. Keeping existing image.')
@@ -147,7 +152,7 @@ class ImageProcessingServer:
                     self.images[id] = image
                     processed_image_path = 'processed_images/' + raw_image_name[:raw_image_name.rfind(".")] + "_processed" + IMG_ENCODING
                     save_success = cv2.imwrite(processed_image_path, image)
-                    reply.append(id + 'at' + cdt[0] + cdt[1])
+                    reply.append(id + 'at' + x+ ',' + y)
                     
             #reply variable TODO
             print("Time to process: ", timeit.default_timer() - start_time)
@@ -155,12 +160,35 @@ class ImageProcessingServer:
                 self.image_hub.send_reply("None")
             else:
                 #self.image_hub.send_reply(str(reply))
+                print(str(reply))
+
+                # for TESTING ONLY
                 self.stitch_images()
                 print("Stitching Images...")
                 self.show_all_images()
                 print("Image Processing Server Ended")
                 break
 
+    def calc_cdts(self, cdt_list, cut_width, bbox, img_width):
+        xmin, ymin, xmax, ymax = darknet.bbox2points(bbox)
+        x = (xmin + xmax)/2
+        box_width = xmax - xmin
+        
+                
+        for w in range(cut_width):
+            w = w+1
+            section_width = float(img_width)/cut_width*w
+            if xmin<section_width:
+                if (box_width/2)<(section_width - xmin):
+                    if cdt_list[2*w-1]=="-1":
+                        text = ""
+                        break
+                    else:
+                        return cdt_list[2*w-2], cdt_list[2*w-1]
+
+        return -1, -1
+
+        
     def stitch_images(self):
         frameWidth = 1920
         imagesPerRow = 5
