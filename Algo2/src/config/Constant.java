@@ -5,7 +5,7 @@ public class Constant {
 	public static final int TIME = -1;
 	public static final int PERCENTAGE = 100;
 	public static final int SPEED = 1;
-	public static final boolean IMAGE_REC = false;
+	public static final boolean IMAGE_REC = true;
 
 	// Used for all Real and Simulator Events
 	public static final int BOARDWIDTH = 20; // By default, this should be 20. This must be greater than 3 as the Robot
@@ -18,8 +18,8 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 15.0, 35.0 }, { 14.0, 36.0 }, { 18.00, 24.00 }, { 12.5, 31.0 },
-			{ 12.5, 31.0 }, { 18.00, 24.00, 31.00, 43.00, 55.00 } };
+	public static final double[][] SENSOR_RANGES = { { 6.0, 17.0, 26.0 }, { 6.0, 17.0, 26.0 }, { 6.0, 17.0, 26.0 }, { 7.00, 17.0, 26.0 },
+			{ 7.0, 17.0, 26.0 }, { 7.0, 13.5, 24.0, 36.0, 46.0, 58.0 } };
 
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
@@ -93,7 +93,8 @@ public class Constant {
 	public static final String SENSE_ALL = "Z|";
 	public static final String TURN_LEFT = "A|";
 	public static final String TURN_RIGHT = "D|";
-	public static final String CALIBRATE = "SS|";
+	public static final String FORWARD_MOVEMENT = "W|";
+	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
 	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\OneDrive\\Desktop\\NTU\\Year 3\\MDP\\MDP\\Algo2";
