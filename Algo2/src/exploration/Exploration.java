@@ -19,6 +19,7 @@ public class Exploration {
     private FastestPath fp = new FastestPath();
     private Map map;
     private boolean imageStop;
+    private int countOfMoves = 0;
 
     public void ExplorationAlgo(Robot robot, int time, int percentage, int speed, boolean image_recognition) {
         map = robot.getMap();
@@ -147,7 +148,6 @@ public class Exploration {
         Coordinate defaultCoord = new Coordinate(-1, -1);
         Obstacle defaultPos = new Obstacle(defaultCoord, -1); // x , y and direction of the robot
         Obstacle[] obsPos = new Obstacle[] { defaultPos, defaultPos, defaultPos }; // 3 x 3 array //use arraylist
-
         do {
             checkedObstacles = move(robot, 1, checkedObstacles);
             System.out.println("Checked obstacles:");
@@ -155,6 +155,9 @@ public class Exploration {
                 System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
             }
             System.out.println();
+            if (this.countOfMoves % 4 == 0) {
+                robot.rightAlign();
+            }
             cornerCalibration(robot);
         } while (!atPosition(robot, Constant.START));
 
@@ -275,6 +278,7 @@ public class Exploration {
             robot.rotateRight();
             if (isFrontEmpty(robot)) {
                 robot.forward(1);
+                this.countOfMoves += 1;
                 return checkedObstacles;
             } else { // Right empty but turn right and front not empty?? (Inaccuracy of sensors?)
                 robot.rotateLeft();
@@ -287,6 +291,7 @@ public class Exploration {
         }
         if (isFrontEmpty(robot)) { // Robot is along wall now
             robot.forward(1);
+            this.countOfMoves += 1;
             return checkedObstacles;
         } else {
             robot.rotateLeft(); // Robot faces north
@@ -296,6 +301,7 @@ public class Exploration {
         }
         if (isFrontEmpty(robot)) {
             robot.forward(1);
+            this.countOfMoves += 1;
             return checkedObstacles;
         } else {
             robot.rotateLeft(); // Robot reverses
@@ -305,6 +311,7 @@ public class Exploration {
         }
         if (isFrontEmpty(robot)) {
             robot.forward(1);
+            this.countOfMoves += 1;
         } else {
             System.out.println("Error during exploration phase 1. All 4 sides blocked.");
         }

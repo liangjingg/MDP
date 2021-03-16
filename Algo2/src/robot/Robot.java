@@ -42,7 +42,7 @@ public abstract class Robot {
 		this.validObstacleValue = false; // TODO: Wtf is this
 		if (ConnectionSocket.getDebug()) {
 			try {
-				this.writer = new OutputStreamWriter(new FileOutputStream("Output.txt"), "UTF-8");
+				this.writer = new OutputStreamWriter(new FileOutputStream(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt"), "UTF-8");
 				writer.write("");
 			} catch (Exception e) {
 				System.out.println("Unable to write into output");
@@ -150,7 +150,12 @@ public abstract class Robot {
 		// For each of the sensor value, we will update the map accordingly.
 		for (int i = 0; i < 6; i++) {
 			// System.out.printf("Currently at sensor %d \n", i + 1);
-			double value = Double.parseDouble(sensorValues[i]);
+			double value  = 0;
+			try {
+				value = Double.parseDouble(sensorValues[i]);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 
 			// Find the direction to update the map based on the direction of the sensor
 			switch (i) {
@@ -247,13 +252,13 @@ public abstract class Robot {
 
 		if (ConnectionSocket.getDebug()) {
 			try {
-				File file = new File("Output.txt");
+				File file = new File(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt");
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String st = "", tmp = "";
 				while ((tmp = br.readLine()) != null) {
 					st += tmp + "\n";
 				}
-				this.writer = new OutputStreamWriter(new FileOutputStream("Output.txt"), "UTF-8");
+				this.writer = new OutputStreamWriter(new FileOutputStream(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt"), "UTF-8");
 				writer.write(st + "\n\n");
 				writer.write("Pos : [" + x + ", " + y + ", " + direction + "]\n");
 				writer.write("The sensor values are: ");
