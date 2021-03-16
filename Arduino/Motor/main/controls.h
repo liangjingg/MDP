@@ -5,19 +5,19 @@ char cmd[300];
 
 
 #define W01  250
-#define W02  500
-#define W03  820
-#define W04  1120
-#define W05  1380
-#define W06  1380+390
+#define W02  550
+#define W03  850
+#define W04  1140
+#define W05  1450
+#define W06  1380+370
 #define W07  1380+390+270
-#define W08  1380+390+270+250
-#define W09  1380+390+270+250+250+75
+#define W08  1380+390+270+290
+#define W09  1380+390+270+250+250+75+10
 #define W10  10*290 + 20
-#define W11  11*290 + 10
-#define W12  12*290 + 10
-#define W13  13*290 + 35
-#define W14  14*290 
+#define W11  11*290 + 30
+#define W12  12*290 + 40
+#define W13  13*290 + 40
+#define W14  14*290 + 40
 #define W15  15*290
 #define W16  16*290
 #define W17  17*290
@@ -45,7 +45,7 @@ char cmd[300];
 #define S18  100
 #define S19  100
 
-#define A01  368
+#define A01  366
 #define A02  200
 #define A03  300
 #define A04  400
@@ -88,6 +88,33 @@ bool readCommand()
     return false;
 }
 
+void executeExplorationCommand(){
+  char letter = cmd[cmd_out];
+  switch(letter){
+    case 'W': goStraight(W01);
+    
+//              Serial.println("going straight");
+              break;
+    case 'A': turnLeft(A01);
+              break;
+    case 'D': turnRight(D01);
+              break;
+    case 'Q':break;
+    case 'E':break;
+    case 'Z':updateSensor();
+              break;
+    case 'B':alignRight();
+              break;
+    case 'V':break;
+    case 'X':break;
+    case 'C':break;
+
+    
+
+    
+  }
+  cmd_out+=2;
+}
 
 void executeFastestPathCommand(){
   char letter = cmd[cmd_out];
@@ -147,6 +174,7 @@ void executeFastestPathCommand(){
 
            break;    
        }
+       //goBack(10);
     }
     else if (firstDigit == '1'){
        cmd_out++;
@@ -187,6 +215,7 @@ void executeFastestPathCommand(){
            Serial.println("Input Error!");
            break;    
         }
+        //goBack(10);
     }
     cmd_out++;
  }
@@ -312,20 +341,20 @@ void executeFastestPathCommand(){
       else if (letter == 'Z') //sense
  {
     cmd_out++;
-    sense();
+    //sense();
     cmd_out++;
  }
       else if (letter == 'B')
  {
     cmd_out++;
-    alignRight();
+    //alignRight();
     cmd_out++;
  }
 
        else if (letter == 'V')
  {
     cmd_out++;
-    alignFront();
+    //alignFront();
     cmd_out++;
  }
        else if (letter == 'X') //sense
@@ -360,6 +389,23 @@ if (readCommand() == true)
        //Serial.print("Servicing Command: ");
        //Serial.println(cmd);
     //de   Serial.println(cmd[cmd_out]);
+      //cmd_out++;
+    }
+    // reset cmd_out counter
+    cmd_out = 0;
+  }
+
+}
+
+void valoom(){
+if (readCommand() == true)
+  { // if there are commands that are available
+    while (cmd_out < cmd_in)
+    { // execute each command until the last char has been executed
+      executeExplorationCommand();
+       //Serial.print("Servicing Command: ");
+       //Serial.println(cmd);
+    //de   Serial.println(ucmd[cmd_out]);
       //cmd_out++;
     }
     // reset cmd_out counter

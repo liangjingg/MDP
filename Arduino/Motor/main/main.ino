@@ -80,8 +80,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  vroom();
-  delay(100);
+  //vroom();
+  //Serial.println(medianAnalog(20,0));
+//  Serial.println("RUN NOW");
+  //alignRight();
+  valoom();
+  //updateSensor();
+  //Serial.println(getRFAnalog());
+  delay(1000);
   //getSensorDist();
   //getDistanceMsg();
   //delay(3000);
