@@ -168,16 +168,17 @@ public class ConnectionManager extends Thread{
 			else if (!ExplorationThread.getRunning() && !FastestPathThread.getRunning() && 
 					s.contains(Constant.SETWAYPOINT)) {
 				Pattern wp_s_s = Pattern.compile(Constant.SETWAYPOINT + " \\([1-9],[1-9]\\)");
-				Pattern wp_d_s = Pattern.compile(Constant.SETWAYPOINT + " \\([1-9],[1][0-8]\\)");
-				Pattern wp_s_d = Pattern.compile(Constant.SETWAYPOINT + " \\([1][0-4],[1-9]\\)");
-				Pattern wp_d_d = Pattern.compile(Constant.SETWAYPOINT + " \\([1][0-4],[1][0-8]\\)");
+				Pattern wp_d_s = Pattern.compile(Constant.SETWAYPOINT + " \\([1][0-8],[1-9]\\)");
+				Pattern wp_s_d = Pattern.compile(Constant.SETWAYPOINT + " \\([1-9],[1][0-4]\\)");
+				Pattern wp_d_d = Pattern.compile(Constant.SETWAYPOINT + " \\([1][0-8],[1][0-4]\\)");
 				if ((wp_s_s.matcher(s).matches() || wp_d_s.matcher(s).matches() || wp_s_d.matcher(s).matches() || wp_d_d.matcher(s).matches())){
 					complete = true;
 					String tmp = s.replace(Constant.SETWAYPOINT + " (", "");
 					tmp = tmp.replace(")", "");
 					String[] arr = tmp.trim().split(",");
 					//x , y
-					robot.setWaypoint(Integer.parseInt(arr[1]), Integer.parseInt(arr[0]));
+
+					robot.setWaypoint(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
 					s = "Successfully received the waypoint: " + Integer.parseInt(arr[0]) + 
 							"," + Integer.parseInt(arr[1]);
 					System.out.printf("Waypoint: x: %d, y: %d \n", robot.getWaypoint()[0], robot.getWaypoint()[1]);

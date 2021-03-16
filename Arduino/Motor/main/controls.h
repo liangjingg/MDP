@@ -1,28 +1,28 @@
 // dont need to include movement.h here because main is calling controls.h and already has an include for movement
 int cmd_in,cmd_out;
-char cmd[100];
-//#include "sensor.h"
+char cmd[300];
+//##include "sensor.h"
 
 
 #define W01  250
-#define W02  500
-#define W03  820
-#define W04  1120
-#define W05  1380
-#define W06  1380+390
+#define W02  550
+#define W03  850
+#define W04  1140
+#define W05  1450
+#define W06  1380+370
 #define W07  1380+390+270
-#define W08  1380+390+270+250
-#define W09  1380+390+270+250+250
-#define W10  10*300
-#define W11  11*300
-#define W12  12*300
-#define W13  13*300
-#define W14  14*300
-#define W15  15*300
-#define W16  16*300
-#define W17  17*300
-#define W18  18*300
-#define W19  19*300
+#define W08  1380+390+270+290
+#define W09  1380+390+270+250+250+75+10
+#define W10  10*290 + 20
+#define W11  11*290 + 30
+#define W12  12*290 + 40
+#define W13  13*290 + 40
+#define W14  14*290 + 40
+#define W15  15*290
+#define W16  16*290
+#define W17  17*290
+#define W18  18*285
+#define W19  19*285
 
 
 #define S01  250
@@ -79,7 +79,7 @@ bool readCommand()
     cmd_in++;
 
     // exceed buffer, stop reading additional commands
-    if (cmd_in >= 100)
+    if (cmd_in >= 300)
       break;
   }
   if (cmd_in > 0)
@@ -88,6 +88,33 @@ bool readCommand()
     return false;
 }
 
+void executeExplorationCommand(){
+  char letter = cmd[cmd_out];
+  switch(letter){
+    case 'W': goStraight(W01);
+    
+//              Serial.println("going straight");
+              break;
+    case 'A': turnLeft(A01);
+              break;
+    case 'D': turnRight(D01);
+              break;
+    case 'Q':break;
+    case 'E':break;
+    case 'Z':updateSensor();
+              break;
+    case 'B':alignRight();
+              break;
+    case 'V':break;
+    case 'X':break;
+    case 'C':break;
+
+    
+
+    
+  }
+  cmd_out+=2;
+}
 
 void executeFastestPathCommand(){
   char letter = cmd[cmd_out];
@@ -147,13 +174,17 @@ void executeFastestPathCommand(){
 
            break;    
        }
+       //goBack(10);
     }
     else if (firstDigit == '1'){
        cmd_out++;
        char secondDigit = cmd[cmd_out];
        cmd_out++;
        switch(secondDigit){
-         case '1': 
+         case '0': 
+           goStraight(W10);
+           break;
+          case '1': 
            goStraight(W11);
            break;
          case '2': 
@@ -184,6 +215,7 @@ void executeFastestPathCommand(){
            Serial.println("Input Error!");
            break;    
         }
+        //goBack(10);
     }
     cmd_out++;
  }
@@ -305,6 +337,41 @@ void executeFastestPathCommand(){
     turnRight(D01/2.2);
     cmd_out++;
  }
+
+      else if (letter == 'Z') //sense
+ {
+    cmd_out++;
+    //sense();
+    cmd_out++;
+ }
+      else if (letter == 'B')
+ {
+    cmd_out++;
+    //alignRight();
+    cmd_out++;
+ }
+
+       else if (letter == 'V')
+ {
+    cmd_out++;
+    //alignFront();
+    cmd_out++;
+ }
+       else if (letter == 'X') //sense
+ {
+    cmd_out++;
+    //adjustDistanceFromWall();
+    cmd_out++;
+ }
+
+        else if (letter == 'C') //sense
+ {
+    cmd_out++;
+    //Serial.println("Align Angel");
+    //alignAngle();
+    cmd_out++;
+ }
+ 
  else{
   cmd_out++;
   cmd_out++;
@@ -319,9 +386,26 @@ if (readCommand() == true)
     while (cmd_out < cmd_in)
     { // execute each command until the last char has been executed
       executeFastestPathCommand();
-       Serial.print("Servicing Command: ");
-       Serial.println(cmd);
+       //Serial.print("Servicing Command: ");
+       //Serial.println(cmd);
     //de   Serial.println(cmd[cmd_out]);
+      //cmd_out++;
+    }
+    // reset cmd_out counter
+    cmd_out = 0;
+  }
+
+}
+
+void valoom(){
+if (readCommand() == true)
+  { // if there are commands that are available
+    while (cmd_out < cmd_in)
+    { // execute each command until the last char has been executed
+      executeExplorationCommand();
+       //Serial.print("Servicing Command: ");
+       //Serial.println(cmd);
+    //de   Serial.println(ucmd[cmd_out]);
       //cmd_out++;
     }
     // reset cmd_out counter

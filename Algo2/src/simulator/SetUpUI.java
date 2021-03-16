@@ -450,7 +450,7 @@ public class SetUpUI implements ActionListener {
 		Buttons.add(up);
 		Buttons.add(update);
 		Buttons.add(checkMap);
-		// Buttons.add(toggleMap);
+		Buttons.add(toggleMap);
 		Buttons.add(resetRobot);
 		Buttons.add(returnToStart);
 

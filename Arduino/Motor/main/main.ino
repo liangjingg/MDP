@@ -1,33 +1,33 @@
 
 /*
- * Version: 1.7 2 March 2021
- * 
- * Description:
- * This code is written for integration testing of Arduino Robot Hardware to Rpi via serial communication. 
- * 
- *  
- * Features:
- * Moving Straight Line
- * Rotate Left/Right
- * Calibration Front (WIP)
- * Calibration right wall (WIP)
- * 
- * This is the code that was most recently updated to gihub
- * 
- */
+   Version: 1.10 09 March 2021
+
+   Description:
+   This code is written for integration testing of Arduino Robot Hardware to Rpi via serial communication.
+
+
+   Features:
+   Moving Straight Line
+   Rotate Left/Right
+   Calibration Front (WIP)
+   Calibration right wall (WIP)
+
+   This is the code that was most recently updated to gihub
+
+*/
 
 
 /*
- * ===================================
- * Packages 
- * DualVNH5019MotorShield - Library to interface with Pololu motorshield to control DC motors
- * SharpIR - Library to interface with Sharp IR sensors
- * EnableInterrupt - Library to allows interrupts control on any digital pin. Note: Arduino Uno can only configure D0 and D1 as interrupt 
- * pin by AttachInterrupt() without this library.
- * PID_v1 - Library to easy and quick integration of PID Controller
- * ArduinoSort - Library for insertion sort algorithm for implementing median filtering of sensor value
- * ===================================
- */
+   ===================================
+   Packages
+   DualVNH5019MotorShield - Library to interface with Pololu motorshield to control DC motors
+   SharpIR - Library to interface with Sharp IR sensors
+   EnableInterrupt - Library to allows interrupts control on any digital pin. Note: Arduino Uno can only configure D0 and D1 as interrupt
+   pin by AttachInterrupt() without this library.
+   PID_v1 - Library to easy and quick integration of PID Controller
+   ArduinoSort - Library for insertion sort algorithm for implementing median filtering of sensor value
+   ===================================
+*/
 #include "DualVNH5019MotorShield.h"
 #include <SharpIR.h>
 #include <EnableInterrupt.h>
@@ -38,10 +38,10 @@
 //#include "sensor.h"
 
 /*
- * ==============================
- * Variables declaration
- * ==============================
- */
+   ==============================
+   Variables declaration
+   ==============================
+*/
 
 
 //Operating states
@@ -53,10 +53,10 @@ bool DEBUG = false;
 //CONSTANTS SAMPLE SIZE OF 50(FOR SENSOR)
 #define SAMPLE 50
 
-volatile double sensor_reading[SAMPLE];  //Store Reading for Median_filtering 
+volatile double sensor_reading[SAMPLE];  //Store Reading for Median_filtering
 
-//Define constructor for sensor 
-//Note : front_right(front-sensor(RHS)), right_front(Right-position sensor)  
+//Define constructor for sensor
+//Note : front_right(front-sensor(RHS)), right_front(Right-position sensor)
 
 //// VARIABLES FOR COMMAND CHAINING FROM ALGO //
 //char command;
@@ -65,35 +65,37 @@ volatile double sensor_reading[SAMPLE];  //Store Reading for Median_filtering
 //int dash = 0;
 
 /*
- * ==============================
- * Main Program
- * ==============================
- */
+   ==============================
+   Main Program
+   ==============================
+*/
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Connected");
-  
+
   movementSetup();        //pulls the setup files from movement.h
   sensorSetup();
-  
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  vroom();
-  //delay(1000);
   //vroom();
-  delay(100);
-  //getSensorDist();
-  //delay(2000);
+  //Serial.println(medianAnalog(20,0));
+//  Serial.println("RUN NOW");
+  //alignRight();
+  valoom();
+  //updateSensor();
+  //Serial.println(getRFAnalog());
+  delay(1000);
   //getSensorDist();
   //getDistanceMsg();
   //delay(3000);
-  
-  
+
+
 }
 
-// 
+//
 ////method to get command string into the buffer
 //void get_command(){
 //    int i = 0;

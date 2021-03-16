@@ -327,9 +327,10 @@ public class Map {
 			}
 		}
 		try {
-			File folder = new File(Constant.FOLDER_TO_WRITE);
+			File folder = new File(Constant.FOLDER_TO_WRITE + "\\sample arena");
 			int numOfFiles = folder.list().length;
-			File file = new File(Constant.FOLDER_TO_WRITE + "\\samplearena" + (numOfFiles-1) + ".txt");
+			System.out.println(numOfFiles);
+			File file = new File(Constant.FOLDER_TO_WRITE + "\\sample arena\\" + "samplearena" + (numOfFiles-1) + ".txt");
 			PrintWriter out = new PrintWriter(file);
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -374,13 +375,13 @@ public class Map {
 		for (int j = 0; j < Constant.BOARDWIDTH; j++) {
 			for (int i = 0; i < Constant.BOARDHEIGHT; i++) {
 
-				if (grid[j][i].compareTo(Constant.POSSIBLEGRIDLABELS[2]) == 0) { // Obstacle
+				if (grid[j][i].equals(Constant.OBSTACLE)) { // Obstacle
 					MDFBitStringPart1.append("1");
 					MDFBitStringPart2.append("1");
 
-				} else if (grid[j][i].compareTo(Constant.POSSIBLEGRIDLABELS[0]) == 0) { // Unexplored
+				} else if (grid[j][i].equals(Constant.UNEXPLORED)) { // Unexplored
 					MDFBitStringPart1.append("0");
-				} else {
+				} else { //Not obstacle or unexplored (start point/end point/explored)
 					MDFBitStringPart1.append("1");
 					MDFBitStringPart2.append("0");
 				}
@@ -390,6 +391,7 @@ public class Map {
 		MDFBitStringPart1.append("11");
 
 		for (int i = 0; i < MDFBitStringPart1.length(); i += 4) {
+			System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16));
 			MDFHexString[0] += Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16);
 		}
 

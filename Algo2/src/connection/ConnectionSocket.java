@@ -53,7 +53,7 @@ public class ConnectionSocket {
 	    		result = false;
 	        } 
 	    	catch (IOException IOEx) {
-	    		System.out.println("IOException in ConnectionSocket connectToRPI Function");
+	    		System.out.println("IOException in ConnectionSocket connectToRPI Function" + IOEx.getMessage());
 	    		result = false;
 	    	}
     	}

@@ -45,6 +45,7 @@ public class FastestPath {
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
                 realFPmove(path, robot);
+                // move(robot, path, speed);
                 System.out.println("Finsh sending");
                 // move(robot, path, speed);
             } else {
@@ -114,7 +115,7 @@ public class FastestPath {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         for (int direction : path) {
-            System.out.printf("count: %d, direction: %d\n", count, direction);
+            // System.out.printf("count: %d, direction: %d\n", count, direction);
             if (direction == Constant.FORWARD) {
                 count++;
             } else if (count > 0) {
@@ -168,6 +169,7 @@ public class FastestPath {
         Exploration ex = new Exploration(); // change isfrontempty to robot method?
         // Move the robot based on the path
         for (int direction : path) {
+            System.out.println("Move " + direction);
             if (!connection.ConnectionSocket.checkConnection()) {
                 try {
                     TimeUnit.SECONDS.sleep(speed);
