@@ -158,24 +158,25 @@ public class RealRobot extends Robot {
 
 	// Send the mdf string every 4 times we receive the sensor value
 	public void sendMDFString() {
-		if (this.numOfCount > 3) { // can just use modulus?
-			String[] arr2 = this.getMDFString();
-			connectionSocket.sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
-					+ ",\"obstacle\":\"" + arr2[2] + "\"}]}");
-			if (sr != null) {
-				sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
-						+ ",\"obstacle\":\"" + arr2[2] + "\"}]}", 1);
-			}
-			this.numOfCount = 0;
-		} else {
-			this.numOfCount++;
+		// if (this.numOfCount > 3) {
+		String[] arr2 = this.getMDFString();
+		connectionSocket.sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
+				+ ",\"obstacle\":\"" + arr2[2] + "\"}]}|");
+		if (sr != null) {
+			sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
+					+ ",\"obstacle\":\"" + arr2[2] + "\"}]}|", 1);
 		}
+		// 	this.numOfCount = 0;
+		// } else {
+		// 	this.numOfCount++;
+		// }
 	}
 
 	// Send the forward message with how many steps and update the robot position
 	@Override
 	public void forward(int step) {
-		connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
+		//connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
+		connectionSocket.sendMessage(Constant.FORWARD_MOVEMENT);
 		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
 		if (sr != null) {
@@ -183,6 +184,7 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: W0" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
+		sendMDFString();
 		// if (!acknowledge()) {
 		// this.x = setValidX(this.x -
 		// Constant.SENSORDIRECTION[this.getDirection()][0]);
@@ -203,6 +205,7 @@ public class RealRobot extends Robot {
 			sr.rotateRight();
 			sr.displayMessage("Sent message: " + Constant.TURN_RIGHT, 1);
 		}
+		sendMDFString();
 		// acknowledge();
 	}
 
@@ -215,22 +218,23 @@ public class RealRobot extends Robot {
 			sr.rotateLeft();
 			sr.displayMessage("Sent message: " + Constant.TURN_LEFT, 1);
 		}
+		sendMDFString();
 		// acknowledge();
 	}
 
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
-		connectionSocket.sendMessage("C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + "("
-				+ image_pos[1].coordinates.y + "(" + image_pos[1].coordinates.x + "(" + image_pos[2].coordinates.y + ","
-				+ image_pos[2].coordinates.x + "(");
+		connectionSocket.sendMessage("C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + ":"
+				+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y + ","
+				+ image_pos[2].coordinates.x + ")");
 		// x and y is inverted in
 		// Real Run.
 
 		if (sr != null) {
 			sr.captureImage(image_pos);
-			sr.displayMessage("Sent message: C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + "("
-					+ image_pos[1].coordinates.y + "(" + image_pos[1].coordinates.x + "(" + image_pos[2].coordinates.y
-					+ "," + image_pos[2].coordinates.x + "(", 1);
+			sr.displayMessage("Sent message: C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + ":"
+			+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y + ","
+			+ image_pos[2].coordinates.x + ")", 1);
 		}
 		boolean completed = false;
 		String s;
@@ -281,7 +285,7 @@ public class RealRobot extends Robot {
 		if (sr != null) {
 			sr.displayMessage("Sent message: " + Constant.RIGHTALIGN, 1);
 		}
-		acknowledge();
+		// acknowledge();
 	}
 
 	// This will override the update map from the robot class
