@@ -30,4 +30,9 @@ public class Coordinate {
         result = prime * result + y;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "x: " + this.x + ", y:" + this.y;
+    }
 }

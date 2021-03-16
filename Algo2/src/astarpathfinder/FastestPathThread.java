@@ -32,7 +32,7 @@ public class FastestPathThread extends Thread {
         // Check if it is the simulator mode
         boolean isSimulated = r.getClass().equals(SimulatorRobot.class);
         FastestPath fp = new FastestPath();
-        fp.FastestPath(r, waypoint, Constant.END, speed, true, true);
+        fp.FastestPathAlgo(r, waypoint, Constant.END, speed, true, true);
         if (running.get()) {
             completed.set(true);
         } else {

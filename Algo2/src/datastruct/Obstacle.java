@@ -27,4 +27,9 @@ public class Obstacle {
     public int hashCode() {
         return Objects.hash(coordinates.x, coordinates.y, direction);
     }
+
+    @Override
+    public String toString() {
+        return "x: " + this.coordinates.x + ", y:" + this.coordinates.y + ", direction: " + this.direction;
+    }
 }

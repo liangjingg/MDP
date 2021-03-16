@@ -510,16 +510,16 @@ public class SetUpUI implements ActionListener {
 		// both
 		JScrollBar vbar = scrollPane.getVerticalScrollBar();
 		switch (mode) {
-			case 0:
-				System.out.println(s);
-				break;
-			case 1:
-				printConsole(s, vbar);
-				break;
-			case 2:
-				System.out.println(s);
-				printConsole(s, vbar);
-				break;
+		case 0:
+			System.out.println(s);
+			break;
+		case 1:
+			printConsole(s, vbar);
+			break;
+		case 2:
+			System.out.println(s);
+			printConsole(s, vbar);
+			break;
 		}
 	}
 
@@ -547,7 +547,7 @@ public class SetUpUI implements ActionListener {
 		int i = filePath.size() - 1;
 
 		for (String key : filePath.keySet()) {
-			System.out.println(key);
+			// System.out.println(key);
 			fileName[i] = key;
 			i--;
 		}
@@ -573,40 +573,40 @@ public class SetUpUI implements ActionListener {
 			}
 			for (int i = 0; i < line.length(); i++) {
 				switch (line.charAt(i)) {
-					case 'S': // Represent start grid
-						grid[i][heightCount] = Constant.STARTPOINT;
-						break;
+				case 'S': // Represent start grid
+					grid[i][heightCount] = Constant.STARTPOINT;
+					break;
 
-					case 'U': // Represent empty grid as end grid already used 'E'
-						// Here, we set to explored instead of Unexplored
-						grid[i][heightCount] = Constant.EXPLORED;
-						break;
+				case 'U': // Represent empty grid as end grid already used 'E'
+					// Here, we set to explored instead of Unexplored
+					grid[i][heightCount] = Constant.EXPLORED;
+					break;
 
-					// case 'W':
-					/*
-					 * We do not allow waypoint setting as there may be ambiguous situation
-					 * 
-					 * For example, if user accidentally set wrongly, what should be the grid string
-					 * after it resets as one map should only have one waypoint?
-					 * 
-					 * This might affect the correctness of our mdf string.
-					 */
-					// grid[i][heightCount] = Constant.POSSIBLEGRIDLABELS[3];
-					// break;
+				// case 'W':
+				/*
+				 * We do not allow waypoint setting as there may be ambiguous situation
+				 * 
+				 * For example, if user accidentally set wrongly, what should be the grid string
+				 * after it resets as one map should only have one waypoint?
+				 * 
+				 * This might affect the correctness of our mdf string.
+				 */
+				// grid[i][heightCount] = Constant.POSSIBLEGRIDLABELS[3];
+				// break;
 
-					case 'E': // Represent end grid
-						grid[i][heightCount] = Constant.ENDPOINT;
-						break;
+				case 'E': // Represent end grid
+					grid[i][heightCount] = Constant.ENDPOINT;
+					break;
 
-					case 'O': // Represent obstacle grid
-						grid[i][heightCount] = Constant.OBSTACLE;
-						break;
+				case 'O': // Represent obstacle grid
+					grid[i][heightCount] = Constant.OBSTACLE;
+					break;
 
-					default:
-						displayMessage("There is unrecognised character symbol in " + fileName + ".\n" + fileName
-								+ " failed to load into the program.", 1);
-						throw new Exception("There is unrecognised character symbol in " + fileName + ".\n" + fileName
-								+ " failed to load into the program.");
+				default:
+					displayMessage("There is unrecognised character symbol in " + fileName + ".\n" + fileName
+							+ " failed to load into the program.", 1);
+					throw new Exception("There is unrecognised character symbol in " + fileName + ".\n" + fileName
+							+ " failed to load into the program.");
 				}
 			}
 
@@ -646,7 +646,7 @@ public class SetUpUI implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
-		System.out.println(" Action: " + action);
+		// System.out.println(" Action: " + action);
 		if (action.equals("Right")) {
 			displayMessage("Rotate right button clicked", 2);
 			disableButtons();
@@ -778,12 +778,13 @@ public class SetUpUI implements ActionListener {
 			String irc = (String) ir.getSelectedItem();
 			if (irc != null) {
 				isImageRecognition = irc.equals("With Image Recognition");
-				System.out.println("Image Rec: " + isImageRecognition);
+				// System.out.println("Image Rec: " + isImageRecognition);
 			}
 		}
 
 		else if (action.equals("Fastest Path")) {
-			System.out.printf("Waypoint x :%d, y: %d \n", chosenWaypoint[0], chosenWaypoint[1]);
+			// System.out.printf("Waypoint x :%d, y: %d \n", chosenWaypoint[0],
+			// chosenWaypoint[1]);
 			// r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
 			// // if (Arrays.equals(chosenWaypoint, new int[] { -1, -1 })) {
 			// // r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
@@ -808,7 +809,7 @@ public class SetUpUI implements ActionListener {
 			}
 			// Need to be after the map is set because it got cleared
 			int[] waypoint = r.getWaypoint();
-			System.out.printf("Old Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
+			// System.out.printf("Old Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
 			r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
 			// if (loadedMap.getGrid(chosenWaypoint[0],
 			// chosenWaypoint[1]).equals(Constant.OBSTACLE)) {

@@ -82,7 +82,7 @@ public class Exploration {
 
             // fastest path to nearest unexplored square
             System.out.println("Phase 2");
-            int[] path = fp.FastestPath(robot, null, unexplored, speed, false, true);
+            int[] path = fp.FastestPathAlgo(robot, null, unexplored, speed, false, true);
             if ((path == null) || (map.getGrid(unexplored[0], unexplored[1]).equals(Constant.UNEXPLORED))) {
                 map.setGrid(unexplored[0], unexplored[1], Constant.OBSTACLE);
             }
@@ -95,7 +95,7 @@ public class Exploration {
             // fastest path to start point
             System.out.println("Phase 3");
             System.out.println(Arrays.toString(robot.getPosition()));
-            fp.FastestPath(robot, null, Constant.START, speed, true, true);
+            fp.FastestPathAlgo(robot, null, Constant.START, speed, true, true);
         }
 
         stopwatch.stop();
@@ -115,7 +115,7 @@ public class Exploration {
         while (unexplored != null) {
             // fastest path to nearest unexplored square
             System.out.println("Phase 2");
-            int[] path = fp.FastestPath(robot, null, unexplored, 1, false, true);
+            int[] path = fp.FastestPathAlgo(robot, null, unexplored, 1, false, true);
             if ((path == null) || (map.getGrid(unexplored[0], unexplored[1]).equals(Constant.UNEXPLORED))) {
                 // No path to the nearest unexplored/Remains unexplored -> Because it is an
                 // obstacle
@@ -131,7 +131,7 @@ public class Exploration {
             // fastest path to start point
             System.out.println("Phase 3");
             System.out.println(Arrays.toString(robot.getPosition()));
-            fp.FastestPath(robot, null, Constant.START, 1, true, true);
+            fp.FastestPathAlgo(robot, null, Constant.START, 1, true, true);
         }
 
         System.out.println("Exploration Complete!");
@@ -155,9 +155,9 @@ public class Exploration {
                 System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
             }
             System.out.println();
-            if (this.countOfMoves % 4 == 0) {
-                robot.rightAlign();
-            }
+            // if (this.countOfMoves % 4 == 0) {
+            // robot.rightAlign();
+            // }
             cornerCalibration(robot);
         } while (!atPosition(robot, Constant.START));
 
@@ -172,19 +172,23 @@ public class Exploration {
         if (!this.imageStop) {
             // nearest obstacle whose coordinate isnt in checked obstacles
             needTake = pictureTaken(robot, robot.getPosition(), checkedObstacles);
+            System.out.println("Need take: " + needTake);
             // go next to the obstacle
             whereToGo = nextToObstacle(robot, needTake);
+            System.out.println("Where to go (Picture taken): " + whereToGo);
         }
         // else, go to the nearest unexplored
         if (whereToGo == null) {
             unexplored = true;
             needTake = null;
             whereToGo = nearestUnexplored(robot, robot.getPosition());
+            System.out.println("Where to go (Nearest unexplored): " + whereToGo);
         }
-        int[] goTo = new int[] { whereToGo.x, whereToGo.y };
+        int[] goTo = null;
         while ((whereToGo != null) && !(this.imageStop)) {
             System.out.println("Phase 2");
-            int[] path = fp.FastestPath(robot, null, goTo, 1, true, true);
+            goTo = new int[] { whereToGo.x, whereToGo.y };
+            int[] path = fp.FastestPathAlgo(robot, null, goTo, 1, true, true);
             if ((unexplored)
                     && ((path == null) || (map.getGrid(whereToGo.x, whereToGo.y).equals(Constant.UNEXPLORED)))) {
                 map.setGrid(whereToGo.x, whereToGo.y, Constant.OBSTACLE);
@@ -195,11 +199,17 @@ public class Exploration {
                 checkedObstacles.add(new Obstacle(whereToGo, -1));
             } else { // if not unexplored (pictureTaken) or path not null and grid is not unexplored
                      // (successfully do fastest path)
+                System.out.println("Not unexplored (Nearest obstacle)");
                 move = obstacleOnRight(robot, needTake); // false if need take is null
+                System.out.println("obstacle on right " + move);
             }
 
+            // go in a circle around d block (will be an island if not reachable during the
+            // first phase)
             if ((path != null) && move) {
+                System.out.println("Valid path + move");
                 do {
+                    System.out.println("MOVEEEE");
                     checkedObstacles = move(robot, 1, checkedObstacles);
                     // System.out.println(Arrays.deepToString(checkedObstacles));
                 } while ((!atPosition(robot, goTo)) && !imageStop);
@@ -210,20 +220,22 @@ public class Exploration {
             unexplored = false;
             needTake = pictureTaken(robot, robot.getPosition(), checkedObstacles);
             whereToGo = nextToObstacle(robot, needTake);
+            System.out.println("Where to go (Picture taken): " + whereToGo);
 
             if (whereToGo == null) {
                 unexplored = true;
                 needTake = null;
                 whereToGo = nearestUnexplored(robot, robot.getPosition());
+                System.out.println("Where to go (Nearest unexplored): " + whereToGo);
             }
 
             if (whereToGo == null) {
                 // to return to start after each "island"
-                fp.FastestPath(robot, null, Constant.START, 1, true, true);
+                fp.FastestPathAlgo(robot, null, Constant.START, 1, true, true);
                 cornerCalibration(robot);
             } else { // means all explored?
                 // to corner calibrate after each "island"
-                fp.FastestPath(robot, null, nearestCorner(robot), 1, true, true);
+                fp.FastestPathAlgo(robot, null, nearestCorner(robot), 1, true, true);
                 cornerCalibration(robot);
                 if (!this.imageStop) {
                     this.imageStop = robot.captureImage(obsPos);
@@ -240,7 +252,7 @@ public class Exploration {
             System.out.println("Phase 3");
             System.out.println(Arrays.toString(robot.getPosition()));
 
-            int[] path = fp.FastestPath(robot, null, goTo, 1, false, true);
+            int[] path = fp.FastestPathAlgo(robot, null, goTo, 1, false, true);
             if ((path == null) || (map.getGrid(whereToGo.x, whereToGo.y).equals(Constant.UNEXPLORED))) {
                 map.setGrid(whereToGo.x, whereToGo.y, Constant.OBSTACLE);
             }
@@ -253,7 +265,7 @@ public class Exploration {
             // fastest path to start point
             System.out.println("Phase 4");
             System.out.println(Arrays.toString(robot.getPosition()));
-            fp.FastestPath(robot, null, Constant.START, 1, true, true);
+            fp.FastestPathAlgo(robot, null, Constant.START, 1, true, true);
         }
 
         System.out.println("Exploration Complete!");
@@ -662,7 +674,9 @@ public class Exploration {
     private Coordinate pictureTaken(Robot robot, int[] start, Set<Obstacle> checkedObstacles) {
         Map map = robot.getMap();
         int lowestCost = Constant.MAXFCOST;
-        Coordinate cheapestPos = null;
+        // Coordinate cheapestPos = null;
+        int x = 0;
+        int y = 0;
 
         Set<Coordinate> coordinates = checkedObstacles.stream().map(obstacle -> obstacle.coordinates)
                 .collect(Collectors.toSet());
@@ -675,7 +689,9 @@ public class Exploration {
                         // not_inside = false;
                         int cost = Math.abs(start[0] - i) + Math.abs(start[1] - j);
                         if (cost < lowestCost) {
-                            cheapestPos = new Coordinate(i, j);
+                            // cheapestPos = new Coordinate(i, j);
+                            x = i;
+                            y = j;
                             lowestCost = cost;
                         }
                     }
@@ -696,7 +712,7 @@ public class Exploration {
                 }
             }
         }
-        return cheapestPos;
+        return new Coordinate(x, y);
     }
 
     private int[] furthest(Robot robot, int[][] checked_obstacles) {
@@ -735,7 +751,7 @@ public class Exploration {
         }
         int direction = robot.getDirection();
         int[] pos = robot.getPosition();
-
+        System.out.printf("Obstacle on right: x: %d, y: %d, direction: %d", pos[0], pos[1], direction);
         switch (direction) {
         case Constant.NORTH:
             if (obstacle.x == (pos[0] - 2)) { // why not pos[0] + 2??
@@ -751,30 +767,38 @@ public class Exploration {
                 robot.rotateRight();
                 break;
             }
-        case Constant.SOUTH:
-            if (obstacle.x == (pos[0] + 2)) {
+        case Constant.EAST:
+            if (obstacle.y == (pos[1] + 2)) {
+                System.out.println("First case");
                 break;
-            } else if (obstacle.y == (pos[1] - 2)) {
+            } else if (obstacle.x == (pos[0] - 2)) {
+                System.out.println("Second case");
                 robot.rotateRight();
                 break;
-            } else if (obstacle.y == (pos[1] + 2)) {
+            } else if (obstacle.x == (pos[0] + 2)) {
+                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else {
+                System.out.println("Fourth case");
                 robot.rotateRight();
                 robot.rotateRight();
                 break;
             }
-        case Constant.EAST:
-            if (obstacle.y == (pos[1] + 2)) {
+        case Constant.SOUTH:
+            if (obstacle.x == (pos[0] + 2)) { // why not pos[0] - 2??
+                System.out.println("First case");
                 break;
-            } else if (obstacle.x == (pos[0] - 2)) {
+            } else if (obstacle.y == (pos[1] - 2)) {
+                System.out.println("Second case");
                 robot.rotateRight();
                 break;
-            } else if (obstacle.x == (pos[0] + 2)) {
+            } else if (obstacle.y == (pos[1] + 2)) {
+                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else {
+                System.out.println("Fourth case");
                 robot.rotateRight();
                 robot.rotateRight();
                 break;

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class FastestPath {
-    public int[] FastestPath(Robot robot, int[] waypoint, int[] goal, int speed, boolean on_grid, boolean move) {
+    public int[] FastestPathAlgo(Robot robot, int[] waypoint, int[] goal, int speed, boolean on_grid, boolean move) {
         // on_grid is true in exploration but not image recognition exploration and not
         // phase 3 of exploration (back to the start)and false in fastest path
         // could represent the sensors i guess
@@ -52,10 +52,11 @@ public class FastestPath {
                 // get realPath
                 System.out.println(getRealPath(path));
                 move(robot, path, speed);
+                System.out.printf("At goal, x: %d, y: %d \n now", goal[0], goal[1]);
             }
         }
         System.out.println(Arrays.toString(path));
-        System.out.println(Arrays.toString(robot.getWaypoint()));
+        // System.out.println(Arrays.toString(robot.getWaypoint()));
         System.out.println("Finished Fastest Path");
         return path;
     }
@@ -169,7 +170,8 @@ public class FastestPath {
         Exploration ex = new Exploration(); // change isfrontempty to robot method?
         // Move the robot based on the path
         for (int direction : path) {
-            System.out.println("Move " + direction);
+            System.out.printf("Fastest path move: x: %d, y: %d \n", robot.getPosition()[0], robot.getPosition()[1]);
+            // System.out.println("Move " + direction);
             if (!connection.ConnectionSocket.checkConnection()) {
                 try {
                     TimeUnit.SECONDS.sleep(speed);
