@@ -256,7 +256,6 @@ public class Exploration {
             if ((path == null) || (map.getGrid(whereToGo.x, whereToGo.y).equals(Constant.UNEXPLORED))) {
                 map.setGrid(whereToGo.x, whereToGo.y, Constant.OBSTACLE);
             }
-
             whereToGo = nearestUnexplored(robot, robot.getPosition());
             robot.updateMap();
         }
@@ -287,12 +286,15 @@ public class Exploration {
 
         // Right Wall Hugging
         if (isRightEmpty(robot)) {
+            System.out.println("Right is empty");
             robot.rotateRight();
             if (isFrontEmpty(robot)) {
+                System.out.println("Front is empty");
                 robot.forward(1);
                 this.countOfMoves += 1;
                 return checkedObstacles;
             } else { // Right empty but turn right and front not empty?? (Inaccuracy of sensors?)
+
                 robot.rotateLeft();
                 if ((checkedObstacles != null) && (!rightWall(robot))) {
                     checkedObstacles = imageRecognition(robot, checkedObstacles);
@@ -302,13 +304,16 @@ public class Exploration {
             checkedObstacles = imageRecognition(robot, checkedObstacles);
         }
         if (isFrontEmpty(robot)) { // Robot is along wall now
+            System.out.println("Right not empty but front empty");
             robot.forward(1);
             this.countOfMoves += 1;
             return checkedObstacles;
         } else {
+            System.out.println("Right and Front not empty, turn left!");
             robot.rotateLeft(); // Robot faces north
             if ((checkedObstacles != null) && (!rightWall(robot))) {
                 checkedObstacles = imageRecognition(robot, checkedObstacles);
+                System.out.println("Here image stop: " + this.imageStop);
             }
         }
         if (isFrontEmpty(robot)) {
@@ -413,7 +418,9 @@ public class Exploration {
                 }
             }
             this.imageStop = robot.captureImage(obsPos);
+            System.out.println("Image stop: " + this.imageStop);
         }
+        System.out.println("Finish image recognition  function");
         // if (isFrontEmpty(robot) && !(Arrays.equals(obsPos[2], defaultPos))) {
         // takePic = true;
         // } else if (!isFrontEmpty(robot)) {

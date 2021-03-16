@@ -1,6 +1,7 @@
 package robot;
 
 import java.awt.Image;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -224,6 +225,13 @@ public class RealRobot extends Robot {
 
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
+		System.out.println("Start to capture image (To sleep)");
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		System.out.println("Finish waiting");
 		connectionSocket.sendMessage("C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + ":"
 				+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y + ","
 				+ image_pos[2].coordinates.x + ")");
