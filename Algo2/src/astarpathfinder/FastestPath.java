@@ -18,7 +18,7 @@ public class FastestPath {
         astar.setFirst(true); // wtf -> this is set in the old code when the open list is empty? -> means no
                               // possible path
         int[] path, path1, path2;
-        System.out.printf("Fastest path waypoint: %d, %d \n",  waypoint[0], waypoint[1]);
+        //System.out.printf("Fastest path waypoint: %d, %d \n",  waypoint[0], waypoint[1]);
 
         if (astar.isValid(robot, waypoint)) { // If valid waypoint
             // move is false when running fastest path
@@ -30,14 +30,14 @@ public class FastestPath {
 
             // if way point was set: go to way point first
             path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), waypoint, on_grid);
-            if (path != null) {
-                astar.setFirstTurnPenalty(true);
-                path1 = path;
-                path2 = astar.AStarPathFinderAlgo(robot, waypoint, goal, on_grid);
-                path = new int[path1.length + path2.length];
-                System.arraycopy(path1, 0, path, 0, path1.length);
-                System.arraycopy(path2, 0, path, path1.length, path2.length);
-            }
+           if (path != null) {
+               astar.setFirstTurnPenalty(true);
+               path1 = path;
+               path2 = astar.AStarPathFinderAlgo(robot, waypoint, goal, on_grid);
+               path = new int[path1.length + path2.length];
+               System.arraycopy(path1, 0, path, 0, path1.length);
+               System.arraycopy(path2, 0, path, path1.length, path2.length);
+           }
         } else {
             astar.setFirstTurnPenalty(true);
             path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), goal, on_grid);
@@ -46,8 +46,9 @@ public class FastestPath {
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
                 realFPmove(path, robot);
+                //move(robot, path, speed);
                 System.out.println("Finsh sending");
-                move(robot, path, speed);
+                //move(robot, path, speed);
             } else {
             	//get realPath
             	System.out.println(getRealPath(path));
@@ -115,7 +116,7 @@ public class FastestPath {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         for (int direction : path) {
-        	System.out.printf("count: %d, direction: %d\n", count, direction);
+        	// System.out.printf("count: %d, direction: %d\n", count, direction);
             if (direction == Constant.FORWARD) {
                 count++;
             } else if (count > 0) {
@@ -169,6 +170,7 @@ public class FastestPath {
         // Exploration ex = new Exploration(); // change isfrontempty to robot method?
         // Move the robot based on the path
         for (int direction : path) {
+        	System.out.println("Move " + direction);
             if (!connection.ConnectionSocket.checkConnection()) {
                 try {
                     TimeUnit.SECONDS.sleep(speed);

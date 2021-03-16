@@ -75,6 +75,7 @@ void setup() {
 
   movementSetup();        //pulls the setup files from movement.h
   sensorSetup();
+  delay(500);
 
 }
 

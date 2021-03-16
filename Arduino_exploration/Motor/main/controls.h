@@ -1,17 +1,17 @@
 // dont need to include movement.h here because main is calling controls.h and already has an include for movement
 int cmd_in,cmd_out;
 char cmd[300];
-//##include "sensor.h"
+//#include "sensor.h"
 
-
-#define W01  250
-#define W02  500
-#define W03  820
-#define W04  1120
-#define W05  1380
-#define W06  1380+390
-#define W07  1380+390+270
-#define W08  1380+390+270+250
+#define W20  50
+#define W01  250 + 5 
+#define W02  500 + 10 + 5 
+#define W03  820 + 15 + 50
+#define W04  1120 + 20 + 15 +50
+#define W05  1380 + 25 + 20 
+#define W06  1380+390 + 30 + 25
+#define W07  1380+390+270 + 15
+#define W08  1380+390+270+250 + 10 + 15 
 #define W09  1380+390+270+250+250+75
 #define W10  10*290 + 20
 #define W11  11*290 + 10
@@ -45,7 +45,7 @@ char cmd[300];
 #define S18  100
 #define S19  100
 
-#define A01  368
+#define A01  400
 #define A02  200
 #define A03  300
 #define A04  400
@@ -56,7 +56,7 @@ char cmd[300];
 #define A09  900
 #define A10  1000
 
-#define D01  366
+#define D01  400
 #define D02  200
 #define D03  300
 #define D04  400
@@ -298,14 +298,20 @@ void executeFastestPathCommand(){
      else if (letter == 'Q')
  {
     cmd_out++;
-    turnLeft(A01/2);
+    turnLeft(A01);
     cmd_out++;
  }
 
       else if (letter == 'E')
  {
     cmd_out++;
-    turnRight(D01/2.2);
+    turnRight(D01);
+    cmd_out++;
+ }
+       else if (letter == 'T')
+ {
+    cmd_out++;
+    goStraight(W20);
     cmd_out++;
  }
 
