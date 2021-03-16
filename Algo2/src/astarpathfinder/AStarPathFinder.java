@@ -210,111 +210,111 @@ public class AStarPathFinder {
         return false;
     }
 
-    private String[] print(Node[] list) {
-        String[] new_list = new String[list.length];
+    // private String[] print(Node[] list) {
+    //     String[] new_list = new String[list.length];
 
-        if (list.length < 1) {
-            return new String[] {};
-        }
+    //     if (list.length < 1) {
+    //         return new String[] {};
+    //     }
 
-        for (int i = 0; i < list.length; i++) {
-            int[] pos = list[i].pos;
-            new_list[i] = Arrays.toString(pos);
-        }
+    //     for (int i = 0; i < list.length; i++) {
+    //         int[] pos = list[i].pos;
+    //         new_list[i] = Arrays.toString(pos);
+    //     }
 
-        return new_list;
-    }
+    //     return new_list;
+    // }
 
-    private Node lowestCost(Node[] list) { // Find the node with the lowest cost in the list
-        int cost;
+    // private Node lowestCost(Node[] list) { // Find the node with the lowest cost in the list
+    //     int cost;
 
-        if (list.length > 0) {
-            int l_cost = list[0].cost;
-            Node l_node = list[0];
+    //     if (list.length > 0) {
+    //         int l_cost = list[0].cost;
+    //         Node l_node = list[0];
 
-            for (int i = 0; i < list.length; i++) {
-                cost = list[i].cost;
-                if (cost <= l_cost) {
-                    l_cost = cost;
-                    l_node = list[i];
-                }
-            }
+    //         for (int i = 0; i < list.length; i++) {
+    //             cost = list[i].cost;
+    //             if (cost <= l_cost) {
+    //                 l_cost = cost;
+    //                 l_node = list[i];
+    //             }
+    //         }
 
-            return l_node;
-        } else {
-            return null;
-        }
-    }
+    //         return l_node;
+    //     } else {
+    //         return null;
+    //     }
+    // }
 
-    private Node[] removeNode(Node[] list, Node node) {
-        int index = -1;
+    // private Node[] removeNode(Node[] list, Node node) {
+    //     int index = -1;
 
-        if (list.length < 2) {
-            return new Node[] {};
-        }
+    //     if (list.length < 2) {
+    //         return new Node[] {};
+    //     }
 
-        Node[] new_list = new Node[list.length - 1];
+    //     Node[] new_list = new Node[list.length - 1];
 
-        for (int i = 0; i < list.length; i++) {
-            if (list[i] == node) {
-                index = i;
-                break;
-            }
-        }
+    //     for (int i = 0; i < list.length; i++) {
+    //         if (list[i] == node) {
+    //             index = i;
+    //             break;
+    //         }
+    //     }
 
-        if (index > -1) {
-            System.arraycopy(list, 0, new_list, 0, index);
-            for (int j = index; j < new_list.length; j++) {
-                new_list[j] = list[j + 1];
-            }
-        }
+    //     if (index > -1) {
+    //         System.arraycopy(list, 0, new_list, 0, index);
+    //         for (int j = index; j < new_list.length; j++) {
+    //             new_list[j] = list[j + 1];
+    //         }
+    //     }
 
-        return new_list;
-    }
+    //     return new_list;
+    // }
 
-    private Node[] addNode(Node[] list, Node node) {
-        Node[] new_list = new Node[list.length + 1];
+    // private Node[] addNode(Node[] list, Node node) {
+    //     Node[] new_list = new Node[list.length + 1];
 
-        System.arraycopy(list, 0, new_list, 0, list.length);
-        new_list[list.length] = node;
+    //     System.arraycopy(list, 0, new_list, 0, list.length);
+    //     new_list[list.length] = node;
 
-        return new_list;
-    }
+    //     return new_list;
+    // }
 
-    private Node[] addNeighbours(Robot robot, Node[] open, Node[] closed, Node cur, int[] end_pos) {
-        Node[] neighbours = new Node[4];
-        int count = 0;
-        int x = cur.pos[0];
-        int y = cur.pos[1];
-        int[][] neighbours_pos = { { x, y + 1 }, { x - 1, y }, { x + 1, y }, { x, y - 1 } };
+    // private Node[] addNeighbours(Robot robot, Node[] open, Node[] closed, Node cur, int[] end_pos) {
+    //     Node[] neighbours = new Node[4];
+    //     int count = 0;
+    //     int x = cur.pos[0];
+    //     int y = cur.pos[1];
+    //     int[][] neighbours_pos = { { x, y + 1 }, { x - 1, y }, { x + 1, y }, { x, y - 1 } };
 
-        for (int i = 0; i < 4; i++) {
-            if (isValid(robot, neighbours_pos[i])) {
-                // add neighbours (must be a valid grid to move to)
-                Node neighbour = new Node(neighbours_pos[i]);
-                neighbour.parent = cur;
-                neighbour.cost = findCost(neighbour, end_pos, robot);
-                neighbours[count] = neighbour;
-                count++;
-            }
-        }
+    //     for (int i = 0; i < 4; i++) {
+    //         if (isValid(robot, neighbours_pos[i])) {
+    //             // add neighbours (must be a valid grid to move to)
+    //             Node neighbour = new Node(neighbours_pos[i]);
+    //             neighbour.parent = cur;
+    //             neighbour.cost = findCost(neighbour, end_pos, robot);
+    //             neighbours[count] = neighbour;
+    //             count++;
+    //         }
+    //     }
 
-        for (int j = 0; j < count; j++) {
-            Node node = neighbours[j];
-            // if (find_index(node, closed) == -1) { // if not in closed
-            // int index = find_index(node, open);
-            // if ((index > -1) && (node.cost < open[index].cost)) {
-            // open[index] = node;
-            // }
-            // if (index == -1) { // if not in open
-            // open = add_node(open, node);
-            // }
-            // }
-            open = addNode(open, node);
-        }
+    //     for (int j = 0; j < count; j++) {
+    //         Node node = neighbours[j];
+    //         // if (find_index(node, closed) == -1) { // if not in closed
+    //         // int index = find_index(node, open);
+    //         // if ((index > -1) && (node.cost < open[index].cost)) {
+    //         // open[index] = node;
+    //         // }
+    //         // if (index == -1) { // if not in open
+    //         // open = add_node(open, node);
+    //         // }
+    //         // }
+    //         open = addNode(open, node);
+    //     }
 
-        return open;
-    }
+    //     return open;
+    // }
 
     private Node[] getNeighbours(Robot robot, Node cur, int[] end_pos) {
         Node[] neighbours = new Node[4];
@@ -357,12 +357,12 @@ public class AStarPathFinder {
         }
     }
 
-    private int findCost(Node node, int[] end_pos, Robot robot) {
-        node.h_cost = calculateHCost(node, end_pos);
-        node.g_cost = calculateGCost(node);
-        node.updateCost();
-        return node.cost;
-    }
+    // private int findCost(Node node, int[] end_pos, Robot robot) {
+    //     node.h_cost = calculateHCost(node, end_pos);
+    //     node.g_cost = calculateGCost(node);
+    //     node.updateCost();
+    //     return node.cost;
+    // }
 
     private void calculateCosts(Node node, int[] end_pos, Robot robot) {
         node.h_cost = calculateHCost(node, end_pos);
@@ -505,16 +505,16 @@ public class AStarPathFinder {
         return -2; // error
     }
 
-    private int find_index(Node node, Node[] list) {
-        if (list.length > 0) {
-            for (int i = 0; i < list.length; i++) {
-                if (Arrays.equals(list[i].pos, node.pos)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
+    // private int find_index(Node node, Node[] list) {
+    //     if (list.length > 0) {
+    //         for (int i = 0; i < list.length; i++) {
+    //             if (Arrays.equals(list[i].pos, node.pos)) {
+    //                 return i;
+    //             }
+    //         }
+    //     }
+    //     return -1;
+    // }
 
     private int[] reversePath(Node node) {
         int[] path = { directionToGo(node) };
