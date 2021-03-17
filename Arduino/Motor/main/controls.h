@@ -1,7 +1,6 @@
 // dont need to include movement.h here because main is calling controls.h and already has an include for movement
 int cmd_in,cmd_out;
 char cmd[300];
-//##include "sensor.h"
 
 
 #define W01  250

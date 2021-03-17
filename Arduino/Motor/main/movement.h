@@ -5,10 +5,12 @@
 #include <ArduinoSort.h>
 #include "sensor.h"
 
+
 #define LEFT_ENCODER 11 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
-#define FASTSPEED 250
+#define FASTSPEED 320
 #define SLOWSPEED 200
+#define FRONTBUMPER 4
 
 
 //tickss parameters for PID
@@ -332,3 +334,178 @@ void alignRight() {
 //  }
 //  md.setBrakes(400, 400);
 //}
+
+
+float correction[2]={0.00};
+float right = correction[0];
+float left = correction[1];
+float RB;
+float RF;
+
+
+void pullData(){
+  updateSensor();
+  RB=sensorDist[3];
+  RF=sensorDist[4];
+  //FC=sensorDist[1];
+}
+
+
+void rightSlantCorrection(){
+  pullData();
+  float diffrfrb = abs(RF-RB);
+  
+  if (RF>RB){
+    //ADJUST THE ROBOT TO TILT RIGHT
+    
+    right = right-  diffrfrb*1.00;
+    left = left+    diffrfrb*1.00;
+
+    Serial.println(right);
+    Serial.println(left);
+ 
+  }
+
+  else if (RF<RB){
+    //ADJUST THE ROBOT TO TILT LEFT
+
+    right = right+  diffrfrb*1.00;
+    left = left-    diffrfrb*1.00;
+
+    Serial.println(right);
+    Serial.println(left);
+ 
+  }
+  
+  else{
+  }
+
+  md.setSpeeds(-100-left, -100-right);
+  //md.setBrakes(400,400);
+  right =0;
+  left=0;
+  
+}
+
+//float rightDistanceCorrection(){
+//  
+//  return;
+//}
+//
+//
+//float frontSlantCorrection(){
+//
+//  return;
+//}
+//
+//float frontDistanceCorrection(){
+//  
+//  return;
+//}
+//
+//float leftCorrection(){
+//  
+//  return;
+//}
+//
+//float rightCorrection(){
+//  
+//  return;
+//}
+
+
+void goStraight1(double ticks) {
+
+straightPID.Compute();
+  while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks )){
+    straightPID.Compute();
+    pullData();
+    Serial.print(RB);
+    Serial.print ("   ");
+    Serial.println(RF);
+    float diffrfrb = abs(RF-RB);
+    
+    float LeftEncoderFixed = leftEncoderValue;
+    float LeftEncoderOutput = leftEncoderValue + Output ;
+    float RightEncoderOutput = rightEncoderValue - Output;
+
+  /** ADJUSTING TILT FROM RIGHT SENSOR**/
+    int CONST = 4;
+
+  if (RF>RB && diffrfrb<10){
+    //ADJUST THE ROBOT TO TILT RIGHT
+    right = right- diffrfrb*CONST;
+    left = left+ diffrfrb*CONST;
+  }
+  else if (RF<RB && diffrfrb<5){
+    //ADJUST THE ROBOT TO TILT LEFT
+    right = right+diffrfrb*CONST;
+    left = left-diffrfrb*CONST;
+  }
+
+  /** ADJUSTING DISTANCE FROM FRONT SENSOR**/
+  
+//  if (10<FC-FRONTBUMPER<40){
+//    //ADJUST THE ROBOT TO TILT RIGHT
+//
+//    float error = (FC-FRONTBUMPER)%10;
+//
+//    if (error < 5){
+//        right = right - error;
+//        left = left - error;
+//    }
+//    else{
+//      right = right + error;
+//      left = left + error;
+//    }
+//  }
+//
+//  else if (10<FL-FRONTBUMPER<40){
+//    //ADJUST THE ROBOT TO TILT RIGHT
+//
+//    float error = (FL-FRONTBUMPER)%10;
+//
+//    if (error < 5){
+//        right = right - error;
+//        left = left - error;
+//    }
+//    else{
+//      right = right + error;
+//      left = left + error;
+//    }
+//  }
+//    else if (10<FR-FRONTBUMPER<40){
+//    //ADJUST THE ROBOT TO TILT RIGHT
+//
+//    float error = (FR-FRONTBUMPER)%10;
+//
+//    if (error < 5){
+//        right = right - error;
+//        left = left - error;
+//    }
+//    else{
+//      right = right + error;
+//      left = left + error;
+//    }
+//  }
+//  
+
+
+
+    md.setSpeeds(-((FASTSPEED - Output+right)), -((FASTSPEED + Output+left)));
+
+    //md.setSpeeds(50, 350); //left,right
+  }
+  md.setBrakes(400, 400);
+  delay(100);
+  rightEncoderRes();
+  leftEncoderRes();
+  right = 0;
+  left = 0;
+  
+//  }else{
+//    Serial.println(front_left_inDistanceCM);
+//    Serial.println("Too Close!!");
+//  }
+
+}

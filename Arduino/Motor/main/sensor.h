@@ -53,13 +53,13 @@ float FL_a = -4.905;
 float FL_b = 5258;
 float FL_c = -13.36;
 
-float RB_a = -2.561;
-float RB_b = 5341;
-float RB_c = -16.29;
+float RB_a = -3.43;
+float RB_b = 5263;
+float RB_c = -22.36;
 
-float RF_a = -2.232;
-float RF_b = 5180;
-float RF_c = -18.84;
+float RF_a = -3.477;
+float RF_b = 5981;
+float RF_c = -5.528;
 
 //float RF_a = -2.561;
 //float RF_b = 5341;
@@ -75,7 +75,7 @@ float L_c = 29.35;
 float FR_D = 0;
 float FC_D = 0;
 float FL_D = 0;
-float RB_D = 0;
+float RB_D = -2.5;
 float RF_D = 0;
 float L_D = 0;
 
