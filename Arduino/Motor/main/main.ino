@@ -88,12 +88,13 @@ void loop() {
 
 //  Serial.println("RUN NOW");
   //alignRight();
-  //valoom();
-  goStraight1(500);
+  valoom();
+ 
   //rightSlantCorrection();
   //updateSensor();
   //Serial.println(getRFAnalog());
-  delay(1000);
+  delay(500);
+
   //getSensorDist();
   //getDistanceMsg();
   //delay(3000);

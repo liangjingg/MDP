@@ -8,9 +8,8 @@
 
 #define LEFT_ENCODER 11 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
-#define FASTSPEED 320
+#define FASTSPEED 300
 #define SLOWSPEED 200
-#define FRONTBUMPER 4
 
 
 //tickss parameters for PID
@@ -341,78 +340,19 @@ float right = correction[0];
 float left = correction[1];
 float RB;
 float RF;
+float FC;
+float FL;
+float FR;
 
 
 void pullData(){
   updateSensor();
   RB=sensorDist[3];
   RF=sensorDist[4];
-  //FC=sensorDist[1];
+  FC=sensorDist[1];
+  FL=sensorDist[2];
+  FR=sensorDist[0];
 }
-
-
-void rightSlantCorrection(){
-  pullData();
-  float diffrfrb = abs(RF-RB);
-  
-  if (RF>RB){
-    //ADJUST THE ROBOT TO TILT RIGHT
-    
-    right = right-  diffrfrb*1.00;
-    left = left+    diffrfrb*1.00;
-
-    Serial.println(right);
-    Serial.println(left);
- 
-  }
-
-  else if (RF<RB){
-    //ADJUST THE ROBOT TO TILT LEFT
-
-    right = right+  diffrfrb*1.00;
-    left = left-    diffrfrb*1.00;
-
-    Serial.println(right);
-    Serial.println(left);
- 
-  }
-  
-  else{
-  }
-
-  md.setSpeeds(-100-left, -100-right);
-  //md.setBrakes(400,400);
-  right =0;
-  left=0;
-  
-}
-
-//float rightDistanceCorrection(){
-//  
-//  return;
-//}
-//
-//
-//float frontSlantCorrection(){
-//
-//  return;
-//}
-//
-//float frontDistanceCorrection(){
-//  
-//  return;
-//}
-//
-//float leftCorrection(){
-//  
-//  return;
-//}
-//
-//float rightCorrection(){
-//  
-//  return;
-//}
-
 
 void goStraight1(double ticks) {
 
@@ -420,9 +360,9 @@ straightPID.Compute();
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks )){
     straightPID.Compute();
     pullData();
-    Serial.print(RB);
-    Serial.print ("   ");
-    Serial.println(RF);
+    //Serial.print(RB);
+    //Serial.print ("   ");
+    //Serial.println(RF);
     float diffrfrb = abs(RF-RB);
     
     float LeftEncoderFixed = leftEncoderValue;
@@ -430,65 +370,146 @@ straightPID.Compute();
     float RightEncoderOutput = rightEncoderValue - Output;
 
   /** ADJUSTING TILT FROM RIGHT SENSOR**/
-    int CONST = 4;
+    int CONST = 3; //LEFT RIGHT ADJUST
+    int CONST2 =2; //FRONT CORRECTION
+    int CONST3 =5; //KICKOFFPOWER
+    int CONST4 = 3; //right wall distance
+    int WALLDIST = 6;
+    int KICKINSET = 2;
 
-  if (RF>RB && diffrfrb<10){
+
+
+  /** KICK OFF**/
+
+  if (RF<WALLDIST){
+    right = right + (WALLDIST - RF)*CONST3;
+//    Serial.println("Kickoff");
+  }
+
+  else{
+
+  /** KICK IN **/
+  if(RF > KICKINSET){
+
+    float moduluodist = fmod(RF - WALLDIST,10);
+    //Serial.println(moduluodist);
+
+    if (moduluodist>5){
+      float correction = 10-moduluodist;
+      right = right + correction *CONST4;
+//      Serial.println("KICK OUT (FAR)");
+    }
+
+    else{
+      float correction = 10-moduluodist;
+      left = left + correction * CONST4;
+//      Serial.println("KICK IN");
+    }
+//    Serial.print(" RIGHT MODULO:  ");
+//      Serial.println(moduluodist);
+    
+  }
+
+
+  /** RIGHT ALIGN**/
+
+  if (RF>RB && diffrfrb<6 && RF > WALLDIST){
     //ADJUST THE ROBOT TO TILT RIGHT
     right = right- diffrfrb*CONST;
-    left = left+ diffrfrb*CONST;
+    //left = left+ diffrfrb*CONST;
+//    Serial.println ("Tilt Right");
   }
-  else if (RF<RB && diffrfrb<5){
+  else if (RF<RB && diffrfrb<6 && RF > WALLDIST){
     //ADJUST THE ROBOT TO TILT LEFT
-    right = right+diffrfrb*CONST;
+    //right = right+diffrfrb*CONST;
     left = left-diffrfrb*CONST;
+//    Serial.println ("Tilt Left");
+  }
   }
 
   /** ADJUSTING DISTANCE FROM FRONT SENSOR**/
+  float FRONTBUMPER = 5.00;
+
+  if (10<FC-FRONTBUMPER<40){
+    //ADJUST THE ROBOT TO TILT RIGHT
+
+    float error = fmod((FC-FRONTBUMPER),10);
+    
+
+        if (error < 5){
+//        Serial.println("Robot is too near, reverse");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+        right = right - error*CONST2;
+        left = left - error*CONST2;
+    }
+    else{
+//        Serial.println("Robot is too far, move forward");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+      right = right + error*CONST2;
+      left = left + error*CONST2;
+    }
+//      Serial.print(" FRONTC MODULO:  ");
+//      Serial.println(error);
+  }
+
+  else if (10<FL-FRONTBUMPER<40){
+    //ADJUST THE ROBOT TO TILT RIGHT
+
+    float error = fmod((FL-FRONTBUMPER),10);
+
+    if(error == 10,00){
+      error = 0.00;
+    }
+    
+    if (error < 5){
+      
+//        Serial.println("Robot is too near, reverse");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+        right = right - error*CONST2;
+        left = left - error*CONST2;
+    }
+    else{
+//        Serial.println("Robot is too far, move forward");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+      right = right + error*CONST2;
+      left = left + error*CONST2;
+    }
+//    Serial.print(" FRONTL MODULO:  ");
+//      Serial.println(error);
+  }
+   else if (10<FR-FRONTBUMPER<40){
+    //ADJUST THE ROBOT TO TILT RIGHT
+
+    float error = fmod((FR-FRONTBUMPER),10);
+    if(error == 10,00){
+      error = 0.00;
+    }
+
+    if (error < 5){
+//        Serial.println("Robot is too near, reverse");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+        right = right - error*CONST2;
+        left = left - error*CONST2;
+
+    }
+    else{
+//        Serial.println("Robot is too far, move forward");
+//        Serial.print("Tick correction:  ");
+//        Serial.println(error*CONST2);
+      right = right + error*CONST2;
+      left = left + error*CONST2;
+    }
+// Serial.print(" FRONTR MODULO:  ");
+//      Serial.println(error);
+  }
+
   
-//  if (10<FC-FRONTBUMPER<40){
-//    //ADJUST THE ROBOT TO TILT RIGHT
-//
-//    float error = (FC-FRONTBUMPER)%10;
-//
-//    if (error < 5){
-//        right = right - error;
-//        left = left - error;
-//    }
-//    else{
-//      right = right + error;
-//      left = left + error;
-//    }
-//  }
-//
-//  else if (10<FL-FRONTBUMPER<40){
-//    //ADJUST THE ROBOT TO TILT RIGHT
-//
-//    float error = (FL-FRONTBUMPER)%10;
-//
-//    if (error < 5){
-//        right = right - error;
-//        left = left - error;
-//    }
-//    else{
-//      right = right + error;
-//      left = left + error;
-//    }
-//  }
-//    else if (10<FR-FRONTBUMPER<40){
-//    //ADJUST THE ROBOT TO TILT RIGHT
-//
-//    float error = (FR-FRONTBUMPER)%10;
-//
-//    if (error < 5){
-//        right = right - error;
-//        left = left - error;
-//    }
-//    else{
-//      right = right + error;
-//      left = left + error;
-//    }
-//  }
-//  
+  
 
 
 
