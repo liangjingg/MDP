@@ -301,7 +301,7 @@ public abstract class Robot {
 					writer.write(sensorValues[i] + " ");
 				}
 				writer.write("\n");
-				writer.write(newMap.print() + "\r\n\n");
+				writer.write(newMap.print(getPosition()[0], getPosition()[1]) + "\r\n\n");
 				// writer.write(newMap.printDist() + "\r\n\n");
 				writer.close();
 				br.close();

@@ -150,7 +150,7 @@ public class ConnectionManager extends Thread{
 //					sr.toggleMap();
 				}
 				// run map
-				System.out.println(robot.getMap().print());
+				System.out.println(robot.getMap().print(robot.getPosition()[0], robot.getPosition()[1]));
 				s = "Fastest Path started";
 				try {
 					thread.join();
