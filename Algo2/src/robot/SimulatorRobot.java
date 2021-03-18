@@ -78,7 +78,7 @@ public class SimulatorRobot extends Robot {
 
 	// Get the sensor values from the simulated environment
 	protected String[] getSensorValues() {
-		// FL, FM, FR, RB, RF, LF
+		// FR, FC, FL, RB, RF, LF
 		String[] sensorValues = sensor.getAllSensorsValue(this.x, this.y, getDirection());
 		return sensorValues;
 	}

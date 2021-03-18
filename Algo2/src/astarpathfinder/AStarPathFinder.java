@@ -207,8 +207,8 @@ public class AStarPathFinder {
         }
 
         for (int[] coordinates : pos) {
-            System.out.printf("coordinate - x: %d, coordinate - y: %d, cur -x: %d, cur-y: %d \n", coordinates[0],
-                    coordinates[1], cur[0], cur[1]);
+            // System.out.printf("coordinate - x: %d, coordinate - y: %d, cur -x: %d, cur-y: %d \n", coordinates[0],
+            //         coordinates[1], cur[0], cur[1]);
             if (Arrays.equals(cur, coordinates)) {
                 return true;
             }
@@ -353,7 +353,7 @@ public class AStarPathFinder {
 
         if ((x > 0) && (x < Constant.BOARDWIDTH - 1) && (y > 0) && (y < Constant.BOARDHEIGHT - 1)) {
             for (int[] coordinates : robotPos) {
-                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
+                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE) || map.getGrid(coordinates[0], coordinates[1]).equals(Constant.UNEXPLORED)) {
                     return false;
                 }
             }

@@ -134,6 +134,7 @@ public class ConnectionManager extends Thread{
 				}
 			}
 			
+			
 			// Start fastestpath only if the correct message is received and the program is not running exploration and fastest path
 			else if (!ExplorationThread.getRunning() && !FastestPathThread.getRunning() && s.equals(Constant.FASTEST_PATH) ){
 				thread = FastestPathThread.getInstance(robot, robot.getWaypoint(), 1);
@@ -213,7 +214,7 @@ public class ConnectionManager extends Thread{
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
-					System.out.println(map.getMDFString());
+					//System.out.println(map.getMDFString());
 				}
 			}
 			

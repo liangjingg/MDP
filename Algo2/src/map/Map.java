@@ -126,6 +126,73 @@ public class Map {
 		return s;
 	}
 
+	public String printDist() {
+		String s = "";
+		s += "The current map is: \n\n";
+		// System.out.println("The current map is: \n");
+
+		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
+			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
+				if (i != Constant.BOARDWIDTH - 1) {
+					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1] || grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]
+							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]
+							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+						// s+=grid[i][j] + " , ";
+						String temp = " ";
+						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+							temp = String.format("%3s|", dist[i][j]);
+						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+							temp = String.format("%3s|", dist[i][j]);
+						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+							temp = String.format("%3s|", dist[i][j]);
+						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+							temp = String.format("%3s|", dist[i][j]);
+						}
+
+						s += temp;
+
+						// System.out.print(grid[i][j] + " , " );
+						System.out.printf("%3s", temp);
+					} else {
+						// s+=grid[i][j] + ", ";
+						// System.out.print(grid[i][j] + ", " );
+						String temp = " ";
+						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+							temp = String.format("%3s|", dist[i][j]);
+						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+							temp = String.format("%3s|", dist[i][j]);
+						}
+						s += temp;
+						System.out.printf("%3s", temp);
+					}
+				} else {
+					String temp = " ";
+					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+						temp = String.format("%3s|", dist[i][j]);
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+						temp = String.format("%3s|", dist[i][j]);
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+						temp = String.format("%3s|", dist[i][j]);
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+						temp = String.format("%3s|", dist[i][j]);
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+						temp = String.format("%3s|", dist[i][j]);
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+						temp = String.format("%3s|", dist[i][j]);
+					}
+
+					s += temp;
+					System.out.printf("%3s", temp);
+				}
+			}
+			s += "\n";
+			System.out.println();
+		}
+		s += "\n";
+		System.out.println("");
+		return s;
+	}
+
 	public void initializeMap(String[][] grid) {
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -391,7 +458,7 @@ public class Map {
 		MDFBitStringPart1.append("11");
 
 		for (int i = 0; i < MDFBitStringPart1.length(); i += 4) {
-			System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16));
+			//System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16));
 			MDFHexString[0] += Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16);
 		}
 

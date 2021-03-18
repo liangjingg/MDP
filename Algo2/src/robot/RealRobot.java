@@ -121,6 +121,23 @@ public class RealRobot extends Robot {
 
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
+			try {
+				arr = s.split("\\|");
+				for (int i = 0; i < arr.length; i++) {
+					try {
+						double d = Double.parseDouble(arr[i]);
+					} catch (NumberFormatException e) {
+						System.out.println(e.getMessage());
+					}
+				}
+				System.out.println(Arrays.toString(arr));
+				System.out.println(arr.length);
+				if (arr.length == 6) {
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Exception: " + e.getMessage());
+			};
 			if (ConnectionSocket.getDebug()) {
 				System.out.println("In get sensor values");
 				System.out.println(s);
@@ -227,7 +244,7 @@ public class RealRobot extends Robot {
 	public boolean captureImage(Obstacle[] image_pos) {
 		System.out.println("Start to capture image (To sleep)");
 		try {
-			TimeUnit.SECONDS.sleep(3);
+			TimeUnit.SECONDS.sleep(1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
