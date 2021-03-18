@@ -41,7 +41,7 @@ RESULT = 'R'
 
 
 #Image Rec IP addresses
-image_processing_server_rl = 'tcp://192.168.11.106:5555'
+image_processing_server_url = 'tcp://192.168.11.106:5555'
 #image_processing_server_url = 'tcp://192.168.33.96:5555' #Xiao Qing
 #image_processing_server_url = 'tcp://192.168.33.76:5555'    # Marcus
 class MultiProcessCommunication:
