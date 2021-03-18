@@ -25,6 +25,9 @@ TURN_RIGHT_AND = '{m:D'.encode()
 
 MDF_STRING = 'M'.encode()[0]
 
+IMAGE_TAKEN = 'D'.encode()
+IMAGE_DONE = 'I'.encode()
+
 #Algo to RPI
 TAKE_PICTURE = 'P'.encode()[0] #ours is C
 EXPLORATION_COMPLETE = 'N'.encode()
@@ -38,6 +41,7 @@ RESULT = 'R'
 
 
 #Image Rec IP addresses
+image_processing_server_url = 'tcp://192.168.11.106:5555'
 #image_processing_server_url = 'tcp://192.168.33.96:5555' #Xiao Qing
 #image_processing_server_url = 'tcp://192.168.33.76:5555'    # Marcus
 class MultiProcessCommunication:
@@ -68,12 +72,10 @@ class MultiProcessCommunication:
 		self.dropped_connection = Value('i',0)
         
 		#For image rec
-		#self.image_process = Process(target=self._process_pic)
+		self.image_process = Process(target=self._process_pic)
 
-		
- 
-       	#Pictures taken by RPICAM put in this queue to avoid sending all at once
-		#self.image_queue = self.manager.Queue()
+       		#Pictures taken by RPICAM put in this queue to avoid sending all at once
+		self.image_queue = self.manager.Queue()
 
 	def start(self):
 		try:
@@ -95,8 +97,8 @@ class MultiProcessCommunication:
 
 			print('Comms started. Reading from algo and android and arduino and imagerec.')
 
-			# self.image_process.start()
-			# print("Image server connected!")
+			self.image_process.start()
+			print("Image server connected!")
 
 		except Exception as err:
 			raise err
@@ -186,21 +188,19 @@ class MultiProcessCommunication:
 
 					elif (message[0] == 'C'): #for ours is C send message to imagerecPC to capture image
 						image = picam.read()
-						self.image_queue.put_nowait([image, message[2:].encode()])
-						pass
+						self.image_queue.put_nowait([image, message[2:-1]])
 
 					elif (message == 'EF'): #maybe useless
 						#image = picam.read()
 						#self.image_queue.put_nowait([ image, "END"])
 						pass
 						
-
 					elif (message[0] == 'M'):
 						#If message from PC is the MDF string (Arena)
 						MDF_STRING_FINAL = message[1:]
 						self.MDF_LIST[0] = MDF_STRING_FINAL
 					
-						self.to_android_message_queue.put_nowait("{M:"+MDF_STRING_FINAL+ "}|")
+						self.to_android_message_queue.put_nowait(MDF_STRING_FINAL)
 						
 					elif(message[0] == 'K'):
 						self.message_queue.put_nowait(self._format_for(ARDUINO_HEADER, message[1:].encode()))
@@ -288,21 +288,25 @@ class MultiProcessCommunication:
 			try:
 				if not self.image_queue.empty():
 					image_msg = self.image_queue.get_nowait()
-					obstacle_coordinates = image_msg[1].split('(') #Format = (x,y)
-					for i in range(0,3):
-						if(obstacle_coordinates[i] == '-1,-1'):
-							continue
-						reply = image_sender.send_image(obstacle_coordinates[i], image_msg[0])
-						reply = reply.decode('utf-8')
+					obstacle_coordinates = image_msg[1] #Format = (x,y)
+					stop_image = image_msg[0]
+					reply = image_sender.send_image(obstacle_coordinates, image_msg[0])
+					reply = reply.decode('utf-8')
 
-						if reply != 'End':
-							if(len(reply) != 0):
-								if reply != 'None':
-									self.IMAGE_LIST.append(reply)
-							self.to_android_message_queue.put_nowait('{s:'+reply+'|')
+					if reply != 'End':
+						if(len(reply) != 0):
+							if reply != 'None':
+								self.IMAGE_LIST.append(reply)
+								self.to_android_message_queue.put_nowait('{"id":'+reply+'}')
+								self.message_queue.put_nowait(self._format_for(ALGORITHM_HEADER, IMAGE_TAKEN + NEWLINE))
 
 						else:
+							self.message_queue.put_nowait(self._format_for(ALGORITHM_HEADER, IMAGE_DONE + NEWLINE))
 							break
+					
+					if len(IMAGE_LIST) >=2:
+						self.message_queue.put_nowait(self._format_for(ALGORITHM_HEADER, IMAGE_DONE + NEWLINE))
+						reply = image_sender.send_image("END", stop_image)
 
 			except Exception as error:
 				print("_process_pic failed: {}".format(str(error)))

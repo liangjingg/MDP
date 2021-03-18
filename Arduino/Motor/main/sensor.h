@@ -136,6 +136,15 @@ void sort(int arr[],int n) {
 
 float getDist(float analogreading,float a,float b,float c){
   float outdist = ((a*analogreading)+b)/(analogreading+c);
+
+  outdist = abs(outdist);
+
+  if (outdist<0){
+    return 60.00;
+  }
+  else if (outdist > 60){
+    return 60.00;
+  }
   return outdist;
 }
 
@@ -165,10 +174,15 @@ void takeReadings(){
   L_D = getDist(medianAnalog(SAMPLESIZE,L_PIN),L_a,L_b,L_c)-L_OFF;    
 }
 
-void updateSensor(){
+void updateSensorPrint(){
   takeReadings();
   setArraySensor();
   printArraySensor();
+}
+
+void updateSensor(){
+  takeReadings();
+  setArraySensor();
 }
 
 

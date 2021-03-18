@@ -90,19 +90,19 @@ bool readCommand()
 void executeExplorationCommand(){
   char letter = cmd[cmd_out];
   switch(letter){
-    case 'W': goStraight(W01);
+    case 'W': goStraight1(W01);
     
 //              Serial.println("going straight");
               break;
-    case 'A': turnLeft(A01);
+    case 'A': turnLeft(395);
               break;
-    case 'D': turnRight(D01);
+    case 'D': turnRight(395);
               break;
     case 'Q':break;
     case 'E':break;
-    case 'Z':updateSensor();
+    case 'Z':updateSensorPrint();
               break;
-    case 'B':alignRight();
+    case 'B':
               break;
     case 'V':break;
     case 'X':break;
