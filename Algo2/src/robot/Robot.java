@@ -224,6 +224,9 @@ public abstract class Robot {
 								newMap.setGrid(x, y, Constant.OBSTACLE);
 								newMap.setDist(x, y, g + 2);
 							}
+							else {
+								System.out.printf("Less accurate far g: %f < oldDist: %f, dont set to obstacle \n", g+2, oldDist);
+							}
 						} else {
 							if (moreAccurate(g, oldDist)) {
 								// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
@@ -231,7 +234,7 @@ public abstract class Robot {
 								newMap.setGrid(x, y, Constant.OBSTACLE);
 								newMap.setDist(x, y, g);
 							} else {
-								System.out.println("Less accurate, dont set to obstacle");
+								System.out.printf("Less accurate short g: %f < oldDist: %f, dont set to obstacle \n", g, oldDist);
 							}
 						}
 					// } else if (h != 0 && sensorThreshold[h] - value >= value - sensorThreshold[h-1]) {
