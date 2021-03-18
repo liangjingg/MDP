@@ -107,7 +107,7 @@ public class Exploration {
             move(robot, 1, null);
             // robot.getMap().printDist();
             // robot.right_align();
-            // corner_calibration(robot);
+             cornerCalibration(robot);
         } while (!atPosition(robot, Constant.START));
 
         Coordinate unexploredTemp = nearestUnexplored(robot, robot.getPosition()); // Returns the
@@ -159,7 +159,7 @@ public class Exploration {
             // if (this.countOfMoves % 4 == 0) {
             // robot.rightAlign();
             // }
-            // cornerCalibration(robot);
+             cornerCalibration(robot);
         } while (!atPosition(robot, Constant.START));
 
         // Robot is at the start
@@ -486,6 +486,7 @@ public class Exploration {
         int[] obstacles = robot.updateMap(); // updateMap returns a list of 6 integers -> Converts to a list
                                              // of 6 booleans if obstacles or not for each sensor
         if (obstacles[3] == 1 || obstacles[4] == 1) {
+            System.out.println("Both sensors less than threshold");
             return false;
         }
         int[] position = robot.getPosition();
@@ -506,6 +507,7 @@ public class Exploration {
             position[0] += 2; // Increase x by 2
             break;
         }
+        System.out.println("The middle block is not empty");
         return map.getGrid(position[0], position[1]).equals(Constant.EXPLORED)
                 || map.getGrid(position[0], position[1]).equals(Constant.STARTPOINT)
                 || map.getGrid(position[0], position[1]).equals(Constant.ENDPOINT);
@@ -525,7 +527,8 @@ public class Exploration {
         System.out.println("At corner!");
         robot.updateMap();
         int direction = robot.getDirection();
-        if ((pos[0] == 1) && (pos[1] == 13)) {
+        if ((pos[0] == 1) && (pos[1] == Constant.BOARDHEIGHT-2)) {
+            System.out.println("Bottom left corner");
             switch (direction) {
             case Constant.NORTH:
                 robot.rotateRight();
@@ -541,6 +544,7 @@ public class Exploration {
                 break;
             }
         } else if ((pos[0] == Constant.BOARDWIDTH - 2) && (pos[1] == Constant.BOARDHEIGHT - 2)) {
+            System.out.println("Bottom right corner");
             switch (direction) {
             case Constant.WEST:
                 robot.rotateRight();
@@ -556,6 +560,7 @@ public class Exploration {
                 break;
             }
         } else if ((pos[0] == Constant.BOARDWIDTH - 2) && (pos[1] == 1)) {
+            System.out.println("Top right corner");
             switch (direction) {
             case Constant.SOUTH:
                 robot.rotateRight();
@@ -571,6 +576,7 @@ public class Exploration {
                 break;
             }
         } else if ((pos[0] == 1) && (pos[1] == 1)) {
+            System.out.println("At start");
             switch (direction) {
             case Constant.EAST:
                 robot.rotateRight();
@@ -586,10 +592,10 @@ public class Exploration {
                 break;
             }
         }
-        robot.calibrate();
-        int newdirection = robot.getDirection();
-
-        switch (Math.abs(direction - newdirection + 4) % 4) {
+//        robot.calibrate();
+        int newDirection = robot.getDirection();
+        System.out.println("New direction: " + newDirection);
+        switch (Math.abs(direction - newDirection + 4) % 4) {
         case 1:
             robot.rotateRight();
             break;
@@ -601,6 +607,7 @@ public class Exploration {
             robot.rotateLeft();
             break;
         }
+        System.out.println("Wtf is this " + robot.getDirection());
     }
 
     private int[] nearestCorner(Robot robot) {

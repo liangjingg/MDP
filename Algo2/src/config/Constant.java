@@ -19,7 +19,7 @@ public class Constant {
 
 	// You need to define your own range for your sensors
 	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0}, { 8.0, 17.0 },
-			{ 8.0, 17.0}, { 7.0, 13.5, 24.0, 36.0, 46.0 } };
+			{ 8.0, 17.0}, { 7.0, 17.0, 27.0, 37.0, 47.0 } };
 
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
@@ -97,7 +97,7 @@ public class Constant {
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\OneDrive\\Desktop\\NTU\\Year 3\\MDP\\MDP\\Algo2";
+	public static final String FOLDER_TO_WRITE = "C:\\Users\\moham\\Documents\\MDP\\Algo2";
 	public static final String SETMDF = "MDF";
 
 	// Image path for UI Simulator

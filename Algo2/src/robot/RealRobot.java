@@ -244,7 +244,7 @@ public class RealRobot extends Robot {
 	public boolean captureImage(Obstacle[] image_pos) {
 		System.out.println("Start to capture image (To sleep)");
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.MILLISECONDS.sleep(1000);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
