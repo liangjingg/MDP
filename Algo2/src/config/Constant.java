@@ -83,7 +83,7 @@ public class Constant {
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
 	// public static final String IP_ADDRESS = "192.168.15.15";
-	public static final int PORT = 5050;
+	public static final int PORT = 4000;
 	public static final int BUFFER_SIZE = 512;
 
 	public static final String START_EXPLORATION = "ES|";
@@ -95,13 +95,13 @@ public class Constant {
 	public static final String SENSE_ALL = "Z|";
 	public static final String TURN_LEFT = "A|";
 	public static final String TURN_RIGHT = "D|";
+	public static final String U_TURN = "U|";
 	public static final String FORWARD_MOVEMENT = "W|";
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
 	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\Desktop\\NTU\\Year 3\\Semester 2\\CZ3004 Multidisciplinary Project\\FullRepo\\MDP\\Algo2";
 	public static final String SETMDF = "MDF";
-
 	// Image path for UI Simulator
 	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\unexplored_grid.png";
 	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\explored_grid.png";

@@ -90,6 +90,9 @@ public class SimulatorRobot extends Robot {
 		robotImage.setImage(Constant.ROBOTIMAGEPATHS[direction]);
 	}
 
+	public boolean isAcknowledged() {
+		return true;
+	}
 	// Update the map and display on the screen
 	public int[] updateMap() {
 		int[] isObstacle = super.updateMap();
@@ -175,6 +178,11 @@ public class SimulatorRobot extends Robot {
 			// this.getPosition()[0], this.getPosition()[1], i);
 			t.schedule(new MoveImageTask(robotImage, s, 1), delay * (i + 1));
 		}
+	}
+
+	@Override
+	public void rotate180() {
+		setDirection((this.getDirection() + 2) % 4);
 	}
 
 	// Move the robot backward. Only used in real run in case of failed movement

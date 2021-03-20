@@ -197,8 +197,7 @@ public class AStarPathFinder {
 
         if ((x > 0) && (x < Constant.BOARDWIDTH - 1) && (y > 0) && (y < Constant.BOARDHEIGHT - 1)) {
             for (int[] coordinates : robotPos) {
-                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)
-                        || map.getGrid(coordinates[0], coordinates[1]).equals(Constant.UNEXPLORED)) {
+                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
                     return false;
                 }
             }

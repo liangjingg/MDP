@@ -60,7 +60,7 @@ public abstract class Robot {
 
 	public abstract void rotateLeft();
 
-	// public abstract void rotate180();
+	public abstract void rotate180();
 
 	public abstract boolean captureImage(Obstacle[] image_pos);
 
@@ -69,6 +69,8 @@ public abstract class Robot {
 	public abstract void rightAlign();
 
 	public abstract void displayMessage(String s, int mode);
+
+	public abstract boolean isAcknowledged();
 
 	public void setDirection(int direction) {
 		this.direction = direction;
@@ -377,4 +379,5 @@ public abstract class Robot {
 	protected void toggleValid() {
 		validObstacleValue = false;
 	}
+
 }
