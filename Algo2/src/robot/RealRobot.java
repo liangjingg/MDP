@@ -21,7 +21,9 @@ public class RealRobot extends Robot {
 	private ConnectionSocket connectionSocket = ConnectionSocket.getInstance();
 	private static RealRobot r = null;
 	private int numOfCount = 0;
+	private int numOfImages = 0;
 	private SimulatorRobot sr = null;
+	private boolean acknowledgementCompleted = false;
 
 	private RealRobot(boolean simulator) {
 		super();
@@ -56,6 +58,9 @@ public class RealRobot extends Robot {
 		return sr;
 	}
 
+	public boolean isAcknowledged() {
+		return this.acknowledgementCompleted;
+	}
 	// Difference between this function and acknowledge is that it returns the
 	// sensor value arr after sending sense message to Ardurino
 	@Override
@@ -118,6 +123,8 @@ public class RealRobot extends Robot {
 		String[] arr = null;
 
 		boolean completed = false;
+		this.acknowledgementCompleted = false;
+		System.out.println("No acknowledgement");
 
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
@@ -130,9 +137,10 @@ public class RealRobot extends Robot {
 						System.out.println(e.getMessage());
 					}
 				}
+				System.out.println(" sdfiohsadfjsadhfiasdh");
 				System.out.println(Arrays.toString(arr));
 				System.out.println(arr.length);
-				if (arr.length == 6) {
+				if (arr.length == 7) {
 					break;
 				}
 			} catch (Exception e) {
@@ -145,10 +153,10 @@ public class RealRobot extends Robot {
 			if (sr != null) {
 				sr.displayMessage("Received Message: " + s, 1);
 			}
-			if (sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches()) {
-				arr = s.split("\\|");
-				break;
-			}
+			// if (sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches()) {
+			// 	arr = s.split("\\|");
+			// 	break;
+			// }
 		}
 
 		// 1 indicates the Ardurino has performed the action successfully and hence
@@ -159,7 +167,9 @@ public class RealRobot extends Robot {
 			this.sensePosition[0] = x;
 			this.sensePosition[1] = y;
 			this.sensePosition[2] = getDirection();
-			sendMDFString();
+			this.acknowledgementCompleted = true;
+			System.out.println("Acknowledgement");
+			//sendMDFString();
 			return true;
 		}
 
@@ -169,7 +179,9 @@ public class RealRobot extends Robot {
 		this.sensePosition[0] = x;
 		this.sensePosition[1] = y;
 		this.sensePosition[2] = getDirection();
-		sendMDFString();
+		this.acknowledgementCompleted = true;
+		System.out.println("Acknowledgementdfdsf");
+		//sendMDFString();
 		return false;
 
 	}
@@ -202,15 +214,13 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: W0" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
-		sendMDFString();
+		// sendMDFString();
 		// if (!acknowledge()) {
-		// this.x = setValidX(this.x -
-		// Constant.SENSORDIRECTION[this.getDirection()][0]);
-		// this.y = setValidX(this.y -
-		// Constant.SENSORDIRECTION[this.getDirection()][1]);
-		// if (sr != null) {
-		// sr.backward(step);
-		// }
+		// 	this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
+		// 	this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
+		// 	if (sr != null) {
+		// 		sr.backward(step);
+		// 	}
 		// }
 	}
 
@@ -218,12 +228,34 @@ public class RealRobot extends Robot {
 	@Override
 	public void rotateRight() {
 		connectionSocket.sendMessage(Constant.TURN_RIGHT);
+		// try {
+		// 	TimeUnit.MILLISECONDS.sleep(1000);
+		// } catch (Exception e) {
+		// 	System.out.println(e.getMessage());
+		// }
 		setDirection((this.getDirection() + 1) % 4);
 		if (sr != null) {
 			sr.rotateRight();
 			sr.displayMessage("Sent message: " + Constant.TURN_RIGHT, 1);
 		}
-		sendMDFString();
+		// sendMDFString();
+		// acknowledge();
+	}
+
+	@Override
+	public void rotate180() {
+		connectionSocket.sendMessage(Constant.U_TURN);
+		// try {
+		// 	TimeUnit.MILLISECONDS.sleep(1000);
+		// } catch (Exception e) {
+		// 	System.out.println(e.getMessage());
+		// }
+		setDirection((this.getDirection() + 2) % 4);
+		if (sr != null) {
+			sr.rotate180();
+			sr.displayMessage("Sent message: " + Constant.U_TURN, 1);
+		}
+		//sendMDFString();
 		// acknowledge();
 	}
 
@@ -231,20 +263,36 @@ public class RealRobot extends Robot {
 	@Override
 	public void rotateLeft() {
 		connectionSocket.sendMessage(Constant.TURN_LEFT);
+		// try {
+		// 	TimeUnit.MILLISECONDS.sleep(1000);
+		// } catch (Exception e) {
+		// 	System.out.println(e.getMessage());
+		// }
 		setDirection((this.getDirection() + 3) % 4);
 		if (sr != null) {
 			sr.rotateLeft();
 			sr.displayMessage("Sent message: " + Constant.TURN_LEFT, 1);
 		}
-		sendMDFString();
+		// sendMDFString();
 		// acknowledge();
 	}
 
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
+		// System.out.println("Acknowledgemnet completed: " + acknowledgementCompleted);
+		// while (this.acknowledgementCompleted != true) {
+		// 	try {
+		// 		System.out.println("sleeep");
+		// 		TimeUnit.MILLISECONDS.sleep(500);
+		// 	} catch (Exception e) {
+		// 		System.out.println(e.getMessage());
+		// 	}
+		// }
+		this.numOfImages += 1;
+		System.out.println("Number of images " + numOfImages);
 		System.out.println("Start to capture image (To sleep)");
 		try {
-			TimeUnit.MILLISECONDS.sleep(1000);
+			TimeUnit.MILLISECONDS.sleep(1250);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -262,27 +310,43 @@ public class RealRobot extends Robot {
 			+ image_pos[2].coordinates.x + ")", 1);
 		}
 		boolean completed = false;
+		System.out.println("Not completed yet!");
 		String s;
 		ArrayList<String> buffer = ConnectionManager.getBuffer();
+		for (String b: buffer) {
+			System.out.println("In buffer: " + b);
+		}
 		while (!completed) {
+			System.out.println("Not completed");
 			s = connectionSocket.receiveMessage().trim();
 			completed = checkImageAcknowledge(s);
+			System.out.println("Completed: " + completed);
+			System.out.println("String received: " + s);
+			System.out.println(s.equals(Constant.IMAGE_ACK));
+			System.out.println(s.equals(Constant.IMAGE_STOP));
 			if (completed && s.equals(Constant.IMAGE_ACK)) {
-				System.out.println(s);
+				System.out.println("Received image acknowledgement" + s);
 				return false;
 			} else if (completed && s.equals(Constant.IMAGE_STOP)) {
+				System.out.println("Received stop" + s);
 				System.out.println(s);
 				return true;
 			} else {
+				System.out.println("hereereadsr");
+				//s = connectionSocket.receiveMessage().trim();
+				// buffer = ConnectionManager.getBuffer();
+				System.out.println("hereerer");
+				System.out.println(" TADAAHHHH" + s);
 				for (int i = 0; i < buffer.size(); i++) {
+					System.out.println("In LOOOOP");
 					completed = checkImageAcknowledge(buffer.get(i));
+					System.out.println(completed);
 					if (completed) {
 						buffer.remove(i);
 						break;
 					}
 				}
 			}
-			System.out.println(s);
 		}
 		return false;
 	}
@@ -290,6 +354,7 @@ public class RealRobot extends Robot {
 	// Get the image acknowledgement from RPI
 	private boolean checkImageAcknowledge(String s) {
 		if (s.equals(Constant.IMAGE_ACK) || s.equals(Constant.IMAGE_STOP)) {
+			System.out.println("valid image reply");
 			return true;
 		}
 		return false;
@@ -328,7 +393,9 @@ public class RealRobot extends Robot {
 		if (sr != null) {
 			sr.displayMessage(s, mode);
 		} else {
+			System.out.println("Display on simulator");
 			System.out.println(s);
+			System.out.println("Display on sfdsfimulator");
 		}
 	}
 

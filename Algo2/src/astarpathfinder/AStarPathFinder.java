@@ -66,10 +66,10 @@ public class AStarPathFinder {
             // temp.g_cost, temp.h_cost, temp.cost);
             // }
             cur = openQueue.poll();
-            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n",
-            // cur.pos[0], cur.pos[1],
-            // nodeDetails[cur.pos[0]][cur.pos[1]].g_cost,
-            // nodeDetails[cur.pos[0]][cur.pos[1]].h_cost);
+            System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n",
+            cur.pos[0], cur.pos[1],
+            nodeDetails[cur.pos[0]][cur.pos[1]].g_cost,
+            nodeDetails[cur.pos[0]][cur.pos[1]].h_cost);
 
             if (((!on_grid) && (canReach(cur.pos, end_pos, first)))
                     || ((on_grid) && (Arrays.equals(cur.pos, end_pos)))) {
@@ -353,7 +353,7 @@ public class AStarPathFinder {
 
         if ((x > 0) && (x < Constant.BOARDWIDTH - 1) && (y > 0) && (y < Constant.BOARDHEIGHT - 1)) {
             for (int[] coordinates : robotPos) {
-                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE) || map.getGrid(coordinates[0], coordinates[1]).equals(Constant.UNEXPLORED)) {
+                if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
                     return false;
                 }
             }

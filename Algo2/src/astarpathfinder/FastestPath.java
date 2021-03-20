@@ -204,10 +204,12 @@ public class FastestPath {
                     return;
                 }
             } else if (direction == Constant.BACKWARD) {
-                // robot.updateMap();
+                robot.updateMap();
                 robot.rotateRight();
-                // robot.updateMap();
+                robot.updateMap();
                 robot.rotateRight();
+                //robot.updateMap();
+                //robot.rotate180();
                 if (ex.isFrontEmpty(robot)) {
                     robot.forward(1);
                 } else {

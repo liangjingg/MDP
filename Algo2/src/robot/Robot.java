@@ -58,7 +58,7 @@ public abstract class Robot {
 
 	public abstract void rotateLeft();
 
-	//public abstract void rotate180();
+	public abstract void rotate180();
 
 	public abstract boolean captureImage(Obstacle[] image_pos);
 
@@ -67,6 +67,8 @@ public abstract class Robot {
 	public abstract void rightAlign();
 
 	public abstract void displayMessage(String s, int mode);
+
+	public abstract boolean isAcknowledged();
 
 	public void setDirection(int direction) {
 		this.direction = direction;
@@ -225,7 +227,7 @@ public abstract class Robot {
 								newMap.setDist(x, y, g + 2);
 							}
 							else {
-								System.out.printf("Less accurate far g: %f < oldDist: %f, dont set to obstacle \n", g+2, oldDist);
+								System.out.println("Less accurate short g: " + (g+2) + "more than or equal to " + oldDist);
 							}
 						} else {
 							if (moreAccurate(g, oldDist)) {
@@ -234,7 +236,7 @@ public abstract class Robot {
 								newMap.setGrid(x, y, Constant.OBSTACLE);
 								newMap.setDist(x, y, g);
 							} else {
-								System.out.printf("Less accurate short g: %f < oldDist: %f, dont set to obstacle \n", g, oldDist);
+								System.out.println("Less accurate short g: " + g + "more than or equal to  " + oldDist);
 							}
 						}
 					// } else if (h != 0 && sensorThreshold[h] - value >= value - sensorThreshold[h-1]) {
@@ -373,4 +375,6 @@ public abstract class Robot {
 	protected void toggleValid() {
 		validObstacleValue = false;
 	}
+
+	
 }
