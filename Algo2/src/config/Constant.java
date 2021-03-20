@@ -1,5 +1,7 @@
 package config;
 
+import datastruct.Coordinate;
+
 public class Constant {
 	// Actual run constraints
 	public static final int TIME = -1;
@@ -18,8 +20,8 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0}, { 8.0, 17.0 },
-			{ 8.0, 17.0}, { 7.0, 17.0, 27.0, 37.0, 47.0 } };
+	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0 }, { 8.0, 17.0 },
+			{ 8.0, 17.0 }, { 7.0, 17.0, 27.0, 37.0, 47.0 } };
 
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
@@ -69,8 +71,8 @@ public class Constant {
 	public static final int SOUTH = 2;
 	public static final int WEST = 3;
 	public static final String[] DIRECTIONS = new String[] { "North", "East", "South", "West" };
-	public static final int[] START = { 1, 1 };
-	public static final int[] END = { 18, 13 };
+	public static final Coordinate START = new Coordinate(1, 1);
+	public static final Coordinate END = new Coordinate(18, 13);
 
 	// Avoid changing these values below
 	public static final int ROBOTHEIGHT = 100; // By default, this should be twice of the grid height. GRIDHEIGHT * 2
@@ -97,7 +99,7 @@ public class Constant {
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "C:\\Users\\moham\\Documents\\MDP\\Algo2";
+	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\Desktop\\NTU\\Year 3\\Semester 2\\CZ3004 Multidisciplinary Project\\FullRepo\\MDP\\Algo2";
 	public static final String SETMDF = "MDF";
 
 	// Image path for UI Simulator

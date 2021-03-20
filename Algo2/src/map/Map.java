@@ -8,6 +8,7 @@ import java.util.Set;
 import astarpathfinder.FastestPathThread;
 import config.Constant;
 import connection.ConnectionSocket;
+import datastruct.Coordinate;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +25,7 @@ public class Map {
 
 	private String[][] grid = new String[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
 	private double[][] dist = new double[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
-	private int[] waypoint = new int[] { -1, -1 };
+	private Coordinate waypoint = new Coordinate(-1, -1);
 	private String[] MDPString = new String[3];
 	private boolean changed = true; // WTF IS THIS
 
@@ -55,7 +56,7 @@ public class Map {
 
 	public Map copy() {
 		Map m = new Map(this.grid);
-		m.setWayPoint(this.waypoint[0], this.waypoint[1]);
+		m.setWayPoint(this.waypoint.x, this.waypoint.y);
 		return m;
 	}
 
@@ -92,8 +93,7 @@ public class Map {
 						String temp = " ";
 						if (i == x && j == y) {
 							temp = String.format("%3s|", "R");
-						}
-						else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
 							temp = String.format("%3s|", "O");
 						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
 							temp = String.format("%3s|", "S");
@@ -105,8 +105,7 @@ public class Map {
 					String temp = " ";
 					if (i == x && j == y) {
 						grid[i][j] = String.format("%3s|", "R");
-					}
-					else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
 						temp = String.format("%3s|", " ");
 					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
 						temp = String.format("%3s|", "X");
@@ -314,27 +313,28 @@ public class Map {
 
 	public void setWayPoint(int x, int y) {
 		boolean verbose = new Exception().getStackTrace()[1].getClassName().equals("robot.Robot");
-
+		int waypointX = waypoint.x;
+		int waypointY = waypoint.y;
 		if (x >= Constant.BOARDWIDTH - 1 || x <= 0 || y >= Constant.BOARDHEIGHT - 1 || y <= 0
-				|| (getGrid(x, y) != null && getGrid(x, y).compareTo(Constant.POSSIBLEGRIDLABELS[0]) != 0
-						&& getGrid(x, y).compareTo(Constant.POSSIBLEGRIDLABELS[1]) != 0)) {
-			if (!(waypoint[0] == -1 && waypoint[1] == -1)) {
-				this.waypoint[0] = -1;
-				this.waypoint[1] = -1;
+				|| (getGrid(x, y) != null && !getGrid(x, y).equals(Constant.POSSIBLEGRIDLABELS[0]))
+						&& !getGrid(x, y).equals(Constant.POSSIBLEGRIDLABELS[1])) {
+			if (!(waypointX == -1 && waypointY == -1)) {
+				this.waypoint.x = -1;
+				this.waypoint.y = -1;
 				if (verbose) {
 					System.out.println("The current waypoint is set as: " + "-1" + "," + "-1");
 				}
 			}
 			return;
 		}
-		this.waypoint[0] = x;
-		this.waypoint[1] = y;
+		this.waypoint.x = x;
+		this.waypoint.y = y;
 		if (verbose) {
 			System.out.println("Successfully set the waypoint: " + x + "," + y);
 		}
 	}
 
-	public int[] getWayPoint() {
+	public Coordinate getWayPoint() {
 		return waypoint;
 	}
 
@@ -403,7 +403,8 @@ public class Map {
 			File folder = new File(Constant.FOLDER_TO_WRITE + "\\sample arena");
 			int numOfFiles = folder.list().length;
 			System.out.println(numOfFiles);
-			File file = new File(Constant.FOLDER_TO_WRITE + "\\sample arena\\" + "samplearena" + (numOfFiles-1) + ".txt");
+			File file = new File(
+					Constant.FOLDER_TO_WRITE + "\\sample arena\\" + "samplearena" + (numOfFiles - 1) + ".txt");
 			PrintWriter out = new PrintWriter(file);
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -424,9 +425,9 @@ public class Map {
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-//		if (ConnectionSocket.checkConnection() && !FastestPathThread.getRunning()) {
-//			
-//		}
+		// if (ConnectionSocket.checkConnection() && !FastestPathThread.getRunning()) {
+		//
+		// }
 		// System.out.println(s);
 	}
 
@@ -454,7 +455,7 @@ public class Map {
 
 				} else if (grid[j][i].equals(Constant.UNEXPLORED)) { // Unexplored
 					MDFBitStringPart1.append("0");
-				} else { //Not obstacle or unexplored (start point/end point/explored)
+				} else { // Not obstacle or unexplored (start point/end point/explored)
 					MDFBitStringPart1.append("1");
 					MDFBitStringPart2.append("0");
 				}
@@ -464,7 +465,8 @@ public class Map {
 		MDFBitStringPart1.append("11");
 
 		for (int i = 0; i < MDFBitStringPart1.length(); i += 4) {
-			//System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16));
+			// System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i,
+			// i + 4), 2), 16));
 			MDFHexString[0] += Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16);
 		}
 
