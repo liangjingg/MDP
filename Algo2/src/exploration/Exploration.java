@@ -146,11 +146,13 @@ public class Exploration {
         Obstacle defaultPos = new Obstacle(defaultCoord, -1); // x , y and direction of the robot
         Obstacle[] obsPos = new Obstacle[] { defaultPos, defaultPos, defaultPos }; // 3 x 3 array //use arraylist
         do {
-            System.out.printf("Robot position: x: %d, y: %d, direction: %s \n", robot.getPosition()[0],
-                    robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
+            // System.out.printf("Robot position: x: %d, y: %d, direction: %s \n",
+            // robot.getPosition()[0],
+            // robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
             checkedObstacles = move(robot, 1, checkedObstacles);
-            System.out.printf("NEW robot position: x: %d, y: %d, direction: %s \n", robot.getPosition()[0],
-                    robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
+            // System.out.printf("NEW robot position: x: %d, y: %d, direction: %s \n",
+            // robot.getPosition()[0],
+            // robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
             System.out.println("Checked obstacles:");
             for (Obstacle o : checkedObstacles) {
                 System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
@@ -160,56 +162,7 @@ public class Exploration {
             // robot.rightAlign();
             // }
             cornerCalibration(robot);
-            if (atPosition(robot, Constant.START) && !goneUTurn) {
-                System.out.println("At start position");
-                int y = 3;
-                while (y < Constant.BOARDHEIGHT - 2) {
-                    if (robot.getMap().getGrid(0, y).equals(Constant.OBSTACLE)
-                            || robot.getMap().getGrid(1, y).equals(Constant.OBSTACLE)
-                            || robot.getMap().getGrid(2, y).equals(Constant.OBSTACLE)) {
-                        break;
-                    }
-                    y += 1;
-                    ;
-                }
-                System.out.println("y: " + y);
-                boolean hasEmptySpace = false;
-                if (y <= Constant.BOARDHEIGHT - 2) {
-                    int emptySpaces = 0;
-                    for (int i = 1; i <= y; i++) {
-                        System.out.println(emptySpaces);
-                        if (emptySpaces == 3) {
-                            hasEmptySpace = true;
-                            break;
-                        }
-                        if (robot.getMap().getGrid(3, i).equals(Constant.EXPLORED)) {
-                            emptySpaces += 1;
-                        } else if (robot.getMap().getGrid(3, i).equals(Constant.OBSTACLE)) {
-                            emptySpaces = 0;
-                        }
-                    }
-                    System.out.println(hasEmptySpace);
-                    if (!hasEmptySpace) {
-                        switch (robot.getDirection()) {
-                        case Constant.WEST:
-                            robot.rotateRight();
-                            robot.rotateRight();
-                            // robot.rotate180();
-                            break;
-                        case Constant.NORTH:
-                            robot.rotateRight();
-                            break;
-                        case Constant.SOUTH:
-                            robot.rotateLeft();
-                            break;
-                        default:
-                            break;
-                        }
-                        robot.forward(1);
-                        goneUTurn = true;
-                    }
-                }
-            }
+            checkUTurn(robot);
         } while (!atPosition(robot, Constant.START));
 
         // Robot is at the start
@@ -318,6 +271,59 @@ public class Exploration {
         System.out.println("Exploration Complete!");
     }
 
+    private void checkUTurn(Robot robot) {
+        if (atPosition(robot, Constant.START) && !goneUTurn) {
+            System.out.println("At start position");
+            int y = 3;
+            while (y < Constant.BOARDHEIGHT - 2) {
+                if (robot.getMap().getGrid(0, y).equals(Constant.OBSTACLE)
+                        || robot.getMap().getGrid(1, y).equals(Constant.OBSTACLE)
+                        || robot.getMap().getGrid(2, y).equals(Constant.OBSTACLE)) {
+                    break;
+                }
+                y += 1;
+                ;
+            }
+            System.out.println("y: " + y);
+            boolean hasEmptySpace = false;
+            if (y <= Constant.BOARDHEIGHT - 2) {
+                int emptySpaces = 0;
+                for (int i = 1; i <= y; i++) {
+                    System.out.println(emptySpaces);
+                    if (emptySpaces == 3) {
+                        hasEmptySpace = true;
+                        break;
+                    }
+                    if (robot.getMap().getGrid(3, i).equals(Constant.EXPLORED)) {
+                        emptySpaces += 1;
+                    } else if (robot.getMap().getGrid(3, i).equals(Constant.OBSTACLE)) {
+                        emptySpaces = 0;
+                    }
+                }
+                System.out.println(hasEmptySpace);
+                if (!hasEmptySpace) {
+                    switch (robot.getDirection()) {
+                    case Constant.WEST:
+                        robot.rotateRight();
+                        robot.rotateRight();
+                        // robot.rotate180();
+                        break;
+                    case Constant.NORTH:
+                        robot.rotateRight();
+                        break;
+                    case Constant.SOUTH:
+                        robot.rotateLeft();
+                        break;
+                    default:
+                        break;
+                    }
+                    robot.forward(1);
+                    goneUTurn = true;
+                }
+            }
+        }
+    }
+
     private Set<Obstacle> move(Robot robot, int speed, Set<Obstacle> checkedObstacles) {
         System.out.println(robot.getPosition() + " Direction: " + Constant.DIRECTIONS[robot.getDirection()]);
         robot.updateMap();
@@ -330,7 +336,6 @@ public class Exploration {
                 System.out.println(e.getMessage());
             }
         }
-
         // Right Wall Hugging
         if (isRightEmpty(robot)) {
             System.out.println("Right is empty");
@@ -352,8 +357,8 @@ public class Exploration {
         } else if ((checkedObstacles != null) && (!rightWall(robot))) { // right not empty
             checkedObstacles = imageRecognition(robot, checkedObstacles);
         }
-        if (isFrontEmpty(robot)) { // Robot is along wall now
-            System.out.println("Right not empty but front empty");
+        if (isFrontEmpty(robot)) { // Robot is along wall/obstacle now
+
             robot.forward(1);
             // this.countOfMoves += 1;
             return checkedObstacles;
@@ -384,6 +389,10 @@ public class Exploration {
             System.out.println("Error during exploration phase 1. All 4 sides blocked.");
         }
         return checkedObstacles;
+    }
+
+    private int numOfEmptyBlocksAhead() {
+
     }
 
     private Set<Obstacle> imageRecognition(Robot robot, Set<Obstacle> checkedObstacles) {
@@ -552,7 +561,7 @@ public class Exploration {
             return;
         }
         System.out.println("At corner!");
-        System.out.printf("x: %d, y: %d", pos[0], pos[1]);
+        // System.out.printf("x: %d, y: %d", pos[0], pos[1]);
         robot.updateMap();
         int direction = robot.getDirection();
         if ((posX == 1) && (posY == Constant.BOARDHEIGHT - 2)) {

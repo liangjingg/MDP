@@ -197,103 +197,95 @@ public abstract class Robot {
 			}
 
 			// Get the threshold of the sensor
-			double[] sensorThreshold = Constant.SENSOR_RANGES[i]; // Get sensor
-			for (int h = 0; h < sensorThreshold.length; h++) { // For both threshold values
-				int g = h + 1;
+			// double[] sensorThreshold = Constant.SENSOR_RANGES[i]; // Get sensor
 
-				// Update the sensorLocation offset from x position and the grid in the
-				// direction of the sensor
-				int x = this.x + sensorLocation[i][0] + sensorDirectionValueX * g; // This is to get 2 grids that
-																					// can be detected by the sensor??
-				int y = this.y + sensorLocation[i][1] + sensorDirectionValueY * g;
-				// System.out.printf("x: %d, y: %d \n", x, y);
-				// Get the old distance of the grid being updated
+			int numOfBlocksAway = (int) (value / 10) + 1;
+			int x = this.x + sensorLocation[i][0] + sensorDirectionValueX * numOfBlocksAway;
+			int y = this.y + sensorLocation[i][1] + sensorDirectionValueY * numOfBlocksAway;
+			double sensorLimit = Constant.MAX_SENSOR_LIMIT[i];
+			if (value < sensorLimit) {
+				double uncertainty = value % 10.0;
+				double oldUncertainty = newMap.getUncertainty(x, y);
 				double oldDist = newMap.getDist(x, y);
-
-				// System.out.printf("Value: %f, Threshold: %f \n", value, sensorThreshold[h]);
-				// Detected an obstacle
-				// if value > sensorThreshold
-				if (value <= sensorThreshold[h]) {
-					// System.out.println("h: " + h);
-					// if (h == 0 || h != 0 && sensorThreshold[h] - value < value -
-					// sensorThreshold[h-1]) {
-					// System.out.println("Potential obstacle!");
-					/*
-					 * If it is the far sensor, it has a lower accuracy than the short range sensor.
-					 * Only update if the obstacle is determined to be more accurate.
-					 */
-					if (i == 5) { // for far sensors
-						if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
-							// System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1, g,
-							// x, y);
-							newMap.setGrid(x, y, Constant.OBSTACLE);
-							newMap.setDist(x, y, g + 2);
-						}
-					} else {
-						if (moreAccurate(g, oldDist)) {
-							// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
-							System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
-							newMap.setGrid(x, y, Constant.OBSTACLE);
-							newMap.setDist(x, y, g);
-						} else {
-							System.out.println("Less accurate, dont set to obstacle");
-						}
-					}
-					// } else if (h != 0 && sensorThreshold[h] - value >= value -
-					// sensorThreshold[h-1]) {
-					// System.out.println("Sensor value is an underestimate");
-					// h = h - 1;
-					// g = h + 1;
-
-					// // Update the sensorLocation offset from x position and the grid in the
-					// // direction of the sensor
-					// x = this.x + sensorLocation[i][0] + sensorDirectionValueX * g; // This is to
-					// get 2 grids that
-					// // can be detected by the sensor??
-					// y = this.y + sensorLocation[i][1] + sensorDirectionValueY * g;
-					// // System.out.printf("x: %d, y: %d \n", x, y);
-					// // Get the old distance of the grid being updated
-					// oldDist = newMap.getDist(x, y);
-					// if (i == 5) { // for far sensors
-					// if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
-					// // System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1,
-					// g,
-					// // x, y);
-					// newMap.setGrid(x, y, Constant.OBSTACLE);
-					// newMap.setDist(x, y, g + 2);
-					// }
-					// } else {
-					// if (moreAccurate(g, oldDist)) {
-					// // System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
+				if (lessUncertainty(uncertainty, oldUncertainty) || moreAccurate(numOfBlocksAway, oldDist)) {
+					newMap.setGrid(x, y, Constant.OBSTACLE);
+					newMap.setDist(x, y, numOfBlocksAway);
+					newMap.setUncertainty(x, y, uncertainty);
+					// System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
 					// newMap.setGrid(x, y, Constant.OBSTACLE);
 					// newMap.setDist(x, y, g);
-					// }
-					// }
-					// }
-					isObstacle[i] = g;
-					// System.out.printf("Set sensor %d at offset %d \n", i + 1, g);
-					break; // Stop the moment there is an obstacle in the path
 				}
-
-				// No obstacle
-				else {
-					/* Similar to detecting an obstacle */
-					if (i == 5) {
-						if (moreAccurate(g + 1, oldDist)) {
-							newMap.setGrid(x, y, Constant.EXPLORED);
-							newMap.setDist(x, y, g + 1);
-						}
-					} else {
-						if (moreAccurate(g, oldDist)) {
-							newMap.setGrid(x, y, Constant.EXPLORED);
-							newMap.setDist(x, y, g);
-						}
-					}
+				isObstacle[i] = numOfBlocksAway;
+			} else { // no obstacle
+				int minNumOfBlocksAway = (int) (Constant.MAX_SENSOR_LIMIT[i] - Constant.SENSOR_DIST_FROM_BLOCK[i]) / 10
+						+ 1;
+				for (int g = 0; g < minNumOfBlocksAway; g++) {
+					x = this.x + sensorLocation[i][0] + sensorDirectionValueX * g + 1;
+					y = this.y + sensorLocation[i][1] + sensorDirectionValueY * g + 1;
+					newMap.setGrid(x, y, Constant.EXPLORED);
+					newMap.setDist(x, y, g + 1);
 				}
+				// if (moreAccurate(g, oldDist)) {
+				// newMap.setGrid(x, y, Constant.EXPLORED);
+				// newMap.setDist(x, y, g);
+				// }
 			}
+			// isObstacle[i] = numOfBlocksAway + 1;
+			// for (int h = 0; h < sensorThreshold.length; h++) { // For both threshold
+			// values
+			// int g = h + 1;
+
+			// // Update the sensorLocation offset from x position and the grid in the
+			// // direction of the sensor
+			// int x = this.x + sensorLocation[i][0] + sensorDirectionValueX * g;
+			// int y = this.y + sensorLocation[i][1] + sensorDirectionValueY * g;
+			// // Get the old distance of the grid being updated
+			// double oldDist = newMap.getDist(x, y);
+			// if (value <= sensorThreshold[h]) {
+			// /*
+			// * If it is the far sensor, it has a lower accuracy than the short range
+			// sensor.
+			// * Only update if the obstacle is determined to be more accurate.
+			// */
+			// if (i == 5) { // for far sensors
+			// if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
+			// newMap.setGrid(x, y, Constant.OBSTACLE);
+			// newMap.setDist(x, y, g + 2);
+			// }
+			// } else {
+			// if (moreAccurate(g, oldDist)) {
+			// System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
+			// newMap.setGrid(x, y, Constant.OBSTACLE);
+			// newMap.setDist(x, y, g);
+			// } else {
+			// System.out.println("Less accurate, dont set to obstacle");
+			// }
+			// }
+			// isObstacle[i] = g;
+			// break; // Stop the moment there is an obstacle in the path
+			// }
+
+			// // No obstacle
+			// else {
+			// /* Similar to detecting an obstacle */
+			// if (i == 5) {
+			// if (moreAccurate(g + 1, oldDist)) {
+			// newMap.setGrid(x, y, Constant.EXPLORED);
+			// newMap.setDist(x, y, g + 1);
+			// }
+			// } else {
+			// if (moreAccurate(g, oldDist)) {
+			// newMap.setGrid(x, y, Constant.EXPLORED);
+			// newMap.setDist(x, y, g);
+			// }
+			// }
+			// }
+			// }
 		}
 
-		if (ConnectionSocket.getDebug()) {
+		if (ConnectionSocket.getDebug())
+
+		{
 			try {
 				File file = new File(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt");
 				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -339,12 +331,12 @@ public abstract class Robot {
 
 	// Check if the new distance is lesser than the old distance and return true
 	// else false
-	private boolean moreAccurate(double new_dist, double old_dist) {
-		if (new_dist < old_dist) {
-			return true;
-		} else {
-			return false;
-		}
+	private boolean moreAccurate(double newDist, double oldDist) {
+		return newDist < oldDist;
+	}
+
+	private boolean lessUncertainty(double newUncertainty, double oldUncertainty) {
+		return newUncertainty < oldUncertainty;
 	}
 
 	public Map getMap() {

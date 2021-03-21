@@ -25,6 +25,7 @@ public class Map {
 
 	private String[][] grid = new String[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
 	private double[][] dist = new double[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
+	private double[][] uncertainty = new double[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
 	private Coordinate waypoint = new Coordinate(-1, -1);
 	private String[] MDPString = new String[3];
 	private boolean changed = true; // WTF IS THIS
@@ -248,18 +249,20 @@ public class Map {
 		}
 	}
 
+	// Set the distance of which the grid label is set
+	public void setUncertainty(int x, int y, double value) {
+		if ((x >= 0) && (x < Constant.BOARDWIDTH) && (y >= 0) && (y < Constant.BOARDHEIGHT)) {
+			uncertainty[x][y] = value;
+		}
+	}
+
 	// Set grid label
 	public void setGrid(int x, int y, String command) {
-
 		if (x < 0 || x >= Constant.BOARDWIDTH || y < 0 || y >= Constant.BOARDHEIGHT) {
 			return;
 		}
-
-		for (int i = 0; i < Constant.POSSIBLEGRIDLABELS.length; i++) { // new String[]{"Unexplored", "Explored",
-																		// "Obstacle", "Waypoint", "Startpoint",
-																		// "Endpoint"};
-			if (command.toUpperCase().compareTo(Constant.POSSIBLEGRIDLABELS[i].toUpperCase()) == 0) { // If they are
-																										// equal
+		for (int i = 0; i < Constant.POSSIBLEGRIDLABELS.length; i++) {
+			if (command.toUpperCase().equals(Constant.POSSIBLEGRIDLABELS[i].toUpperCase())) {
 				changed = true;
 				if (i == 3) {
 					setWayPoint(x, y);
@@ -342,6 +345,14 @@ public class Map {
 		return grid;
 	}
 
+	public double getUncertainty(int x, int y) {
+		// If the x, y is outside the board, it returns an obstacle.
+		if (x < 0 || x >= Constant.BOARDWIDTH || y < 0 || y >= Constant.BOARDHEIGHT) {
+			return 0;
+		}
+		return uncertainty[x][y];
+	}
+
 	public double getDist(int x, int y) {
 		// If the x, y is outside the board, it returns an obstacle.
 		if (x < 0 || x >= Constant.BOARDWIDTH || y < 0 || y >= Constant.BOARDHEIGHT) {
@@ -382,16 +393,12 @@ public class Map {
 			throw new Exception(e.getMessage());
 		}
 		int unPaddedLength = MDFBitStringP2.length();
-		// System.out.println(unPaddedLength);
 		for (int i = 0; i < MDFHexStringP2.length() * 4 - unPaddedLength; i++) {
 			MDFBitStringP2 = "0" + MDFBitStringP2;
 		}
-		// System.out.println(MDFBitStringP2);
 		MDFBitStringP2 = MDFBitStringP2.substring(0, MDFBitStringP2.length() - 4);
-		// System.out.println(MDFBitStringP2.length());
 		for (int x = 0; x < Constant.BOARDWIDTH; x++) {
 			for (int y = 0; y < Constant.BOARDHEIGHT; y++) {
-				// System.out.printf(" %d, %d \n", x, y);
 				if (MDFBitStringP2.charAt(x * Constant.BOARDHEIGHT + y) == '1') {
 					grid[x][y] = Constant.POSSIBLEGRIDLABELS[2];
 				} else {
@@ -425,10 +432,6 @@ public class Map {
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-		// if (ConnectionSocket.checkConnection() && !FastestPathThread.getRunning()) {
-		//
-		// }
-		// System.out.println(s);
 	}
 
 	// Check if the MDF string stored has changed and make the mdf string if it did

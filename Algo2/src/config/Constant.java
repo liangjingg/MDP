@@ -23,6 +23,10 @@ public class Constant {
 	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0 }, { 8.0, 17.0 },
 			{ 8.0, 17.0 }, { 7.0, 17.0, 27.0, 37.0, 47.0 } };
 
+	public static final double[] MAX_SENSOR_LIMIT = { 30.0, 30.0, 30.0, 30.0, 30.0, 50.0 };
+	public static final double[] MAX_UNCERTAINTY = { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
+	public static final double[] SENSOR_DIST_FROM_BLOCK = { 7.0, 7.0, 7.0, 7.0, 7.0, 7.0 };
+
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
 	public static final int SHORTSENSOROFFSET = 3; // This is in cm.
