@@ -20,8 +20,7 @@ public class AStarPathFinder {
         // Node start = new Node(start_pos);
         initialDirection = robot.getDirection();
         Node cur = null;
-
-        System.out.printf("End pos: x: %d, y: %d \n", endPos.x, endPos.y);
+        // System.out.printf("End pos: x: %d, y: %d \n", endPos.x, endPos.y);
 
         // matrix indicating whether is on open list or not
         boolean[][] openList = new boolean[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];

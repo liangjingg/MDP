@@ -278,6 +278,15 @@ public class SimulatorRobot extends Robot {
 		}
 	}
 
+	public void initialCalibrate() {
+		buttonListener.displayMessage("Initial calibrating", 1);
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	public void displayMessage(String s, int mode) {
 		buttonListener.displayMessage(s, mode);
 	}

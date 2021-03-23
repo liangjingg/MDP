@@ -20,9 +20,9 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0}, { 8.0, 17.0 },
-	{ 8.0, 17.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
-	
+	public static final double[][] SENSOR_RANGES = { { 7.0, 17.0 }, { 7.0, 17.0 }, { 7.0, 17.0}, { 8.0, 17.0 },
+	{ 7.0, 17.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
+
 	public static final double[] MAX_SENSOR_LIMIT = { 30.0, 30.0, 30.0, 30.0, 30.0, 50.0 };
 	public static final double[] MAX_UNCERTAINTY = { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
 	public static final double[] SENSOR_DIST_FROM_BLOCK = { 7.0, 7.0, 7.0, 7.0, 7.0, 7.0 };
@@ -104,8 +104,9 @@ public class Constant {
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\Desktop\\NTU\\Year 3\\Semester 2\\CZ3004 Multidisciplinary Project\\FullRepo\\MDP\\Algo2";
+	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\OneDrive\\Desktop\\NTU\\Year 3\\MDP\\MDP\\Algo2";
 	public static final String SETMDF = "MDF";
+	public static final String INITIAL_CALIBRATE = "E|";
 	// Image path for UI Simulator
 	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\unexplored_grid.png";
 	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\explored_grid.png";

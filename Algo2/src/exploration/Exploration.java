@@ -16,8 +16,10 @@ public class Exploration {
     private FastestPath fp = new FastestPath();
     private Map map;
     private boolean imageStop;
-    private int countOfMoves = 0;
-    private int directionChange = 0;
+    // private int countOfMoves = 0;
+    // private int directionChange = 0;
+    private int consecutiveDirectionChange = 0;
+    private String lastDirectionChange = "";
     private boolean goneUTurn = false;
 
     public void ExplorationAlgo(Robot robot, int time, int percentage, int speed, boolean image_recognition) {
@@ -100,10 +102,10 @@ public class Exploration {
     }
 
     private void normalExploration(Robot robot) {
+        robot.initialCalibrate();
         do {
             move(robot, 1, null);
-            // robot.getMap().printDist();
-            // robot.right_align();
+            inInfiniteLoop(robot);
             cornerCalibration(robot);
         } while (!atPosition(robot, Constant.START));
 
@@ -118,9 +120,7 @@ public class Exploration {
                 // obstacle
                 map.setGrid(unexplored.x, unexplored.y, Constant.OBSTACLE);
             }
-
             unexplored = nearestUnexplored(robot, robot.getPosition());
-
             robot.updateMap();
         }
 
@@ -136,7 +136,6 @@ public class Exploration {
 
     private void imageRecExploration(Robot robot) {
         Set<Obstacle> checkedObstacles = new HashSet<>();
-        // int[][] checkedObstacles = { { 0 } };
         boolean unexplored = false;
         Coordinate needTake = null;
         Coordinate whereToGo = null;
@@ -146,21 +145,12 @@ public class Exploration {
         Obstacle defaultPos = new Obstacle(defaultCoord, -1); // x , y and direction of the robot
         Obstacle[] obsPos = new Obstacle[] { defaultPos, defaultPos, defaultPos }; // 3 x 3 array //use arraylist
         do {
-            // System.out.printf("Robot position: x: %d, y: %d, direction: %s \n",
-            // robot.getPosition()[0],
-            // robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
             checkedObstacles = move(robot, 1, checkedObstacles);
-            // System.out.printf("NEW robot position: x: %d, y: %d, direction: %s \n",
-            // robot.getPosition()[0],
-            // robot.getPosition()[1], Constant.DIRECTIONS[robot.getDirection()]);
-            System.out.println("Checked obstacles:");
-            for (Obstacle o : checkedObstacles) {
-                System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
-            }
-            System.out.println();
-            // if (this.countOfMoves % 4 == 0) {
-            // robot.rightAlign();
+            // System.out.println("Checked obstacles:");
+            // for (Obstacle o : checkedObstacles) {
+            //     System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
             // }
+            System.out.println();
             cornerCalibration(robot);
             checkUTurn(robot);
         } while (!atPosition(robot, Constant.START));
@@ -207,11 +197,8 @@ public class Exploration {
             // go in a circle around d block (will be an island if not reachable during the
             // first phase)
             if ((path != null) && move) {
-                System.out.println("Valid path + move");
                 do {
-                    System.out.println("MOVEEEE");
                     checkedObstacles = move(robot, 1, checkedObstacles);
-                    // System.out.println(Arrays.deepToString(checkedObstacles));
                 } while ((!atPosition(robot, goTo)) && !imageStop);
             }
 
@@ -267,9 +254,19 @@ public class Exploration {
             System.out.println(robot.getPosition());
             fp.FastestPathAlgo(robot, null, Constant.START, 1, true, true);
         }
-
         System.out.println("Exploration Complete!");
     }
+
+    private void inInfiniteLoop(Robot robot) {
+        if (consecutiveDirectionChange == 4) {
+            robot.rotateRight();
+            while (isFrontEmpty(robot)) {
+                robot.forward(1);
+            }
+            robot.rotateLeft();
+        }
+    }
+
 
     private void checkUTurn(Robot robot) {
         if (atPosition(robot, Constant.START) && !goneUTurn) {
@@ -304,9 +301,9 @@ public class Exploration {
                 if (!hasEmptySpace) {
                     switch (robot.getDirection()) {
                     case Constant.WEST:
-                        robot.rotateRight();
-                        robot.rotateRight();
-                        // robot.rotate180();
+                        // robot.rotateRight();
+                        // robot.rotateRight();
+                        robot.rotate180();
                         break;
                     case Constant.NORTH:
                         robot.rotateRight();
@@ -338,18 +335,17 @@ public class Exploration {
         }
         // Right Wall Hugging
         if (isRightEmpty(robot)) {
-            System.out.println("Right is empty");
             robot.rotateRight();
-            // directionChange += 1;
             if (isFrontEmpty(robot)) {
-                System.out.println("Front is empty");
                 robot.forward(1);
-                // this.countOfMoves += 1;
+                if (lastDirectionChange.equals("RIGHT")) {
+                    consecutiveDirectionChange += 1;
+                } else {
+                    consecutiveDirectionChange = 0;
+                }
                 return checkedObstacles;
             } else { // Right empty but turn right and front not empty?? (Inaccuracy of sensors?)
-
                 robot.rotateLeft();
-                // directionChange += 1;
                 if ((checkedObstacles != null) && (!rightWall(robot))) {
                     checkedObstacles = imageRecognition(robot, checkedObstacles);
                 }
@@ -357,42 +353,35 @@ public class Exploration {
         } else if ((checkedObstacles != null) && (!rightWall(robot))) { // right not empty
             checkedObstacles = imageRecognition(robot, checkedObstacles);
         }
-        if (isFrontEmpty(robot)) { // Robot is along wall/obstacle now
-
-            robot.forward(1);
-            // this.countOfMoves += 1;
-            return checkedObstacles;
-        } else {
-            System.out.println("Right and Front not empty, turn left!");
-            robot.rotateLeft(); // Robot faces north
-            // directionChange += 1;
-            if ((checkedObstacles != null) && (!rightWall(robot))) {
-                checkedObstacles = imageRecognition(robot, checkedObstacles);
-                System.out.println("Here image stop: " + this.imageStop);
-            }
-        }
         if (isFrontEmpty(robot)) {
-            robot.forward(1);
-            // this.countOfMoves += 1;
+            robot.forward(1); //Go straight
             return checkedObstacles;
         } else {
-            robot.rotateLeft(); // Robot reverses
-            // directionChange += 1;
+            robot.rotateLeft();
             if ((checkedObstacles != null) && (!rightWall(robot))) {
                 checkedObstacles = imageRecognition(robot, checkedObstacles);
             }
         }
-        if (isFrontEmpty(robot)) {
+        if (isFrontEmpty(robot)) { //Go left
             robot.forward(1);
-            // this.countOfMoves += 1;
+            if (lastDirectionChange.equals("LEFT")) {
+                consecutiveDirectionChange += 1;
+            } else {
+                consecutiveDirectionChange = 0;
+            }
+            return checkedObstacles;
+        } else {
+            robot.rotateLeft(); 
+            if ((checkedObstacles != null) && (!rightWall(robot))) {
+                checkedObstacles = imageRecognition(robot, checkedObstacles);
+            }
+        }
+        if (isFrontEmpty(robot)) { //Go backwards
+            robot.forward(1);
         } else {
             System.out.println("Error during exploration phase 1. All 4 sides blocked.");
         }
         return checkedObstacles;
-    }
-
-    private int numOfEmptyBlocksAhead() {
-
     }
 
     private Set<Obstacle> imageRecognition(Robot robot, Set<Obstacle> checkedObstacles) {
@@ -476,7 +465,6 @@ public class Exploration {
                     checkedObstacles.add(obsPos[k]);
                 }
             }
-            System.out.println("About hte caputer image");
             // while (!robot.isAcknowledged()) {
             // try {
             // System.out.println("sleeep");
@@ -486,9 +474,7 @@ public class Exploration {
             // }
             // }
             this.imageStop = robot.captureImage(obsPos);
-            System.out.println("Image stop: " + this.imageStop);
         }
-        System.out.println("Finish image recognition  function");
         return checkedObstacles;
     }
 
@@ -516,10 +502,8 @@ public class Exploration {
     }
 
     private boolean isRightEmpty(Robot robot) {
-        int[] obstacles = robot.updateMap(); // updateMap returns a list of 6 integers -> Converts to a list
-                                             // of 6 booleans if obstacles or not for each sensor
+        int[] obstacles = robot.updateMap();
         if (obstacles[3] == 1 || obstacles[4] == 1) {
-            System.out.println("Both sensors less than threshold");
             return false;
         }
         Coordinate pos = robot.getPosition();
@@ -529,20 +513,19 @@ public class Exploration {
         Map map = robot.getMap();
 
         switch (direction) { // Detect for two sensors so can move by 2 grid
-        case Constant.EAST:
-            posY += 2; // Increase y by 2
-            break;
-        case Constant.WEST:
-            posY -= 2; // Decrease y by 2
-            break;
-        case Constant.SOUTH:
-            posX -= 2; // Decrease x by 2
-            break;
-        case Constant.NORTH:
-            posX += 2; // Increase x by 2
-            break;
-        }
-        System.out.println("The middle block is not empty");
+            case Constant.EAST:
+                posY += 2; // Increase y by 2
+                break;
+            case Constant.WEST:
+                posY -= 2; // Decrease y by 2
+                break;
+            case Constant.SOUTH:
+                posX -= 2; // Decrease x by 2
+                break;
+            case Constant.NORTH:
+                posX += 2; // Increase x by 2
+                break;
+            }
         return map.getGrid(posX, posY).equals(Constant.EXPLORED) || map.getGrid(posX, posY).equals(Constant.STARTPOINT)
                 || map.getGrid(posX, posY).equals(Constant.ENDPOINT);
     }
@@ -568,9 +551,9 @@ public class Exploration {
             System.out.println("Bottom left corner");
             switch (direction) {
             case Constant.NORTH:
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             case Constant.EAST:
                 robot.rotateRight();
@@ -585,9 +568,9 @@ public class Exploration {
             System.out.println("Bottom right corner");
             switch (direction) {
             case Constant.WEST:
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             case Constant.NORTH:
                 robot.rotateRight();
@@ -602,9 +585,9 @@ public class Exploration {
             System.out.println("Top right corner");
             switch (direction) {
             case Constant.SOUTH:
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             case Constant.WEST:
                 robot.rotateRight();
@@ -619,9 +602,9 @@ public class Exploration {
             System.out.println("At start");
             switch (direction) {
             case Constant.EAST:
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             case Constant.SOUTH:
                 robot.rotateRight();
@@ -641,9 +624,9 @@ public class Exploration {
             robot.rotateRight();
             break;
         case 2:
-            robot.rotateRight();
-            robot.rotateRight();
-            // robot.rotate180();
+            // robot.rotateRight();
+            // robot.rotateRight();
+            robot.rotate180();
             break;
         case 3:
             robot.rotateLeft();
@@ -761,12 +744,9 @@ public class Exploration {
         for (int i = 0; i < Constant.BOARDWIDTH; i++) {
             for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
                 if (map.getGrid(i, j).equals(Constant.OBSTACLE)) {
-                    // boolean not_inside = true;
                     if (!coordinates.contains(new Coordinate(i, j))) {
-                        // not_inside = false;
                         int cost = Math.abs(start.x - i) + Math.abs(start.y - j);
                         if (cost < lowestCost) {
-                            // cheapestPos = new Coordinate(i, j);
                             x = i;
                             y = j;
                             lowestCost = cost;
@@ -802,9 +782,9 @@ public class Exploration {
                 break;
             } else {
                 System.out.println("Fourth case");
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             }
         case Constant.EAST:
@@ -821,9 +801,9 @@ public class Exploration {
                 break;
             } else {
                 System.out.println("Fourth case");
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             }
         case Constant.SOUTH:
@@ -840,9 +820,9 @@ public class Exploration {
                 break;
             } else {
                 System.out.println("Fourth case");
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             }
         case Constant.WEST:
@@ -859,9 +839,9 @@ public class Exploration {
                 break;
             } else {
                 System.out.println("Fourth case");
-                robot.rotateRight();
-                robot.rotateRight();
-                // robot.rotate180();
+                // robot.rotateRight();
+                // robot.rotateRight();
+                robot.rotate180();
                 break;
             }
         }

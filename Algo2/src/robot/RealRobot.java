@@ -350,6 +350,13 @@ public class RealRobot extends Robot {
 		// acknowledge();
 	}
 
+	public void initialCalibrate() {
+		connectionSocket.sendMessage(Constant.INITIAL_CALIBRATE);
+		if (sr != null) {
+			sr.displayMessage("Sent message: " + Constant.INITIAL_CALIBRATE, 1);
+		}
+	}
+
 	// This will override the update map from the robot class
 	public int[] updateMap() {
 		int[] isObstacle = super.updateMap();

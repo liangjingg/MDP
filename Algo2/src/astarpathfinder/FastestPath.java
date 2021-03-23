@@ -21,7 +21,7 @@ public class FastestPath {
                               // possible path
         int[] path, path1, path2;
 
-        if (astar.isValid(robot, waypoint.x, waypoint.y)) { // If valid waypoint
+        if (waypoint != null && astar.isValid(robot, waypoint.x, waypoint.y)) { // If valid waypoint
             // move is false when running fastest path
             // removing first turn penalty to find fastest path due to initial calibration
             // before timing
@@ -46,10 +46,8 @@ public class FastestPath {
         System.out.println(Arrays.toString(path));
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
-                realFPmove(path, robot);
                 // move(robot, path, speed);
                 System.out.println("Finsh sending");
-                // move(robot, path, speed);
             } else {
                 // get realPath
                 System.out.println(getRealPath(path));
@@ -189,7 +187,7 @@ public class FastestPath {
                     return;
                 }
             } else if (direction == Constant.RIGHT) {
-                // robot.updateMap(); // Is this needed ? -> No sensors needed right... ->Only
+                robot.updateMap();
                 // simulatedMap
                 robot.rotateRight();
                 if (ex.isFrontEmpty(robot)) {
@@ -198,7 +196,7 @@ public class FastestPath {
                     return;
                 }
             } else if (direction == Constant.LEFT) {
-                // robot.updateMap();
+                robot.updateMap();
                 robot.rotateLeft();
                 if (ex.isFrontEmpty(robot)) {
                     robot.forward(1);
@@ -221,7 +219,6 @@ public class FastestPath {
                 return;
             }
         }
-
         robot.updateMap();
     }
 }
