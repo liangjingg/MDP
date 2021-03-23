@@ -5,7 +5,7 @@ public class Constant {
 	public static final int TIME = -1;
 	public static final int PERCENTAGE = 100;
 	public static final int SPEED = 1;
-	public static final boolean IMAGE_REC = true;
+	public static final boolean IMAGE_REC = false;
 
 	// Used for all Real and Simulator Events
 	public static final int BOARDWIDTH = 20; // By default, this should be 20. This must be greater than 3 as the Robot
@@ -19,12 +19,12 @@ public class Constant {
 
 	// You need to define your own range for your sensors
 	public static final double[][] SENSOR_RANGES = { { 9.0, 17.0 }, { 9.0, 17.0 }, { 9.0, 17.0}, { 8.0, 17.0 },
-			{ 8.0, 17.0}, { 7.0, 17.0, 27.0, 37.0, 47.0 } };
+			{ 8.0, 17.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
 
 	// Sensor constants used only in Simulator
 	public static final int SHORTSENSORMAXRANGE = 3; // This is in number of grid.
 	public static final int SHORTSENSOROFFSET = 3; // This is in cm.
-	public static final int FARSENSORMAXRANGE = 7; // This is in number of grid.
+	public static final int FARSENSORMAXRANGE = 5; // This is in number of grid.
 	public static final int FARSENSOROFFSET = 13; // This is in cm.
 
 	public static final int[][] SENSORDIRECTION = new int[][] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };

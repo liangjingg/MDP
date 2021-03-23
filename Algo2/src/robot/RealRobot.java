@@ -124,7 +124,7 @@ public class RealRobot extends Robot {
 
 		boolean completed = false;
 		this.acknowledgementCompleted = false;
-		System.out.println("No acknowledgement");
+		//System.out.println("No acknowledgement");
 
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
@@ -137,9 +137,6 @@ public class RealRobot extends Robot {
 						System.out.println(e.getMessage());
 					}
 				}
-				System.out.println(" sdfiohsadfjsadhfiasdh");
-				System.out.println(Arrays.toString(arr));
-				System.out.println(arr.length);
 				if (arr.length == 7) {
 					break;
 				}
@@ -168,8 +165,9 @@ public class RealRobot extends Robot {
 			this.sensePosition[1] = y;
 			this.sensePosition[2] = getDirection();
 			this.acknowledgementCompleted = true;
-			System.out.println("Acknowledgement");
-			//sendMDFString();
+			sendMDFString();
+			sendPosition();
+			System.out.println("Sending MDF and position");
 			return true;
 		}
 
@@ -180,8 +178,8 @@ public class RealRobot extends Robot {
 		this.sensePosition[1] = y;
 		this.sensePosition[2] = getDirection();
 		this.acknowledgementCompleted = true;
-		System.out.println("Acknowledgementdfdsf");
-		//sendMDFString();
+		sendMDFString();
+		sendPosition();
 		return false;
 
 	}
@@ -215,13 +213,13 @@ public class RealRobot extends Robot {
 		}
 		toggleValid();
 		// sendMDFString();
-		// if (!acknowledge()) {
-		// 	this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
-		// 	this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
-		// 	if (sr != null) {
-		// 		sr.backward(step);
-		// 	}
-		// }
+		if (!acknowledge()) {
+			this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
+			this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
+			if (sr != null) {
+				sr.backward(step);
+			}
+		}
 	}
 
 	// Send the rotate right message and update the robot direction
@@ -239,55 +237,36 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: " + Constant.TURN_RIGHT, 1);
 		}
 		// sendMDFString();
-		// acknowledge();
+		acknowledge();
 	}
 
 	@Override
 	public void rotate180() {
 		connectionSocket.sendMessage(Constant.U_TURN);
-		// try {
-		// 	TimeUnit.MILLISECONDS.sleep(1000);
-		// } catch (Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
 		setDirection((this.getDirection() + 2) % 4);
 		if (sr != null) {
 			sr.rotate180();
 			sr.displayMessage("Sent message: " + Constant.U_TURN, 1);
 		}
 		//sendMDFString();
-		// acknowledge();
+		acknowledge();
 	}
 
 	// Send the rotate left message and update the robot direction
 	@Override
 	public void rotateLeft() {
 		connectionSocket.sendMessage(Constant.TURN_LEFT);
-		// try {
-		// 	TimeUnit.MILLISECONDS.sleep(1000);
-		// } catch (Exception e) {
-		// 	System.out.println(e.getMessage());
-		// }
 		setDirection((this.getDirection() + 3) % 4);
 		if (sr != null) {
 			sr.rotateLeft();
 			sr.displayMessage("Sent message: " + Constant.TURN_LEFT, 1);
 		}
 		// sendMDFString();
-		// acknowledge();
+		acknowledge();
 	}
 
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
-		// System.out.println("Acknowledgemnet completed: " + acknowledgementCompleted);
-		// while (this.acknowledgementCompleted != true) {
-		// 	try {
-		// 		System.out.println("sleeep");
-		// 		TimeUnit.MILLISECONDS.sleep(500);
-		// 	} catch (Exception e) {
-		// 		System.out.println(e.getMessage());
-		// 	}
-		// }
 		this.numOfImages += 1;
 		System.out.println("Number of images " + numOfImages);
 		System.out.println("Start to capture image (To sleep)");
@@ -320,23 +299,14 @@ public class RealRobot extends Robot {
 			System.out.println("Not completed");
 			s = connectionSocket.receiveMessage().trim();
 			completed = checkImageAcknowledge(s);
-			System.out.println("Completed: " + completed);
-			System.out.println("String received: " + s);
-			System.out.println(s.equals(Constant.IMAGE_ACK));
-			System.out.println(s.equals(Constant.IMAGE_STOP));
 			if (completed && s.equals(Constant.IMAGE_ACK)) {
 				System.out.println("Received image acknowledgement" + s);
 				return false;
 			} else if (completed && s.equals(Constant.IMAGE_STOP)) {
-				System.out.println("Received stop" + s);
-				System.out.println(s);
 				return true;
 			} else {
-				System.out.println("hereereadsr");
 				//s = connectionSocket.receiveMessage().trim();
 				// buffer = ConnectionManager.getBuffer();
-				System.out.println("hereerer");
-				System.out.println(" TADAAHHHH" + s);
 				for (int i = 0; i < buffer.size(); i++) {
 					System.out.println("In LOOOOP");
 					completed = checkImageAcknowledge(buffer.get(i));
@@ -354,12 +324,17 @@ public class RealRobot extends Robot {
 	// Get the image acknowledgement from RPI
 	private boolean checkImageAcknowledge(String s) {
 		if (s.equals(Constant.IMAGE_ACK) || s.equals(Constant.IMAGE_STOP)) {
-			System.out.println("valid image reply");
 			return true;
 		}
 		return false;
 	}
 
+	public void sendPosition() {
+		connectionSocket.sendMessage("R{\"robotPosition\":[" + y + "," + x + "," + ((getDirection()+3)%4)*90 + "]}|");
+		if (sr != null) {
+			sr.displayMessage("Sent message: " + "R{\"robotPosition\":[" + y + "," + x + "," + ((getDirection()+3)%4)*90 + "]}", 1);
+		}
+	}
 	// Send the calibrate command
 	public void calibrate() {
 		connectionSocket.sendMessage(Constant.CALIBRATE);

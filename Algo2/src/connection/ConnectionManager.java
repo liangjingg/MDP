@@ -217,11 +217,9 @@ public class ConnectionManager extends Thread{
 					//System.out.println(map.getMDFString());
 				}
 			}
-			
 			else {
 				System.out.println("Unknown command: " + s);
 			}
-			
 		}
 		return s;
 	}
