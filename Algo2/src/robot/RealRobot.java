@@ -61,6 +61,7 @@ public class RealRobot extends Robot {
 	public boolean isAcknowledged() {
 		return this.acknowledgementCompleted;
 	}
+
 	// Difference between this function and acknowledge is that it returns the
 	// sensor value arr after sending sense message to Ardurino
 	@Override
@@ -142,7 +143,8 @@ public class RealRobot extends Robot {
 				}
 			} catch (Exception e) {
 				System.out.println("Exception: " + e.getMessage());
-			};
+			}
+			;
 			if (ConnectionSocket.getDebug()) {
 				System.out.println("In get sensor values");
 				System.out.println(s);
@@ -150,9 +152,10 @@ public class RealRobot extends Robot {
 			if (sr != null) {
 				sr.displayMessage("Received Message: " + s, 1);
 			}
-			// if (sensorPattern.matcher(s).matches() || sensorPattern2.matcher(s).matches()) {
-			// 	arr = s.split("\\|");
-			// 	break;
+			// if (sensorPattern.matcher(s).matches() ||
+			// sensorPattern2.matcher(s).matches()) {
+			// arr = s.split("\\|");
+			// break;
 			// }
 		}
 
@@ -194,16 +197,16 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
 					+ ",\"obstacle\":\"" + arr2[2] + "\"}]}|", 1);
 		}
-		// 	this.numOfCount = 0;
+		// this.numOfCount = 0;
 		// } else {
-		// 	this.numOfCount++;
+		// this.numOfCount++;
 		// }
 	}
 
 	// Send the forward message with how many steps and update the robot position
 	@Override
 	public void forward(int step) {
-		//connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
+		// connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
 		connectionSocket.sendMessage(Constant.FORWARD_MOVEMENT);
 		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
@@ -227,9 +230,9 @@ public class RealRobot extends Robot {
 	public void rotateRight() {
 		connectionSocket.sendMessage(Constant.TURN_RIGHT);
 		// try {
-		// 	TimeUnit.MILLISECONDS.sleep(1000);
+		// TimeUnit.MILLISECONDS.sleep(1000);
 		// } catch (Exception e) {
-		// 	System.out.println(e.getMessage());
+		// System.out.println(e.getMessage());
 		// }
 		setDirection((this.getDirection() + 1) % 4);
 		if (sr != null) {
@@ -268,14 +271,11 @@ public class RealRobot extends Robot {
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
 		this.numOfImages += 1;
-		System.out.println("Number of images " + numOfImages);
-		System.out.println("Start to capture image (To sleep)");
 		try {
 			TimeUnit.MILLISECONDS.sleep(1250);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		System.out.println("Finish waiting");
 		connectionSocket.sendMessage("C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + ":"
 				+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y + ","
 				+ image_pos[2].coordinates.x + ")");
@@ -285,22 +285,19 @@ public class RealRobot extends Robot {
 		if (sr != null) {
 			sr.captureImage(image_pos);
 			sr.displayMessage("Sent message: C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x + ":"
-			+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y + ","
-			+ image_pos[2].coordinates.x + ")", 1);
+					+ image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y
+					+ "," + image_pos[2].coordinates.x + ")", 1);
 		}
 		boolean completed = false;
-		System.out.println("Not completed yet!");
 		String s;
 		ArrayList<String> buffer = ConnectionManager.getBuffer();
-		for (String b: buffer) {
+		for (String b : buffer) {
 			System.out.println("In buffer: " + b);
 		}
 		while (!completed) {
-			System.out.println("Not completed");
 			s = connectionSocket.receiveMessage().trim();
 			completed = checkImageAcknowledge(s);
 			if (completed && s.equals(Constant.IMAGE_ACK)) {
-				System.out.println("Received image acknowledgement" + s);
 				return false;
 			} else if (completed && s.equals(Constant.IMAGE_STOP)) {
 				return true;
@@ -310,7 +307,7 @@ public class RealRobot extends Robot {
 				for (int i = 0; i < buffer.size(); i++) {
 					System.out.println("In LOOOOP");
 					completed = checkImageAcknowledge(buffer.get(i));
-					System.out.println(completed);
+					i += 1;
 					if (completed) {
 						buffer.remove(i);
 						break;

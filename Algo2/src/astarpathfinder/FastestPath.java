@@ -2,6 +2,7 @@ package astarpathfinder;
 
 import config.Constant;
 import connection.ConnectionSocket;
+import datastruct.Coordinate;
 import exploration.Exploration;
 import robot.Robot;
 
@@ -9,7 +10,8 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class FastestPath {
-    public int[] FastestPathAlgo(Robot robot, int[] waypoint, int[] goal, int speed, boolean on_grid, boolean move) {
+    public int[] FastestPathAlgo(Robot robot, Coordinate waypoint, Coordinate goal, int speed, boolean on_grid,
+            boolean move) {
         // on_grid is true in exploration but not image recognition exploration and not
         // phase 3 of exploration (back to the start)and false in fastest path
         // could represent the sensors i guess
@@ -19,16 +21,16 @@ public class FastestPath {
                               // possible path
         int[] path, path1, path2;
 
-        if (astar.isValid(robot, waypoint)) { // If valid waypoint
+        if (astar.isValid(robot, waypoint.x, waypoint.y)) { // If valid waypoint
             // move is false when running fastest path
             // removing first turn penalty to find fastest path due to initial calibration
             // before timing
             if (!move) {// ????
                 astar.setFirstTurnPenalty(false);
             }
-
+            Coordinate startPos = robot.getPosition();
             // if way point was set: go to way point first
-            path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), waypoint, on_grid);
+            path = astar.AStarPathFinderAlgo(robot, startPos, waypoint, on_grid);
             if (path != null) {
                 astar.setFirstTurnPenalty(true);
                 path1 = path;
@@ -52,7 +54,7 @@ public class FastestPath {
                 // get realPath
                 System.out.println(getRealPath(path));
                 move(robot, path, speed);
-                System.out.printf("At goal, x: %d, y: %d \n now", goal[0], goal[1]);
+                System.out.printf("At goal, x: %d, y: %d \n now", goal.x, goal.y);
             }
         }
         System.out.println(Arrays.toString(path));
@@ -170,7 +172,7 @@ public class FastestPath {
         Exploration ex = new Exploration(); // change isfrontempty to robot method?
         // Move the robot based on the path
         for (int direction : path) {
-            System.out.printf("Fastest path move: x: %d, y: %d \n", robot.getPosition()[0], robot.getPosition()[1]);
+            System.out.printf("Fastest path move: x: %d, y: %d \n", robot.getPosition().x, robot.getPosition().y);
             // System.out.println("Move " + direction);
             if (!connection.ConnectionSocket.checkConnection()) {
                 try {

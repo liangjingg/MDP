@@ -1,13 +1,15 @@
 package astarpathfinder;
 
+import datastruct.Coordinate;
+
 public class Node implements Comparable<Node> {
-    public int[] pos;
+    public Coordinate pos;
     public Node parent = null;
     public int g_cost = 0;
     public int h_cost = 0;
     public int cost = g_cost + h_cost;
 
-    public Node(int[] pos) {
+    public Node(Coordinate pos) {
         this.pos = pos;
     }
 

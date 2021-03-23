@@ -4,9 +4,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import config.Constant;
+import datastruct.Coordinate;
 import imagecomponent.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class SimulatorMap {
@@ -78,17 +78,15 @@ public class SimulatorMap {
 	private void updateMapOnUI(Map oldMap, Map newMap) {
 		String[][] oldGridValue = oldMap.getGridMap();
 		String[][] newGridValue = newMap.getGridMap();
-		int[] waypoint = newMap.getWayPoint();
-		int[] old_waypoint = oldMap.getWayPoint();
-		if (!Arrays.equals(waypoint, new int[] { -1, -1 })) {
-			gridCells[waypoint[0]][waypoint[1]].setImage(gridToImagePath.get(Constant.WAYPOINT));
+		Coordinate waypoint = newMap.getWayPoint();
+		Coordinate oldWaypoint = oldMap.getWayPoint();
+		if (waypoint.x != -1 && waypoint.y != -1) {
+			gridCells[waypoint.x][waypoint.y].setImage(gridToImagePath.get(Constant.WAYPOINT));
 		}
 		for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
-				if ((oldGridValue[i][j].compareTo(newGridValue[i][j]) != 0
-						|| Arrays.equals(old_waypoint, new int[] { i, j }))
-						&& gridToImagePath.containsKey(newGridValue[i][j])
-						&& !Arrays.equals(waypoint, new int[] { i, j })) {
+				if ((oldGridValue[i][j].compareTo(newGridValue[i][j]) != 0 || oldWaypoint.equals(new Coordinate(i, j)))
+						&& gridToImagePath.containsKey(newGridValue[i][j]) && !waypoint.equals(new Coordinate(i, j))) {
 					gridCells[i][j].setImage(gridToImagePath.get(newGridValue[i][j]));
 				}
 			}

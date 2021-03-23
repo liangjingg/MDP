@@ -13,6 +13,7 @@ import imagecomponent.ImageComponent;
 import sensor.SimulatorSensor;
 import simulator.SetUpUI;
 import timertask.MoveImageTask;
+import datastruct.Coordinate;
 import datastruct.Obstacle;
 
 public class SimulatorRobot extends Robot {
@@ -100,11 +101,11 @@ public class SimulatorRobot extends Robot {
 	}
 
 	public void setWaypoint(int x, int y) {
-		int[] oldWaypoint = this.getWaypoint().clone();
+		Coordinate oldWaypoint = new Coordinate(this.getWaypoint().x, this.getWaypoint().y);
 		super.setWaypoint(x, y); // Sets the map that is attribute of the robot
-		if (!Arrays.equals(oldWaypoint, this.getWaypoint())) {
+		if (!oldWaypoint.equals(this.getWaypoint())) {
 			smap.setMap(map);
-			if (Arrays.equals(new int[] { -1, -1 }, this.getWaypoint())) {
+			if (this.getWaypoint().x != -1 && this.getWaypoint().x != -1) {
 				buttonListener.displayMessage("Removed waypoint.", 1);
 			} else {
 				buttonListener.displayMessage("Successfully set the waypoint: " + x + ", " + y, 1);
@@ -245,7 +246,7 @@ public class SimulatorRobot extends Robot {
 	// Simulate the delay in capturing image
 	public boolean captureImage(Obstacle[] image_pos) {
 		System.out.println("Capturing Image");
-		buttonListener.displayMessage("Capturing image at " + Arrays.toString(getPosition()) + " now", 1);
+		buttonListener.displayMessage("Capturing image at " + getPosition() + " now", 1);
 		buttonListener.displayMessage("Sent message: C(" + image_pos[0].coordinates.y + "," + image_pos[0].coordinates.x
 				+ ":" + image_pos[1].coordinates.y + "," + image_pos[1].coordinates.x + ":" + image_pos[2].coordinates.y
 				+ "," + image_pos[2].coordinates.x + ")", 1);

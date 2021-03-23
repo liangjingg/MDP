@@ -35,6 +35,7 @@ import java.util.HashMap;
 import astarpathfinder.AStarPathFinder;
 import config.Constant;
 import connection.ConnectionSocket;
+import datastruct.Coordinate;
 import exploration.ExplorationThread;
 import robot.SimulatorRobot;
 import map.Map;
@@ -808,7 +809,7 @@ public class SetUpUI implements ActionListener {
 				System.out.println(ex.getMessage());
 			}
 			// Need to be after the map is set because it got cleared
-			int[] waypoint = r.getWaypoint();
+			Coordinate waypoint = r.getWaypoint();
 			// System.out.printf("Old Waypoint x :%d, y: %d \n", waypoint[0], waypoint[1]);
 			r.setWaypoint(chosenWaypoint[0], chosenWaypoint[1]);
 			// if (loadedMap.getGrid(chosenWaypoint[0],
