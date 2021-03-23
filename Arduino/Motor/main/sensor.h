@@ -154,10 +154,10 @@ float getDistL(float analogreading,float a,float b,float c){
   outdist = abs(outdist);
 
   if (outdist<0){
-    return 50.00;
+    return 60.01;
   }
-  else if (outdist > 50){
-    return 50.00;
+  else if (outdist > 60){
+    return 60.01;
   }
   return outdist;
 }

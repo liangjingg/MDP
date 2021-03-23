@@ -100,13 +100,13 @@ void loop() {
   //updateSensorPrint();
   //turnFixedLeft();
   //turnRight(350);
+  delay(100);
  
   //rightSlantCorrection();
   //updateSensor();
   //Serial.println(getRFAnalog());
 //  delay(2000);
 //  turnFixedRight();
-  delay(200);
 
   //getSensorDist();
   //getDistanceMsg();

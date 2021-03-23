@@ -3,7 +3,7 @@ int cmd_in,cmd_out;
 char cmd[300];
 
 //hakim changed W01 from 250 ->260 A and D from 366 to respective
-#define W01  295
+#define W01  280
 #define S01  250
 #define A01  350
 #define D01  350
@@ -35,20 +35,20 @@ void executeExplorationCommand(){
   switch(letter){
     case 'W': goStraight(W01);
               //delay(250);
-              //updateDone();
+              updateDone();
               //updateSensorPrint();
     
 //              Serial.println("going straight");
               break;
     case 'A': turnLeft(380);
               //delay(250);
-              //updateDone();
+              updateDone();
               //checkRightDist();
               break;
     case 'D': //turnRight(400);
               turnRight(380);
               //delay(250);
-              //updateDone();
+              updateDone();
               break;
     case 'Q':checkRightDist();
               break;
