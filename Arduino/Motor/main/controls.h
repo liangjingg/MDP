@@ -63,6 +63,7 @@ void executeExplorationCommand(){
     case 'V':checkFrontAlign();
               break;
     case 'U':uTurn();
+             updateDone();
               break;
     case 'X': checkFrontDist();
               break;

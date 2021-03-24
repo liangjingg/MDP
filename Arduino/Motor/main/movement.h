@@ -11,7 +11,7 @@
 #define FASTSPEED 340
 #define SLOWSPEED 200
 
-#define WALLDIST 4
+#define WALLDIST 5
 
 
 //tickss parameters for PID
@@ -21,7 +21,7 @@ double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 4.2, 1.0, 0, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 4.2, 2.0, 0.1, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.2, 0.2, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.5, 0.3, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -169,10 +169,11 @@ void checkRightDist(){
 
 
 void checkFrontDist(){
+    float walldist = 4.50;
     pullData();
 
-    if (FC <WALLDIST){
-        while (FC < WALLDIST){ /////////
+    if (FC <walldist){
+        while (FC < walldist){ /////////
             md.setSpeeds(100,100);
             pullData();
         }
@@ -211,8 +212,8 @@ void checkFrontDist(){
     }
 
 
-    else if (FR <WALLDIST){
-        while (FR < WALLDIST){
+    else if (FR <walldist){
+        while (FR < walldist){
             md.setSpeeds(100,100);
             pullData();
         }
@@ -349,7 +350,11 @@ void checkRightAlign(){
 }
 
 void uTurn(){
+  rightEncoderRes();
+  leftEncoderRes();
   checkFrontDist();
+  rightEncoderRes();
+  leftEncoderRes();
   checkRightAlign();
   leftEncoderRes();
   rightEncoderRes();
@@ -363,6 +368,8 @@ void uTurn(){
   rightEncoderRes();
   leftEncoderRes();
   checkRightAlign();
+  rightEncoderRes();
+  leftEncoderRes();
 }
 
 
