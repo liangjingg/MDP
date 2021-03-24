@@ -403,11 +403,11 @@ public class Map {
 			}
 		}
 		try {
-			File folder = new File(Constant.FOLDER_TO_WRITE + "\\sample arena");
+			File folder = new File(Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena");
 			int numOfFiles = folder.list().length;
 			System.out.println(numOfFiles);
 			File file = new File(
-					Constant.FOLDER_TO_WRITE + "\\sample arena\\" + "samplearena" + (numOfFiles - 1) + ".txt");
+					Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena" + File.separator + "" + "samplearena" + (numOfFiles - 1) + ".txt");
 			PrintWriter out = new PrintWriter(file);
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				for (int i = 0; i < Constant.BOARDWIDTH; i++) {

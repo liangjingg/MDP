@@ -133,11 +133,11 @@ public class SetUpUI implements ActionListener {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		// Set Icon or Image to the UI Component
-		right.setIcon(new ImageIcon(new ImageIcon(".\\images\\right.png").getImage()
+		right.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "right.png").getImage()
 				.getScaledInstance(Constant.GRIDWIDTH, Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
-		left.setIcon(new ImageIcon(new ImageIcon(".\\images\\left.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
+		left.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "left.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
 				Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
-		up.setIcon(new ImageIcon(new ImageIcon(".\\images\\up.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
+		up.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "up.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
 				Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
 
 		// Set text of buttons
@@ -537,7 +537,7 @@ public class SetUpUI implements ActionListener {
 	// Reads all the txt file from the directory sample arena. Returns the array of
 	// the file name in the directory.
 	public String[] getArenaMapFileNames() {
-		File folder = new File(Constant.FOLDER_TO_WRITE + "\\sample arena");
+		File folder = new File(Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena");
 		filePath = new HashMap<String, String>();
 		for (File file : folder.listFiles()) {
 			if (file.getName().endsWith(".txt")) {
