@@ -3,10 +3,11 @@ int cmd_in,cmd_out;
 char cmd[300];
 
 //hakim changed W01 from 250 ->260 A and D from 366 to respective
-#define W01  280
-#define S01  250
-#define A01  350
-#define D01  350
+//#define W01  280 // Speed -> 250tick/min at 280 ticks needed for one block
+#define W01  270
+#define S01  380
+#define A01  370
+#define D01  370
 
 
 
@@ -40,13 +41,13 @@ void executeExplorationCommand(){
     
 //              Serial.println("going straight");
               break;
-    case 'A': turnLeft(380);
+    case 'A': turnLeft(A01);
               //delay(250);
               updateDone();
               //checkRightDist();
               break;
     case 'D': //turnRight(400);
-              turnRight(380);
+              turnRight(D01);
               //delay(250);
               updateDone();
               break;
@@ -63,7 +64,7 @@ void executeExplorationCommand(){
               break;
     case 'U':uTurn();
               break;
-    case 'X':turnFixedLeft2();
+    case 'X': checkFrontDist();
               break;
     case 'C':break;
 

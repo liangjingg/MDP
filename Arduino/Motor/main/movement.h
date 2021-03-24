@@ -8,8 +8,10 @@
 
 #define LEFT_ENCODER 11 //left motor encoder A to pin 5
 #define RIGHT_ENCODER 5//right motor encoder A to pin 13
-#define FASTSPEED 250
+#define FASTSPEED 340
 #define SLOWSPEED 200
+
+#define WALLDIST 4
 
 
 //tickss parameters for PID
@@ -85,9 +87,9 @@ void turnFixedLeft() {
   leftEncoderRes();
   leftPID.Compute();
   
-  while ((leftEncoderValue < 410) && (rightEncoderValue < 410)) {
+  while ((leftEncoderValue < 380) && (rightEncoderValue < 380)) {
     leftPID.Compute();
-    md.setSpeeds(-(200 - Output), (200 + Output));
+    md.setSpeeds(-(340 - Output), (340 + Output));
    //   Serial.print("Left Encoder Value: ");
  
     //Serial.println(rightEncoderValue);
@@ -100,9 +102,9 @@ void turnFixedRight() {
   rightEncoderRes();
   leftEncoderRes();
   rightPID.Compute();
-  while ((leftEncoderValue < 410) && (rightEncoderValue < 410)) {
+  while ((leftEncoderValue < 370) && (rightEncoderValue < 370)) {
     rightPID.Compute();
-    md.setSpeeds((200 - Output), -(200 + Output));
+    md.setSpeeds((340 - Output), -(340 + Output));
 
     //Serial.println(rightEncoderValue);
   }
@@ -111,17 +113,6 @@ void turnFixedRight() {
   rightEncoderRes();
 }
 
-void turnFixedLeft2() {
-  
-  leftPID.Compute();
-  while ((leftEncoderValue < 522) && (rightEncoderValue < 522)) {
-    leftPID.Compute();
-    md.setSpeeds(-(200 - Output), (200 + Output));
-  }
-  md.setBrakes(400, 400);
-  rightEncoderRes();
-  leftEncoderRes();
-}
 
 
 void checkRightDist(){
@@ -130,7 +121,7 @@ void checkRightDist(){
         turnFixedRight();
         delay(300);
         pullData();
-        while(FC<rtolerance){
+        while(FC<WALLDIST){
             md.setSpeeds(100,100); //reverse robot
             pullData();
             //Serial.print("Reversing . ");
@@ -144,7 +135,7 @@ void checkRightDist(){
     else if (RB < 20 && RF <20){
         float rfmoduluo = fmod(RF-rtolerance,10);
         float rbmoduluo = fmod(RB-rtolerance,10);
-        if (rfmoduluo >=2.00 && rfmoduluo <5.00){ //round down
+        if (rfmoduluo >=3.00 && rfmoduluo <5.00){ //round down
             float target = RF - rfmoduluo;
             turnFixedRight();
             delay(300);
@@ -157,7 +148,7 @@ void checkRightDist(){
             turnFixedLeft();
 
         }
-        else if (rfmoduluo >=5.00 && rfmoduluo <=8.00){
+        else if (rfmoduluo >=5.00 && rfmoduluo <=7.00){
             float target = RF - rfmoduluo + 10.00;
             turnFixedRight();
             delay(300);
@@ -176,11 +167,12 @@ void checkRightDist(){
   leftEncoderRes();
 }
 
+
 void checkFrontDist(){
     pullData();
 
-    if (FC <ftolerance){
-        while (FC < ftolerance){
+    if (FC <WALLDIST){
+        while (FC < WALLDIST){ /////////
             md.setSpeeds(100,100);
             pullData();
         }
@@ -219,8 +211,8 @@ void checkFrontDist(){
     }
 
 
-    else if (FR <ftolerance){
-        while (FR < ftolerance){
+    else if (FR <WALLDIST){
+        while (FR < WALLDIST){
             md.setSpeeds(100,100);
             pullData();
         }
@@ -400,7 +392,7 @@ void goStraight(double ticks) {
 //    Serial.println(LeftEncoderOutput);
 //    Serial.println(Output);
     
-    md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + Output)));
+    md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + Output+20)));
   }
   md.setBrakes(400, 400);
   rightEncoderRes();
@@ -427,7 +419,8 @@ void goBack(double ticks) {
 
 /* =============================== Turn Left & Turn Right ============================= */
 void turnLeft(double ticks) {
-  
+  leftEncoderRes();
+  rightEncoderRes();  
   checkFrontDist();
   checkRightAlign();
   leftEncoderRes();
@@ -446,8 +439,8 @@ void turnLeft(double ticks) {
 
 
 void turnRight(double ticks) {
- 
-  rightPID.Compute();
+  leftEncoderRes();
+  rightEncoderRes(); 
   checkFrontDist();
   checkRightAlign();
   leftEncoderRes();
