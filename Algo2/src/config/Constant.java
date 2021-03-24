@@ -20,8 +20,8 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 7.0, 17.0 }, { 7.0, 17.0 }, { 7.0, 17.0}, { 8.0, 17.0 },
-	{ 7.0, 17.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
+	public static final double[][] SENSOR_RANGES = { { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0}, { 7.0, 19.0, 27.0 },
+	{ 7.0, 19.0, 27.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
 
 	public static final double[] MAX_SENSOR_LIMIT = { 30.0, 30.0, 30.0, 30.0, 30.0, 50.0 };
 	public static final double[] MAX_UNCERTAINTY = { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
@@ -87,7 +87,7 @@ public class Constant {
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
 	// public static final String IP_ADDRESS = "192.168.15.15";
-	public static final int PORT = 5050;
+	public static final int PORT = 6050;
 	public static final int BUFFER_SIZE = 512;
 
 	public static final String START_EXPLORATION = "ES|";

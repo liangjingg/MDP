@@ -260,6 +260,7 @@ public class Exploration {
     }
 
     private void inInfiniteLoop(Robot robot) {
+        System.out.println("Consective direction changes: " + consecutiveDirectionChange);
         if (consecutiveDirectionChange == 4) {
             robot.rotateRight();
             while (isFrontEmpty(robot)) {
@@ -358,7 +359,11 @@ public class Exploration {
             robot.forward(1); // Go straight
             return checkedObstacles;
         } else {
-            robot.rotateLeft();
+            if (leftWall(robot)) {
+                robot.rotate180();
+            } else {
+                robot.rotateLeft();
+            }
             if ((checkedObstacles != null) && (!rightWall(robot))) {
                 checkedObstacles = imageRecognition(robot, checkedObstacles);
             }
@@ -535,6 +540,26 @@ public class Exploration {
         int[] obstacles = robot.updateMap();
         return (obstacles[0] != 1) && (obstacles[1] != 1) && (obstacles[2] != 1);
     };
+
+    private boolean leftWall(Robot robot) {
+        int direction = robot.getDirection();
+        Coordinate pos = robot.getPosition();
+        int posX = pos.x;
+        int posY = pos.y;
+        switch (direction) {
+        case Constant.NORTH:
+            return posX == 1;
+        case Constant.SOUTH:
+            return posX == Constant.BOARDWIDTH - 2;
+        case Constant.EAST:
+            return posY == 1;
+        case Constant.WEST:
+            return posY == Constant.BOARDHEIGHT - 2;
+        default:
+            return true;
+        }
+
+    }
 
     private void cornerCalibration(Robot robot) {
         Coordinate pos = robot.getPosition();
