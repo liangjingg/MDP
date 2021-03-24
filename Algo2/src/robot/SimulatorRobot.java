@@ -93,6 +93,7 @@ public class SimulatorRobot extends Robot {
 	public boolean isAcknowledged() {
 		return true;
 	}
+
 	// Update the map and display on the screen
 	public int[] updateMap() {
 		int[] isObstacle = super.updateMap();
@@ -105,7 +106,7 @@ public class SimulatorRobot extends Robot {
 		super.setWaypoint(x, y); // Sets the map that is attribute of the robot
 		if (!oldWaypoint.equals(this.getWaypoint())) {
 			smap.setMap(map);
-			if (this.getWaypoint().x != -1 && this.getWaypoint().x != -1) {
+			if (this.getWaypoint().x != -1 && this.getWaypoint().y != -1) {
 				buttonListener.displayMessage("Removed waypoint.", 1);
 			} else {
 				buttonListener.displayMessage("Successfully set the waypoint: " + x + ", " + y, 1);

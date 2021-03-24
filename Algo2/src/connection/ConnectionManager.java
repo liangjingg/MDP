@@ -158,7 +158,7 @@ public class ConnectionManager extends Thread {
 					// sr.toggleMap();
 				}
 				// run map
-				System.out.println(robot.getMap().print(robot.getPosition().x, robot.getPosition().y));
+				System.out.println(robot.getMap().print());
 				s = "Fastest Path started";
 				try {
 					thread.join();
@@ -226,8 +226,7 @@ public class ConnectionManager extends Thread {
 					}
 					// System.out.println(map.getMDFString());
 				}
-			}
-			else {
+			} else {
 				System.out.println("Unknown command: " + s);
 			}
 		}

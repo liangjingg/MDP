@@ -61,7 +61,7 @@ public class Map {
 		return m;
 	}
 
-	public String print(int x, int y) {
+	public String print() {
 		String s = "";
 		s += "The current map is: \n\n";
 		// System.out.println("The current map is: \n");
@@ -92,9 +92,7 @@ public class Map {
 						// s+=grid[i][j] + ", ";
 						// System.out.print(grid[i][j] + ", " );
 						String temp = " ";
-						if (i == x && j == y) {
-							temp = String.format("%3s|", "R");
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
 							temp = String.format("%3s|", "O");
 						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
 							temp = String.format("%3s|", "S");
@@ -104,9 +102,7 @@ public class Map {
 					}
 				} else {
 					String temp = " ";
-					if (i == x && j == y) {
-						grid[i][j] = String.format("%3s|", "R");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
 						temp = String.format("%3s|", " ");
 					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
 						temp = String.format("%3s|", "X");

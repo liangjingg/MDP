@@ -16,21 +16,17 @@ public class AStarPathFinder {
     boolean firstPenalty = true;
     Node[][] nodeDetails;
 
-    public int[] AStarPathFinderAlgo(Robot robot, Coordinate startPos, Coordinate endPos, boolean on_grid) {
+    public int[] AStarPathFinderAlgo(Robot robot, Coordinate startPos, Coordinate endPos, boolean onGrid) {
         // Node start = new Node(start_pos);
         initialDirection = robot.getDirection();
         Node cur = null;
         // System.out.printf("End pos: x: %d, y: %d \n", endPos.x, endPos.y);
-
         // matrix indicating whether is on open list or not
         boolean[][] openList = new boolean[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
         // matrix indicating whether is on closed list or not
         boolean[][] closedList = new boolean[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
         // Contains all the details of the node on the board -> parent, cost etc
         nodeDetails = new Node[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
-
-        // Node[] open = { start };
-        // Node[] closed = {};
 
         for (int i = 0; i < Constant.BOARDWIDTH; i++) {
             for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
@@ -50,12 +46,11 @@ public class AStarPathFinder {
         nodeDetails[startPosX][startPosY].h_cost = 0;
         nodeDetails[startPosX][startPosY].cost = 0;
 
-        Node startNode = nodeDetails[startPosY][startPosY];
+        Node startNode = nodeDetails[startPosX][startPosY];
 
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
         openQueue.add(startNode);
         boolean pathFound = false;
-        System.out.println("On grid: " + on_grid);
 
         while (!openQueue.isEmpty()) {
             // System.out.println("Priority Queue: ");
@@ -67,12 +62,12 @@ public class AStarPathFinder {
             // temp.g_cost, temp.h_cost, temp.cost);
             // }
             cur = openQueue.poll();
-            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n",
-            // cur.pos.x, cur.pos.y,
+            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n", cur.pos.x,
+            // cur.pos.y,
             // nodeDetails[cur.pos.x][cur.pos.y].g_cost,
             // nodeDetails[cur.pos.x][cur.pos.y].h_cost);
 
-            if (((!on_grid) && (canReach(cur.pos, endPos, first))) || ((on_grid) && (cur.pos.equals(endPos)))) {
+            if (((!onGrid) && (canReach(cur.pos, endPos, first))) || ((onGrid) && (cur.pos.equals(endPos)))) {
                 System.out.println("Path found!");
                 pathFound = true;
                 break;
@@ -150,7 +145,6 @@ public class AStarPathFinder {
         int x = endPos.x;
         int y = endPos.y;
         int[][] pos;
-        // System.out.println("First: " + first);
         if (first) {
             pos = new int[][] { { x - 1, y - 2 }, { x, y - 2 }, { x + 1, y - 2 }, { x + 2, y - 1 }, { x + 2, y },
                     { x + 2, y + 1 }, { x + 1, y + 2 }, { x, y + 2 }, { x - 1, y + 2 }, { x - 2, y + 1 }, { x - 2, y },
@@ -193,7 +187,6 @@ public class AStarPathFinder {
         int y = posY;
         int[][] robotPos = { { x - 1, y + 1 }, { x, y + 1 }, { x + 1, y + 1 }, { x - 1, y }, { x, y }, { x + 1, y },
                 { x - 1, y - 1 }, { x, y - 1 }, { x + 1, y - 1 } };
-
         if ((x > 0) && (x < Constant.BOARDWIDTH - 1) && (y > 0) && (y < Constant.BOARDHEIGHT - 1)) {
             for (int[] coordinates : robotPos) {
                 if (map.getGrid(coordinates[0], coordinates[1]).equals(Constant.OBSTACLE)) {
