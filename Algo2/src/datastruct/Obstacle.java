@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Obstacle {
     public final Coordinate coordinates;
     public final int direction;
+    private double uncertainty;
 
     public Obstacle(Coordinate coordinates, int direction) {
         this.coordinates = coordinates;
@@ -31,5 +32,13 @@ public class Obstacle {
     @Override
     public String toString() {
         return "x: " + this.coordinates.x + ", y:" + this.coordinates.y + ", direction: " + this.direction;
+    }
+
+    public void setUncertainty(double uncertainty) {
+        this.uncertainty = uncertainty;
+    }
+
+    public double getUncertainty() {
+        return this.uncertainty;
     }
 }

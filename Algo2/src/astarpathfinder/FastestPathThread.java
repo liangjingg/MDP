@@ -1,6 +1,5 @@
 package astarpathfinder;
 
-import exploration.ExplorationThread;
 import robot.Robot;
 import robot.SimulatorRobot;
 
@@ -8,17 +7,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import config.Constant;
 import connection.ConnectionSocket;
+import datastruct.Coordinate;
 
 public class FastestPathThread extends Thread {
     private Robot r;
-    private int[] waypoint;
+    private Coordinate waypoint;
     private int speed;
 
     private static final AtomicBoolean running = new AtomicBoolean(false);
     private static final AtomicBoolean completed = new AtomicBoolean(false);
     private static FastestPathThread thread = null;
 
-    private FastestPathThread(Robot r, int[] waypoint, int speed) {
+    private FastestPathThread(Robot r, Coordinate waypoint, int speed) {
         super("FastestPathThread");
         this.r = r;
         this.speed = speed;
@@ -53,7 +53,7 @@ public class FastestPathThread extends Thread {
         }
     }
 
-    public static FastestPathThread getInstance(Robot r, int[] waypoint, int speed) {
+    public static FastestPathThread getInstance(Robot r, Coordinate waypoint, int speed) {
         if (thread == null) {
             thread = new FastestPathThread(r, waypoint, speed);
         }

@@ -39,8 +39,10 @@ public abstract class Sensor {
 		sensorLocation[3] = new int[] { sensorDirection[1][0] + lastDirection[0],
 				sensorDirection[1][1] + lastDirection[1] };
 		sensorLocation[4] = new int[] { sensorLocation[0][0], sensorLocation[0][1] };
-		sensorLocation[5] = new int[] { sensorLocation[2][0], sensorLocation[2][1] };
+		sensorLocation[5] = sensorDirection[2];
+		System.out.printf("Last sensor location: %d, %d \n", sensorLocation[5][0], sensorLocation[5][1]);
 	}
+
 
 	public static void print() {
 		System.out.println("Sensor Location \n");
