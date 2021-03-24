@@ -57,7 +57,7 @@ public class Constant {
 	public static final int GRIDWIDTH = 40;
 	public static final int MARGINLEFT = 100;
 	public static final int MARGINTOP = 100;
-	public static final String SIMULATORICONIMAGEPATH = ".\\images\\simulator_icon.ico";
+	public static final String SIMULATORICONIMAGEPATH = "/images/simulator_icon.ico";
 
 	// Used in Map and possibly used in real run and simulator
 	public static final String[] POSSIBLEGRIDLABELS = new String[] { "Unexplored", "Explored", "Obstacle", "Waypoint",
@@ -104,22 +104,22 @@ public class Constant {
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\OneDrive\\Desktop\\NTU\\Year 3\\MDP\\MDP\\Algo2";
+	public static final String FOLDER_TO_WRITE = "/Users/ray/Desktop/Projects/MDP Stuff/MDP/Algo2";
 	public static final String SETMDF = "MDF";
 	public static final String INITIAL_CALIBRATE = "E|";
 	// Image path for UI Simulator
-	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\unexplored_grid.png";
-	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\explored_grid.png";
-	public static final String OBSTACLEIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\obstacle_grid.png";
-	public static final String WAYPOINTIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\waypoint_grid.png";
-	public static final String STARTPOINTIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\start_grid.png";
-	public static final String ENDPOINTIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\end_grid.png";
-	public static final String ROBOTIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\robot.png";
-	public static final String ROBOTNIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\carN.gif";
-	public static final String ROBOTEIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\carE.gif";
-	public static final String ROBOTSIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\carS.gif";
-	public static final String ROBOTWIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\carW.gif";
-	public static final String DIALOGICONIMAGEPATH = FOLDER_TO_WRITE + ".\\images\\letter-r.png";
+	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + "/images/unexplored_grid.png";
+	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + "/images/explored_grid.png";
+	public static final String OBSTACLEIMAGEPATH = FOLDER_TO_WRITE + "/images/obstacle_grid.png";
+	public static final String WAYPOINTIMAGEPATH = FOLDER_TO_WRITE + "/images/waypoint_grid.png";
+	public static final String STARTPOINTIMAGEPATH = FOLDER_TO_WRITE + "/images/start_grid.png";
+	public static final String ENDPOINTIMAGEPATH = FOLDER_TO_WRITE + "/images/end_grid.png";
+	public static final String ROBOTIMAGEPATH = FOLDER_TO_WRITE + "/images/robot.png";
+	public static final String ROBOTNIMAGEPATH = FOLDER_TO_WRITE + "/images/carN.gif";
+	public static final String ROBOTEIMAGEPATH = FOLDER_TO_WRITE + "/images/carE.gif";
+	public static final String ROBOTSIMAGEPATH = FOLDER_TO_WRITE + "/images/carS.gif";
+	public static final String ROBOTWIMAGEPATH = FOLDER_TO_WRITE + "/images/carW.gif";
+	public static final String DIALOGICONIMAGEPATH = FOLDER_TO_WRITE + "/images/letter-r.png";
 
 	public static final String[] GRIDIMAGEPATH = new String[] { UNEXPLOREDIMAGEPATH, EXPLOREDIMAGEPATH,
 			OBSTACLEIMAGEPATH, WAYPOINTIMAGEPATH, STARTPOINTIMAGEPATH, ENDPOINTIMAGEPATH };

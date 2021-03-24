@@ -44,7 +44,7 @@ public abstract class Robot {
 		if (ConnectionSocket.getDebug()) {
 			try {
 				this.writer = new OutputStreamWriter(
-						new FileOutputStream(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt"), "UTF-8");
+						new FileOutputStream(Constant.FOLDER_TO_WRITE + "/" + "Output.txt"), "UTF-8");
 				writer.write("");
 			} catch (Exception e) {
 				System.out.println("Unable to write into output");
@@ -377,14 +377,14 @@ public abstract class Robot {
 
 		{
 			try {
-				File file = new File(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt");
+				File file = new File(Constant.FOLDER_TO_WRITE + "/" + "Output.txt");
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String st = "", tmp = "";
 				while ((tmp = br.readLine()) != null) {
 					st += tmp + "\n";
 				}
 				this.writer = new OutputStreamWriter(
-						new FileOutputStream(Constant.FOLDER_TO_WRITE + "\\" + "Output.txt"), "UTF-8");
+						new FileOutputStream(Constant.FOLDER_TO_WRITE + "/" + "Output.txt"), "UTF-8");
 				writer.write(st + "\n\n");
 				writer.write("Pos : [" + x + ", " + y + ", " + Constant.DIRECTIONS[direction] + "]\n");
 				writer.write("The sensor values are: ");
