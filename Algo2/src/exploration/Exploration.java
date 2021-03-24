@@ -110,13 +110,14 @@ public class Exploration {
         } while (!atPosition(robot, Constant.START));
 
         Coordinate unexplored = nearestUnexplored(robot, robot.getPosition()); // Returns the
-        // System.out.println("Unexplored: " + Arrays.toString(unexplored));
         while (unexplored != null) {
+            System.out.println("Unexplored: " + unexplored);
             // fastest path to nearest unexplored square
             System.out.println("Phase 2");
             int[] path = fp.FastestPathAlgo(robot, null, unexplored, 1, false, true);
             if ((path == null) || (map.getGrid(unexplored.x, unexplored.y).equals(Constant.UNEXPLORED))) {
-                // No path to the nearest unexplored/Remains unexplored -> Because it is an
+                // need fix this becuase sensor position changed
+                // No path to the nearest unexplored/Remains unexplored because it is an
                 // obstacle
                 map.setGrid(unexplored.x, unexplored.y, Constant.OBSTACLE);
             }
@@ -148,7 +149,8 @@ public class Exploration {
             checkedObstacles = move(robot, 1, checkedObstacles);
             // System.out.println("Checked obstacles:");
             // for (Obstacle o : checkedObstacles) {
-            //     System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x, o.coordinates.y, o.direction);
+            // System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x,
+            // o.coordinates.y, o.direction);
             // }
             System.out.println();
             cornerCalibration(robot);
@@ -267,7 +269,6 @@ public class Exploration {
         }
     }
 
-
     private void checkUTurn(Robot robot) {
         if (atPosition(robot, Constant.START) && !goneUTurn) {
             System.out.println("At start position");
@@ -354,7 +355,7 @@ public class Exploration {
             checkedObstacles = imageRecognition(robot, checkedObstacles);
         }
         if (isFrontEmpty(robot)) {
-            robot.forward(1); //Go straight
+            robot.forward(1); // Go straight
             return checkedObstacles;
         } else {
             robot.rotateLeft();
@@ -362,7 +363,7 @@ public class Exploration {
                 checkedObstacles = imageRecognition(robot, checkedObstacles);
             }
         }
-        if (isFrontEmpty(robot)) { //Go left
+        if (isFrontEmpty(robot)) { // Go left
             robot.forward(1);
             if (lastDirectionChange.equals("LEFT")) {
                 consecutiveDirectionChange += 1;
@@ -371,12 +372,12 @@ public class Exploration {
             }
             return checkedObstacles;
         } else {
-            robot.rotateLeft(); 
+            robot.rotateLeft();
             if ((checkedObstacles != null) && (!rightWall(robot))) {
                 checkedObstacles = imageRecognition(robot, checkedObstacles);
             }
         }
-        if (isFrontEmpty(robot)) { //Go backwards
+        if (isFrontEmpty(robot)) { // Go backwards
             robot.forward(1);
         } else {
             System.out.println("Error during exploration phase 1. All 4 sides blocked.");
@@ -513,19 +514,19 @@ public class Exploration {
         Map map = robot.getMap();
 
         switch (direction) { // Detect for two sensors so can move by 2 grid
-            case Constant.EAST:
-                posY += 2; // Increase y by 2
-                break;
-            case Constant.WEST:
-                posY -= 2; // Decrease y by 2
-                break;
-            case Constant.SOUTH:
-                posX -= 2; // Decrease x by 2
-                break;
-            case Constant.NORTH:
-                posX += 2; // Increase x by 2
-                break;
-            }
+        case Constant.EAST:
+            posY += 2; // Increase y by 2
+            break;
+        case Constant.WEST:
+            posY -= 2; // Decrease y by 2
+            break;
+        case Constant.SOUTH:
+            posX -= 2; // Decrease x by 2
+            break;
+        case Constant.NORTH:
+            posX += 2; // Increase x by 2
+            break;
+        }
         return map.getGrid(posX, posY).equals(Constant.EXPLORED) || map.getGrid(posX, posY).equals(Constant.STARTPOINT)
                 || map.getGrid(posX, posY).equals(Constant.ENDPOINT);
     }
