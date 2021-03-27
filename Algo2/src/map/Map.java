@@ -9,6 +9,7 @@ import astarpathfinder.FastestPathThread;
 import config.Constant;
 import connection.ConnectionSocket;
 import datastruct.Coordinate;
+import robot.Robot;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,13 +62,19 @@ public class Map {
 		return m;
 	}
 
-	public String print() {
+	public String print(Robot robot) {
 		String s = "";
 		s += "The current map is: \n\n";
 		// System.out.println("The current map is: \n");
 
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
+				if (i == robot.getPosition().x && j == robot.getPosition().y) {
+					String temp = String.format("%3s|", "R");
+					s += temp;
+					System.out.printf("%3s", temp);
+					continue;
+				}
 				if (i != Constant.BOARDWIDTH - 1) {
 					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1] || grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]
 							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]

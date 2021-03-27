@@ -6,8 +6,8 @@ char cmd[300];
 //#define W01  280 // Speed -> 250tick/min at 280 ticks needed for one block
 #define W01  270
 #define S01  380
-#define A01  370
-#define D01  370
+#define A01  375
+#define D01  375
 
 
 

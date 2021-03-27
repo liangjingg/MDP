@@ -4,7 +4,7 @@ import datastruct.Coordinate;
 
 public class Constant {
 	// Actual run constraints
-	public static final int TIME = -1;
+	public static final int TIME = 320;
 	public static final int PERCENTAGE = 100;
 	public static final int SPEED = 1;
 	public static final boolean IMAGE_REC = false;
@@ -87,7 +87,7 @@ public class Constant {
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
 	// public static final String IP_ADDRESS = "192.168.15.15";
-	public static final int PORT = 6050;
+	public static final int PORT = 5020;
 	public static final int BUFFER_SIZE = 512;
 
 	public static final String START_EXPLORATION = "ES|";

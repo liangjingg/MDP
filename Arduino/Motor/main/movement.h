@@ -21,7 +21,7 @@ double difference;                // Use to find the difference
 double Setpoint, Input, Output;
 
 
-PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 4.2, 2.0, 0.1, DIRECT); //7.4 // 3.4, 3.0, 0.3 //1.4 0.3
+PID straightPID(&leftEncoderValue, &Output, &rightEncoderValue, 6.9,0.3 , 0.0, DIRECT); //2.3,1.0 5.9
 PID leftPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.2, 0.2, 0.0, DIRECT);
 PID rightPID(&leftEncoderValue, &Output, &rightEncoderValue, 1.5, 0.3, 0.0, DIRECT); //1.5 0.3
 DualVNH5019MotorShield md;
@@ -42,9 +42,6 @@ void rightEncoderRes(void) {
 
 void movementSetup() {          //setup files used in the main
   md.init();
-
-  //Serial.begin(9600);
-  //md.init();
   pinMode (LEFT_ENCODER, INPUT); //set digital pin 5 as input
   pinMode (RIGHT_ENCODER, INPUT); //set digital pin 13 as input
   enableInterrupt(LEFT_ENCODER, leftEncoderInc, RISING);  // Reading the Encoder
@@ -79,225 +76,422 @@ void pullData() {
   FR = sensorDist[0];
 }
 
-int rtolerance = 5;
-int ftolerance = 5;
 
 void turnFixedLeft() {
   rightEncoderRes();
   leftEncoderRes();
-  leftPID.Compute();
   
+  leftPID.Compute();
   while ((leftEncoderValue < 380) && (rightEncoderValue < 380)) {
     leftPID.Compute();
-    md.setSpeeds(-(340 - Output), (340 + Output));
+    md.setSpeeds(-(FASTSPEED - Output), (FASTSPEED + Output));
    //   Serial.print("Left Encoder Value: ");
  
     //Serial.println(rightEncoderValue);
   }
   md.setBrakes(400, 400);
+  
   rightEncoderRes();
   leftEncoderRes();
 }
+
 void turnFixedRight() {
   rightEncoderRes();
   leftEncoderRes();
+  
   rightPID.Compute();
   while ((leftEncoderValue < 370) && (rightEncoderValue < 370)) {
+    md.setSpeeds((FASTSPEED - Output), -(FASTSPEED + Output));
     rightPID.Compute();
-    md.setSpeeds((340 - Output), -(340 + Output));
-
     //Serial.println(rightEncoderValue);
   }
   md.setBrakes(400, 400);
+  
   leftEncoderRes();
   rightEncoderRes();
+}
+
+
+void checkFrontDist(){
+  delay(300);
+  pullData();
+  //Serial.println(FL);
+  if (FL < 5){
+    while (FL<4.8){
+      md.setSpeeds(110,100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+  else if (FC < 5){
+    while (FC<4.8){
+      md.setSpeeds(110,100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+  else if (FR < 5){
+    while (FR<4.8){
+      md.setSpeeds(110,100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+
+//  else if (FL < 13 && FL >10){
+//    while (FL<15){
+//      //Serial.print("FL WORKS");
+//      md.setSpeeds(110,100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+//   else if (FC < 13 && FC >10){
+//    while (FC<15){
+//      md.setSpeeds(110,100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+//  else if (FR < 13 && FR >10){
+//    while (FR<15){
+//      md.setSpeeds(110,100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+
+  //MOVE FORWARD
+
+  else if (FL >5 && FL<10){
+    while (FL>5.2){
+      md.setSpeeds(-110,-100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+  else if (FC >5 && FC<10){
+    while (FC>5.2){
+      md.setSpeeds(-110,-100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+  else if (FR >5 && FR<10){
+    while (FR>5.2){
+      md.setSpeeds(-110,-100);
+      pullData();
+    }
+    md.setBrakes(400,400);
+  }
+
+//  else if (FL >13 && FL<25){
+//    while (FL>15){
+//      md.setSpeeds(-110,-100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+//  else if (FC >13 && FC<20){
+//    while (FC>15){
+//      md.setSpeeds(-110,-100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+//  else if (FR >13 && FR<20){
+//    while (FR>15){
+//      md.setSpeeds(-110,-100);
+//      pullData();
+//    }
+//    md.setBrakes(400,400);
+//  }
+
+  
 }
 
 
 
 void checkRightDist(){
+  delay(100);
+  int rtolerance = 5;
     pullData();
-    if(RB < rtolerance-2 && RF <rtolerance-2){ //if need to move away from wall
+    
+    if(RB < rtolerance-2){ //if need to move away from wall
         turnFixedRight();
         delay(300);
         pullData();
-        while(FC<WALLDIST){
-            md.setSpeeds(100,100); //reverse robot
+        while(FR<4.5){
+
+            md.setSpeeds(110,100); //reverse robot
             pullData();
-            //Serial.print("Reversing . ");
-            //Serial.println(FC);
         }
         md.setBrakes(400,400);
+        delay(100);
         turnFixedLeft();
         //delay(500);
     }
+      else if(RF <rtolerance-2){ //if need to move away from wall
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while(FL<4.5){
 
-    else if (RB < 20 && RF <20){
-        float rfmoduluo = fmod(RF-rtolerance,10);
-        float rbmoduluo = fmod(RB-rtolerance,10);
-        if (rfmoduluo >=3.00 && rfmoduluo <5.00){ //round down
-            float target = RF - rfmoduluo;
-            turnFixedRight();
-            delay(300);
-            pullData();
-            while (FC>target){
-                md.setSpeeds(-100,-100); //accelerate robot
-                pullData();
-            }
-            md.setBrakes(400,400);
-            turnFixedLeft();
-
-        }
-        else if (rfmoduluo >=5.00 && rfmoduluo <=7.00){
-            float target = RF - rfmoduluo + 10.00;
-            turnFixedRight();
-            delay(300);
-            pullData();
-            while (FC<target){
-                md.setSpeeds(100,100); //reverse robot
-                pullData();
-            }
-            md.setBrakes(400,400);
-            turnFixedLeft();
-
-        }
+          md.setSpeeds(110,100); //reverse robot
+          pullData();
+      }
+      md.setBrakes(400,400);
+        delay(100);
+      
+      turnFixedLeft();
+      //delay(500);
     }
+
+    else if (RB > 10 && RB <15){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while(FR<14.5){
+
+          md.setSpeeds(110,100); //reverse robot
+          pullData();
+      }
+      md.setBrakes(400,400);
+        delay(100);
+      turnFixedLeft();
+    }
+
+    else if (RF > 10 && RF <15){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while(FL<14.5){
+
+          md.setSpeeds(110,100); //reverse robot
+          pullData();
+      }
+      md.setBrakes(400,400);
+        delay(100);
+      turnFixedLeft();
+    }
+
+
+    else if (RF > 7 && RF <10){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while (FL>4.5){
+        md.setSpeeds(-110,-100);
+        pullData();
+      }
+      md.setBrakes(400,400);
+        delay(100);
+      turnFixedLeft();
+
+
+    }
+    else if (RB > 7 && RB <10){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while (FR>4.5){
+        //Serial.println(FR);
+        md.setSpeeds(-110,-100);
+        pullData();
+      }
+      md.setBrakes(400,400);
+        delay(100);
+      turnFixedLeft();
+
+
+    }
+
+      else if (RF > 17 && RF <20){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while (FL>14.5){
+        md.setSpeeds(-110,-100);
+        delay(100);
+        pullData();
+      }
+      md.setBrakes(400,400);
+      turnFixedLeft();
+
+
+    }
+    else if (RB > 17 && RB <20){
+      turnFixedRight();
+      delay(300);
+      pullData();
+      while (FR>14.5){
+        md.setSpeeds(-110,-100);
+         delay(100);
+       pullData();
+      }
+      md.setBrakes(400,400);
+      turnFixedLeft();
+
+
+    }
+
     delay(100);
     rightEncoderRes();
-  leftEncoderRes();
+    leftEncoderRes();
 }
 
-
-void checkFrontDist(){
-    float walldist = 4.50;
-    pullData();
-
-    if (FC <walldist){
-        while (FC < walldist){ /////////
-            md.setSpeeds(100,100);
-            pullData();
-        }
-        //Serial.println("FC KICK OUT");
-        md.setBrakes(400,400);
-    }
-    else if (FC<15){
-             // Serial.println("FC <15 OUT");
-        float fcmoduluo = fmod(FC - ftolerance,10);
-        if (fcmoduluo >= 2.00 && fcmoduluo <5.00){
-//             Serial.println("Moving Forward");
-            float target = FC - fcmoduluo;
-            //Serial.print("Target: ");
-            //Serial.print(target);
-            pullData();
-            while(FC>target){
-                md.setSpeeds(-100,-100);
-                pullData();
-//                Serial.println("Moving Forward");
-            }
-            md.setBrakes(400,400);
-        }
-        else if (fcmoduluo >=5.00 && fcmoduluo <= 8.00){
-           //Serial.println("FC >15 OUT");
-            float target = FC - fcmoduluo + 10.00;
-            pullData();
-            while (FC<target){
-                md.setSpeeds(100,100);
-                pullData();
-//                                Serial.println("Moving Backward");
-
-            }
-            md.setBrakes(400,400);
-        }
-
-    }
-
-
-    else if (FR <walldist){
-        while (FR < walldist){
-            md.setSpeeds(100,100);
-            pullData();
-        }
-        //Serial.println("Kick out");
-        md.setBrakes(400,400);
-    }
-    else if (FR<15){
-        float frmoduluo = fmod(FR - ftolerance,10);
-        if (frmoduluo >= 2.00 && frmoduluo <5.00){
-//             Serial.println("Moving Forward");
-            float target = FR - frmoduluo;
-            //Serial.print("Target: ");
-            //Serial.print(target);
-            pullData();
-            while(FR>target){
-                md.setSpeeds(-100,-100);
-                pullData();
-//                Serial.println("Moving Forward");
-            }
-            md.setBrakes(400,400);
-        }
-        else if (frmoduluo >=5.00 && frmoduluo <= 8.00){
-          
-            float target = FR - frmoduluo + 10.00;
-            pullData();
-            while (FR<target){
-                md.setSpeeds(100,100);
-                pullData();
-//                             Serial.println("Moving Backward");
-
-            }
-            md.setBrakes(400,400);
-        }
-
-    }
-
-
-    
-
-}
 
 void checkFrontAlign(){
-  pullData();
-  float difference = abs(FR-FL);
-  //Serial.println(difference);
+    pullData();
+    float d = 8.00; //this is the minimal distance to do one block same plane allignment
+    float d2 = 18.00; //this is the minimal distance to do two block allignement (stairs)
+    float tolerance = 0.2;
 
-  if (difference > 6 || FR > 25 || FL >25){
-    return;
-  }
-
-  else{
-    if (FR>FL && difference > 0.15){
-      while(FR>FL){
-        md.setSpeeds(-70,70);
-        pullData();
-      }
-      md.setBrakes(400,400);
+    /** ALLIGN ONE BLOCK SAME LEVEL PLANE **/
+    //FL VS FR
+    if(FL<d && FR<d){ 
+        if(FL<FR && abs(FL-FR)>tolerance){
+            while(FL<FR){
+//                Serial.print("FL: ");
+//                Serial.print(FL);
+//                Serial.print("   FR: ");
+//                Serial.println(FR);
+                md.setSpeeds(-90,80); //right wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
+        else if(FL>FR && abs(FL-FR)>tolerance){
+            while(FL>FR){
+                md.setSpeeds(90,-80); //left wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
     }
-    else if (FL>FR && difference > 0.15 ){
-      while(FL>FR){
-        md.setSpeeds(70,-70);
-        pullData();
-      }
-      md.setBrakes(400,400);
+    //FL vs FC
+    else if(FL<d && FC<d){
+        if(FL<FC && abs(FL-FC)>tolerance){
+            while(FL<FC){
+                md.setSpeeds(-90,80); //right wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
+        else if(FL>FC && abs(FL-FC)>tolerance){
+            while(FL>FC){
+                md.setSpeeds(90,-80); //left wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
     }
-  }
+    //FR VS FC
+    else if(FR<d && FC<d){
+        if(FR<FC && abs(FR-FC)>tolerance){
+            while(FR<FC){
+                md.setSpeeds(90,-80); //left wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
+        else if(FR>FC && abs(FL-FC)>tolerance){
+            while(FR>FC){
+                md.setSpeeds(-90,80); //right wheel turn more
+                pullData();
+            }
+            md.setBrakes(400,400);
+        }
+    }
 
-  rightEncoderRes();
-  leftEncoderRes();
+    /** ALLIGN ONE BLOCK SAME LEVEL PLANE **/
+//    else if ( ((FL<d2) && (FR<d2)) || ((FL<d2) && (FC<d2)) || ((FR<d2) && (FC<d2)) ){ //make sure there is valid pairs that are not more than d2
+//        float modfl = fmod(FL,10);
+//        float modfc = fmod(FC,10);
+//        float modfr = fmod(FR,10);
+//
+//        // modfl vs modfr
+//        if (modfl<modfr && abs(modfl-modfr)>tolerance){
+//            while (modfl<modfr){
+//                md.setSpeeds(60,-60); //move closer to fr sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//        else if (modfl>modfr && abs(modfl-modfr)>tolerance){
+//            while (modfl>modfr){
+//                md.setSpeeds(-60,60); //move closer to fl sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//
+//        // modfl vs modfc
+//        else if (modfl<modfc && abs(modfl-modfc)>tolerance){
+//            while (modfl<modfc){
+//                md.setSpeeds(60,-60); //move closer to fr sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//        else if (modfl>modfc && abs(modfl-modfc)>tolerance){
+//            while (modfl>modfc){
+//                md.setSpeeds(-60,60); //move closer to fl sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//
+//        // modfc vs modfr
+//        else if (modfc<modfr && abs(modfc-modfr)>tolerance){
+//            while (modfc<modfr){
+//                md.setSpeeds(60,-60); //move closer to fr sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//        else if (modfc>modfr && abs(modfc-modfr)>tolerance){
+//            while (modfc>modfr){
+//                md.setSpeeds(-60,60); //move closer to fl sensor
+//                pullData();
+//                modfl = fmod(FL,10);
+//                modfc = fmod(FC,10);
+//                modfr = fmod(FR,10);
+//            }
+//            md.setBrakes(400,400);
+//        }
+//    }
 }
 
 void checkRightAlign(){
     pullData();
     float difference = abs(RB-RF);
+    
 
 //    Serial.println(difference);
 //    Serial.println("");
 
-    if (RB >25 || RF >25){
+    if (RB >20 || RF >20){
         return;
     }
     else if (difference < 6){ //same x-wall adjustment
         if (RB>RF && difference > 0.06){
-            while(RB>RF){
+            while(RB>RF  ){
             md.setSpeeds(-60,60);
             pullData();
             }
@@ -307,9 +501,10 @@ void checkRightAlign(){
 
         }
         else if (RF>RB && difference >0.06){
-            while (RB<RF){
+            while (RB<RF ){
                 md.setSpeeds(60,-60);
                 pullData();
+                
             }
             md.setBrakes(400,400);
             //Serial.println("Turning Right");
@@ -322,11 +517,12 @@ void checkRightAlign(){
       difference = abs(modrb-modrf);
 
       if (modrb>modrf && difference > 0.1){
-            while(modrb>modrf){
+            while(modrb>modrf ){
             md.setSpeeds(-60,60);
             pullData();
             modrb = fmod(RB,10);
             modrf = fmod(RF,10);
+
             }
        
             md.setBrakes(400,400);
@@ -334,11 +530,12 @@ void checkRightAlign(){
 
         }
         else if (modrf>modrb && difference >0.1){
-            while (modrb<modrf){
+            while (modrb<modrf ){
                 md.setSpeeds(60,-60);
                 pullData();
                 modrb = fmod(RB,10);
                 modrf = fmod(RF,10);
+
             }
             md.setBrakes(400,400);
             //Serial.println("Turning Right");
@@ -360,8 +557,9 @@ void uTurn(){
   rightEncoderRes();
   leftPID.Compute();
   while ((leftEncoderValue < 800) && (rightEncoderValue < 800)) {
-    leftPID.Compute();
     md.setSpeeds(-(FASTSPEED - Output), (FASTSPEED + Output));
+    leftPID.Compute();
+
   }
   md.setBrakes(400, 400);
   delay(200);
@@ -374,22 +572,20 @@ void uTurn(){
 
 
 void goStraight(double ticks) {
-  rightEncoderRes();
-  leftEncoderRes();
-  checkRightAlign();
-  rightEncoderRes();
-  leftEncoderRes();
-  checkRightDist();
-  rightEncoderRes();
-  leftEncoderRes();
-  checkRightAlign();
+//  rightEncoderRes();
+//  leftEncoderRes();
+//  checkRightAlign();
+//  rightEncoderRes();
+//  leftEncoderRes();
+//  checkRightDist();
+//  rightEncoderRes();
+//  leftEncoderRes();
+//  checkRightAlign();
   rightEncoderRes();
   leftEncoderRes();
   straightPID.Compute();
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
-  
     
-    straightPID.Compute();
     float LeftEncoderFixed = leftEncoderValue;
     float LeftEncoderOutput = leftEncoderValue + Output;
     float RightEncoderOutput = rightEncoderValue - Output;
@@ -398,13 +594,20 @@ void goStraight(double ticks) {
 //    Serial.print("Left ");
 //    Serial.println(LeftEncoderOutput);
 //    Serial.println(Output);
-    
-    md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + Output+20)));
+    md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + 0.5*Output)));
+    straightPID.Compute();
+
   }
   md.setBrakes(400, 400);
-  rightEncoderRes();
-  leftEncoderRes();
+  delay(100);
+  checkRightAlign();//
+  delay(100);
+  checkRightDist();//
+  delay(100);
+  checkRightAlign();//
+  delay(100);
   checkFrontDist();
+  delay(100);
   rightEncoderRes();
   leftEncoderRes();
 
@@ -415,8 +618,8 @@ void goBack(double ticks) {
 
   while ((leftEncoderValue < 350) && (rightEncoderValue < 350)) {
 
-    straightPID.Compute();
     md.setSpeeds((FASTSPEED - Output), (FASTSPEED + Output));
+        straightPID.Compute();
   }
   md.setBrakes(400, 400);
   delay(100);
@@ -428,41 +631,50 @@ void goBack(double ticks) {
 void turnLeft(double ticks) {
   leftEncoderRes();
   rightEncoderRes();  
-  checkFrontDist();
-  checkRightAlign();
-  leftEncoderRes();
-  rightEncoderRes();
+//  checkFrontDist();
+//  checkRightAlign();
+//  leftEncoderRes();
+//  rightEncoderRes();
   leftPID.Compute();
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
-    leftPID.Compute();
     md.setSpeeds(-(FASTSPEED - Output), (FASTSPEED + Output));
+    leftPID.Compute();
+
   }
   md.setBrakes(400, 400);
   delay(200);
   rightEncoderRes();
   leftEncoderRes();
   checkRightAlign();
+  delay(100);
+  checkFrontDist();
+  delay(100);
+
 }
 
 
 void turnRight(double ticks) {
-  leftEncoderRes();
-  rightEncoderRes(); 
-  checkFrontDist();
-  checkRightAlign();
+//  leftEncoderRes();
+//  rightEncoderRes(); 
+//  checkFrontDist();
+//  checkRightAlign();
   leftEncoderRes();
   rightEncoderRes();
   rightPID.Compute();
 
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
-    rightPID.Compute();
     md.setSpeeds((FASTSPEED - Output), -(FASTSPEED + Output));
+    rightPID.Compute();
+
   }
   md.setBrakes(400, 400);
   delay(200);
+   rightEncoderRes();
   leftEncoderRes();
-  rightEncoderRes();
   checkRightAlign();
+  delay(100);
+  checkFrontDist();
+  delay(100);
 
 }
 

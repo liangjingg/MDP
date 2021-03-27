@@ -129,9 +129,16 @@ public abstract class Robot {
 		// sensePosition[0], sensePosition[1]);
 		// System.out.printf("x: %d, y: %d \n", x, y);
 		// whats w this error checking...
+		System.out.println("Sense position 1" + sensePosition[0]);
+		System.out.println("x: " + x);
+		System.out.println("Sense position 2: " + sensePosition[1]);
+		System.out.println("y: " + y);
+		System.out.println("Direction:" + direction);
+		System.out.println(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction);
+		
 		if (!(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction)
 				|| !ConnectionSocket.checkConnection()) {
-			// System.out.println(" Here");
+			System.out.println("Get sensor values");
 			this.sensorValues = getSensorValues(); // THIS VALUES IS BY CM (GRID * 10)
 			// System.out.println("Got sensor values" + this.sensorValues[0]);
 		}
@@ -198,7 +205,7 @@ public abstract class Robot {
 
 			}
 			double[] sensorThreshold = Constant.SENSOR_RANGES[i];
-			for (int h = 0; h < sensorThreshold.length; h++) { // For both threshold values
+			for (int h = 0; h < sensorThreshold.length - 1; h++) { // For both threshold values
 				int g = h + 1;
 
 				// Update the sensorLocation offset from x position and the grid in the
@@ -309,7 +316,7 @@ public abstract class Robot {
 					writer.write(sensorValues[i] + " ");
 				}
 				writer.write("\n");
-				writer.write(newMap.print() + "\r\n\n");
+				writer.write(newMap.print(this) + "\r\n\n");
 				// writer.write(newMap.printDist() + "\r\n\n");
 				writer.close();
 				br.close();
