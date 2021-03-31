@@ -352,10 +352,6 @@ void checkFrontAlign(){
     if(FL<d && FR<d){ 
         if(FL<FR && abs(FL-FR)>tolerance){
             while(FL<FR){
-//                Serial.print("FL: ");
-//                Serial.print(FL);
-//                Serial.print("   FR: ");
-//                Serial.println(FR);
                 md.setSpeeds(-90,80); //right wheel turn more
                 pullData();
             }
@@ -481,10 +477,6 @@ void checkFrontAlign(){
 void checkRightAlign(){
     pullData();
     float difference = abs(RB-RF);
-    
-
-//    Serial.println(difference);
-//    Serial.println("");
 
     if (RB >20 || RF >20){
         return;
@@ -572,15 +564,6 @@ void uTurn(){
 
 
 void goStraight(double ticks) {
-//  rightEncoderRes();
-//  leftEncoderRes();
-//  checkRightAlign();
-//  rightEncoderRes();
-//  leftEncoderRes();
-//  checkRightDist();
-//  rightEncoderRes();
-//  leftEncoderRes();
-//  checkRightAlign();
   rightEncoderRes();
   leftEncoderRes();
   straightPID.Compute();
@@ -589,14 +572,8 @@ void goStraight(double ticks) {
     float LeftEncoderFixed = leftEncoderValue;
     float LeftEncoderOutput = leftEncoderValue + Output;
     float RightEncoderOutput = rightEncoderValue - Output;
-//    Serial.print("Right ");
-//    Serial.println(RightEncoderOutput);
-//    Serial.print("Left ");
-//    Serial.println(LeftEncoderOutput);
-//    Serial.println(Output);
     md.setSpeeds(-((FASTSPEED - Output)), -((FASTSPEED + 0.5*Output)));
     straightPID.Compute();
-
   }
   md.setBrakes(400, 400);
   delay(100);
@@ -631,10 +608,6 @@ void goBack(double ticks) {
 void turnLeft(double ticks) {
   leftEncoderRes();
   rightEncoderRes();  
-//  checkFrontDist();
-//  checkRightAlign();
-//  leftEncoderRes();
-//  rightEncoderRes();
   leftPID.Compute();
   while ((leftEncoderValue < ticks) && (rightEncoderValue < ticks)) {
     md.setSpeeds(-(FASTSPEED - Output), (FASTSPEED + Output));
@@ -649,15 +622,10 @@ void turnLeft(double ticks) {
   delay(100);
   checkFrontDist();
   delay(100);
-
 }
 
 
 void turnRight(double ticks) {
-//  leftEncoderRes();
-//  rightEncoderRes(); 
-//  checkFrontDist();
-//  checkRightAlign();
   leftEncoderRes();
   rightEncoderRes();
   rightPID.Compute();
