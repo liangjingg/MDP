@@ -9,11 +9,9 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="29" />
-    <!-- package name needa changeeeee -->
 
     <dist:module dist:instant="true" />
 
-    <!-- added permission for bluetooth connection -->
     <uses-feature android:name="android.hardware.bluetooth" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />

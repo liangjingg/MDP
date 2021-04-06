@@ -45,6 +45,8 @@ animator mtrl_fab_show_motion_spec
 animator mtrl_fab_transformation_sheet_collapse_spec
 animator mtrl_fab_transformation_sheet_expand_spec
 array planets_array
+array x_array
+array y_array
 attr actionBarDivider
 attr actionBarItemBackground
 attr actionBarPopupTheme
@@ -1082,8 +1084,6 @@ drawable abc_textfield_search_activated_mtrl_alpha
 drawable abc_textfield_search_default_mtrl_alpha
 drawable abc_textfield_search_material
 drawable abc_vector_test
-drawable arrow9
-drawable arrowpic
 drawable avd_hide_password
 drawable avd_show_password
 drawable border_black_background
@@ -1115,7 +1115,6 @@ drawable common_google_signin_btn_text_light
 drawable common_google_signin_btn_text_light_focused
 drawable common_google_signin_btn_text_light_normal
 drawable common_google_signin_btn_text_light_normal_background
-drawable compass
 drawable design_bottom_navigation_item_background
 drawable design_fab_background
 drawable design_ic_visibility
@@ -1123,8 +1122,13 @@ drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
 drawable directionpic
+drawable dog
+drawable error
+drawable errormsg
+drawable goal
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
+drawable house
 drawable ic_arrow_down
 drawable ic_arrow_error
 drawable ic_arrow_left
@@ -1138,17 +1142,13 @@ drawable ic_back
 drawable ic_change
 drawable ic_check
 drawable ic_clear
-drawable ic_forward
 drawable ic_launcher_background
 drawable ic_launcher_foreground
-drawable ic_left
 drawable ic_map_info
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_refresh
-drawable ic_reverse
-drawable ic_right
 drawable ic_send
 drawable images
 drawable mtrl_snackbar_background
@@ -1167,6 +1167,7 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable obstacle
+drawable robot
 drawable rounded_corner
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -1248,7 +1249,7 @@ id bluetoothSwitch
 id bluetoothTitleTextView
 id bottom
 id buttonPanel
-id calibrateButton
+id cancelBtn
 id cancelDirectionBtn
 id cancelReconfigureBtn
 id center
@@ -1258,7 +1259,6 @@ id chains
 id checkbox
 id checked
 id chronometer
-id clearImageBtn
 id clip_horizontal
 id clip_vertical
 id collapseActionView
@@ -1287,7 +1287,6 @@ id dialog_button
 id dimensions
 id direct
 id directionAxisTextView
-id directionChangeImageBtn
 id directionDropdownSpinner
 id directionFragmentTitleTextView
 id directionLabelTextView
@@ -1297,6 +1296,7 @@ id edit_query
 id end
 id enterAlways
 id enterAlwaysCollapsed
+id errorimage
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -1304,7 +1304,6 @@ id exploreResetImageBtn
 id exploreTextView
 id exploreTimeTextView
 id exploreToggleBtn
-id exploredImageBtn
 id f1ActionButton
 id f1TitleTextView
 id f1ValueEditText
@@ -1375,7 +1374,6 @@ id notification_background
 id notification_main_column
 id notification_main_column_container
 id obstacleBtn
-id obstacleImageBtn
 id off
 id on
 id otherDevicesListView
@@ -1397,7 +1395,7 @@ id progress_horizontal
 id radio
 id reconfigureTitleTextView
 id reconfigure_layout
-id resetMapBtn
+id resetBtn
 id right
 id rightImageBtn
 id right_icon
@@ -1429,8 +1427,6 @@ id search_voice_btn
 id section_label
 id select_dialog_listview
 id selected
-id setStartPointToggleBtn
-id setWaypointToggleBtn
 id shortcut
 id showCustom
 id showHome
@@ -1449,6 +1445,7 @@ id src_in
 id src_over
 id standard
 id start
+id startPointBtn
 id stretch
 id submenuarrow
 id submit_area
@@ -1489,18 +1486,24 @@ id unchecked
 id uniform
 id unlabeled
 id up
-id updateButton
 id useLogo
 id view_offset_helper
 id view_pager
 id visible
 id visible_removing_fragment_view_tag
+id waypointBtn
+id waypointFragmentTitleTextView
+id waypointTitleTextView
+id waypointXDropdownSpinner
+id waypointYDropdownSpinner
 id wide
 id withText
 id wrap
 id wrap_content
+id x
 id xAxisTextView
 id xLabelTextView
+id y
 id yAxisTextView
 id yLabelTextView
 integer abc_config_activityDefaultDur
@@ -1565,6 +1568,7 @@ layout activity_main
 layout activity_map
 layout activity_map_information
 layout activity_reconfigure
+layout activity_waypoint
 layout bluetooth_pop_up_window
 layout custom_dialog
 layout design_bottom_navigation_item

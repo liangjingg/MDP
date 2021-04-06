@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Canvas;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -47,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
     private static Context context;
+    Canvas canvas;
 
     private static GridMap gridMap;
     static TextView xAxisTextView, yAxisTextView, directionAxisTextView;
     static TextView robotStatusTextView;
     static Button f1, f2;
+    ImageView errorimage;
     private static int counter=0;
     Button reconfigure;
     ReconfigureFragment reconfigureFragment = new ReconfigureFragment();
@@ -86,10 +90,14 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("connStatus", "Disconnected");
         editor.commit();
 
+        final ImageView errorimage = findViewById(R.id.errorimage);
+
         Button printMDFStringButton = (Button) findViewById(R.id.printMDFString);
         printMDFStringButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //errorimage.setVisibility(View.VISIBLE);
+                //GridMap.findMDF();
                 String message = "Explored : " + GridMap.getPublicMDFExploration();
                 editor = sharedPreferences.edit();
                 editor.putString("message", CommsFragment.getMessageReceivedTextView().getText() + "\n" + message);
@@ -275,6 +283,13 @@ public class MainActivity extends AppCompatActivity {
         gridMap.setRobotDirection(direction);
         directionAxisTextView.setText(sharedPreferences.getString("direction",""));
         printMessage("Direction is set to " + direction);
+    }
+
+    public void refreshWaypoint(int waypointX, int waypointY) throws JSONException {
+        //gridMap.setWaypointCoord(canvas, waypointX+1,waypointY+1);
+        gridMap.setWaypointCoord(waypointX+1,waypointY+1);
+        //directionAxisTextView.setText(sharedPreferences.getString("direction",""));
+        //printMessage("Waypoint is set to " + waypointX+" , "+waypointY);
     }
 
     public static void refreshLabel() {
