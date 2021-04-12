@@ -2,10 +2,10 @@ from MultiProcessCommunication import MultiProcessCommunication
 import time
 def init():
 	try:
-		multi = MultiProcessCommunication()
-		multi.start()
-	except Exception as err:
-		print('Main.py Error!: {}'.format(str(err)))
+		rpi = MultiProcessCommunication()
+		rpi.start()
+	except Exception as error:
+		print('Main.py Error!: {}'.format(str(error)))
 
 if __name__ == '__main__':
 	init()
