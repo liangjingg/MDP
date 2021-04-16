@@ -1,4 +1,4 @@
-from MultiProcessCommunication import MultiProcessCommunication
+from MultiProcessFinal import MultiProcessCommunication
 import time
 def init():
 	try:
