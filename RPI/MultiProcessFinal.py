@@ -253,37 +253,6 @@ class MultiProcessCommunication:
 				print('Process write_android failed: ' + str(error))
 				break
 
-	def fastest_path_strings(self, fp):
-		fp = ""
-		counter=1
-		fp=fp.decode()
-		fp = fp.replace('1|', '')
-		fp = fp[1:]
-		current_dir = fp[0]
-		for i in range(1, len(fp)+1): 
-			if i == len(fp):
-				fp = fp + current_dir + str(counter)
-				break
-
-			if counter == 9:
-				fp = fp + current_dir + str(counter)
-				counter = 0
-		
-			if fp[i] == current_dir:
-				counter+=1
-			else:
-				if counter == 0:
-					counter +=1
-					fp = fp + fp[i] + str(counter)
-					counter=0
-		
-				else:
-					fp = fp + current_dir + str(counter)
-					current_dir = fp[i]
-					counter=1
-		print("new fp = {}".format(fp))
-		return fp.encode()
-
 	def image_processing(self):
 		send_images = imagezmq.ImageSender(connect_to=image_processing_server_url)
 		listOfImageId = []
