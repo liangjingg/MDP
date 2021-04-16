@@ -24,7 +24,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.DefaultCaret;
 
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
@@ -32,9 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import astarpathfinder.AStarPathFinder;
 import config.Constant;
-import connection.ConnectionSocket;
 import datastruct.Coordinate;
 import exploration.ExplorationThread;
 import robot.SimulatorRobot;
@@ -360,13 +357,6 @@ public class SetUpUI implements ActionListener {
 		frame.add(decodeMDF);
 		frame.add(genRandMap);
 
-		// frame.add(mcLabel);
-		// frame.add(returnToStart);
-		// frame.add(right);
-		// frame.add(left);
-		// frame.add(up);
-		// frame.add(update);
-		// frame.add(checkMap);
 		frame.add(toggleMap);
 		frame.add(resetRobot);
 		frame.add(robotView);
@@ -407,13 +397,6 @@ public class SetUpUI implements ActionListener {
 		decodeMDF.setVisible(true);
 		genRandMap.setVisible(true);
 
-		// manual
-		// mcLabel.setVisible(true);
-		// right.setVisible(true);
-		// left.setVisible(true);
-		// up.setVisible(true);
-		// update.setVisible(true);
-		// checkMap.setVisible(true);
 		toggleMap.setVisible(true);
 		resetRobot.setVisible(true);
 		robotView.setVisible(true);
@@ -469,14 +452,6 @@ public class SetUpUI implements ActionListener {
 		Labels.put("p1_string_label", p1StringLabel);
 		Labels.put("p2_string_label", p2StringLabel);
 		Labels.put("loadMapLabel", loadMapLabel);
-		// Labels.put("image_cap", image_cap);
-		// Labels.put("calibrating", calibrating);
-
-		// Disable all button during the real runs as they are not meant to work for the
-		// Real Run
-		// if (ConnectionSocket.checkConnection()) {
-		// this.disableButtons();
-		// }
 	}
 
 	public void printConsole(String s, JScrollBar vbar) {
@@ -635,7 +610,6 @@ public class SetUpUI implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
-		// System.out.println(" Action: " + action);
 		if (action.equals("Right")) {
 			displayMessage("Rotate right button clicked", 2);
 			disableButtons();
@@ -693,7 +667,7 @@ public class SetUpUI implements ActionListener {
 
 		else if (action.equals("Toggle Map")) {
 			disableButtons();
-			if (r.toggleMap().compareTo("robot") == 0) {
+			if (r.toggleMap().equals("robot")) {
 				if (r.checkMap().equals("The maps are the same!") && Labels.get("robotView").isVisible()) {
 					disableLabel("robotView");
 					enableLabel("simulatedMap");

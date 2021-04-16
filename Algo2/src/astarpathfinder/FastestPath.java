@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FastestPath {
     public int[] FastestPathAlgo(Robot robot, Coordinate waypoint, Coordinate goal, int speed, boolean onGrid,
-            boolean move) {
+            boolean move, boolean isExploration) {
         AStarPathFinder astar = new AStarPathFinder();
         astar.setDirection(robot.getDirection());
         astar.setFirst(true);
@@ -36,16 +36,21 @@ public class FastestPath {
             astar.setFirstTurnPenalty(true);
             path = astar.AStarPathFinderAlgo(robot, robot.getPosition(), goal, onGrid);
         }
-        System.out.println(Arrays.toString(path));
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
-                realFPmove(path, robot);
-                System.out.println("Finsh sending");
+                if (isExploration) {
+                    move(robot, path, speed, onGrid, goal);
+                } else {
+                    realFPmove(path, robot);
+                }
             } else {
                 // get realPath
                 String pathString = getRealPath(path);
-                FPsimulatorMove(pathString, robot);
-                System.out.printf("At goal, x: %d, y: %d \n now", goal.x, goal.y);
+                if (isExploration) {
+                    move(robot, path, speed, onGrid, goal);
+                } else {
+                    FPsimulatorMove(pathString, robot);
+                }
             }
         }
         System.out.println(Arrays.toString(path));
@@ -100,7 +105,6 @@ public class FastestPath {
                     sb.append(Constant.U_TURN);
                     count = 1;
                 } else {
-                    System.out.println("Error!");
                     return null;
                 }
             } else {
@@ -173,7 +177,6 @@ public class FastestPath {
             sb.append("W").append(count).append("|");
         }
         String msg = sb.toString();
-        System.out.println("Actual msg! " + msg);
         robot.displayMessage("Message sent for FastestPath real run: " + msg, 2);
         ConnectionSocket.getInstance().sendMessage(msg);
     }
@@ -249,8 +252,6 @@ public class FastestPath {
         Exploration ex = new Exploration();
         // Move the robot based on the path
         for (int direction : path) {
-            System.out.printf("Fastest path move: x: %d, y: %d \n", robot.getPosition().x, robot.getPosition().y);
-            // System.out.println("Move " + direction);
             if (!connection.ConnectionSocket.checkConnection()) {
                 try {
                     TimeUnit.SECONDS.sleep(speed);
@@ -298,7 +299,6 @@ public class FastestPath {
             robot.updateMap();
         }
         if (!onGrid) {
-            System.out.println("Rotate to face obstacle!!");
             rotateToFaceObstacle(robot, endPos);
         }
     }

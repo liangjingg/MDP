@@ -4,6 +4,7 @@ import config.Constant;
 import map.Map;
 
 public abstract class Sensor {
+	private Map trueMap;
 	public static int[][] sensorLocation = new int[6][2];
 	public static int[][] sensorDirection = new int[3][2];
 
@@ -30,27 +31,20 @@ public abstract class Sensor {
 		sensorLocation[5] = sensorDirection[2];
 	}
 
-	public static void print() {
-		System.out.println("Sensor Location \n");
-		for (int i = 0; i < sensorLocation.length; i++) {
-			for (int j = 0; j < sensorLocation[i].length; j++) {
-				System.out.print(sensorLocation[i][j] + ", ");
-			}
-			System.out.println("");
-		}
-
-		System.out.println("Sensor Direction \n");
-		for (int i = 0; i < sensorDirection.length; i++) {
-			for (int j = 0; j < sensorDirection[i].length; j++) {
-				System.out.print(sensorDirection[i][j] + ",");
-			}
-			System.out.println("");
-		}
-	}
-
 	public abstract String[] getAllSensorsValue(int x, int y, int direction);
 
-	public abstract Map getTrueMap(); // Only for simulator to display the true map
+	// public abstract Map getTrueMap(); // Only for simulator to display the true
+	// map
 
-	public abstract void setTrueMap(Map map); // Only for simulator to load map
+	public Map getTrueMap() {
+		// return null;
+		return trueMap;
+	}
+
+	// This is not valid action for the robot
+	public void setTrueMap(Map map) {
+		this.trueMap = map;
+	}
+
+	// public abstract void setTrueMap(Map map); // Only for simulator to load map
 }

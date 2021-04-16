@@ -66,9 +66,7 @@ public class AStarPathFinder {
                     if (closedList[neighbour.pos.x][neighbour.pos.y])
                         continue;
                     if (!openList[neighbour.pos.x][neighbour.pos.y]
-                            || neighbour.cost < nodeDetails[neighbour.pos.x][neighbour.pos.y].cost) { // shd update if
-                                                                                                      // h_cost
-                                                                                                      // lower??
+                            || neighbour.cost < nodeDetails[neighbour.pos.x][neighbour.pos.y].cost) {
                         openList[neighbour.pos.x][neighbour.pos.y] = true;
                         nodeDetails[neighbour.pos.x][neighbour.pos.y] = neighbour;
                         openQueue.add(neighbour); // need replace the old one??

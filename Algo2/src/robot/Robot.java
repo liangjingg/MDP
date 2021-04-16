@@ -129,24 +129,9 @@ public abstract class Robot {
 		// Update the Sensor Direction with our Robot's directions
 		Sensor.updateSensorDirection(this.direction);
 
-		// Check the position of the stored sensor values are the same as our current
-		// robot position and it is a real run
-		// System.out.printf(" sensePosition[0]: %d, sensePosition[1]: %d \n",
-		// sensePosition[0], sensePosition[1]);
-		// System.out.printf("x: %d, y: %d \n", x, y);
-		// whats w this error checking...
-		System.out.println("Sense position 1" + sensePosition[0]);
-		System.out.println("x: " + x);
-		System.out.println("Sense position 2: " + sensePosition[1]);
-		System.out.println("y: " + y);
-		System.out.println("Direction:" + direction);
-		System.out.println(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction);
-		
 		if (!(sensePosition[0] == x && sensePosition[1] == y && sensePosition[2] == direction)
 				|| !ConnectionSocket.checkConnection()) {
-			System.out.println("Get sensor values");
-			this.sensorValues = getSensorValues(); // THIS VALUES IS BY CM (GRID * 10)
-			// System.out.println("Got sensor values" + this.sensorValues[0]);
+			this.sensorValues = getSensorValues();
 		}
 		int[][] sensorLocation = Sensor.sensorLocation;
 		int[][] sensorDirection = Sensor.sensorDirection;
@@ -230,14 +215,11 @@ public abstract class Robot {
 						y = this.y + sensorLocation[i][1] + sensorDirectionValueY;
 						if (i == 5) { // for far sensors
 							if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
-								// System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1, g,
-								// x, y);
 								newMap.setGrid(x, y, Constant.OBSTACLE);
 								newMap.setDist(x, y, g + 2);
 							}
 						} else {
 							if (moreAccurate(g, oldDist)) {
-								// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
 								System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
 								newMap.setGrid(x, y, Constant.OBSTACLE);
 								newMap.setDist(x, y, g);
@@ -245,21 +227,16 @@ public abstract class Robot {
 						}
 					} else {
 						if (value - sensorThreshold[h - 1] < sensorThreshold[h] - value) {
-							// System.out.printf("%f less than %f \n", value - sensorThreshold[h],
-							// sensorThreshold[h] - value);
 							System.out.printf("x: %d, y: %d \n", x, y);
 							x = this.x + sensorLocation[i][0] + sensorDirectionValueX * h;
 							y = this.y + sensorLocation[i][1] + sensorDirectionValueY * h;
 							if (i == 5) { // for far sensors
 								if (moreAccurate(h + 2, oldDist)) { // check if new dist < old dist
-									// System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1, g,
-									// x, y);
 									newMap.setGrid(x, y, Constant.OBSTACLE);
 									newMap.setDist(x, y, h + 2);
 								}
 							} else {
 								if (moreAccurate(h, oldDist)) {
-									// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
 									System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
 									newMap.setGrid(x, y, Constant.OBSTACLE);
 									newMap.setDist(x, y, h);
@@ -268,14 +245,11 @@ public abstract class Robot {
 						} else {
 							if (i == 5) { // for far sensors
 								if (moreAccurate(g + 2, oldDist)) { // check if new dist < old dist
-									// System.out.printf("Sensor %d, Sensor offset: %d, x: %d, y:%d \n", i + 1, g,
-									// x, y);
 									newMap.setGrid(x, y, Constant.OBSTACLE);
 									newMap.setDist(x, y, g + 2);
 								}
 							} else {
 								if (moreAccurate(g, oldDist)) {
-									// System.out.printf("Sensor offset: %d, x: %d, y:%d \n", g, x, y);
 									System.out.printf("Set x: %d, y: %d to obstacle. \n", x, y);
 									newMap.setGrid(x, y, Constant.OBSTACLE);
 									newMap.setDist(x, y, g);

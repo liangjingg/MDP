@@ -137,7 +137,6 @@ public class Map {
 	public String printDist() {
 		String s = "";
 		s += "The current map is: \n\n";
-		// System.out.println("The current map is: \n");
 
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -157,12 +156,8 @@ public class Map {
 						}
 
 						s += temp;
-
-						// System.out.print(grid[i][j] + " , " );
 						System.out.printf("%3s", temp);
 					} else {
-						// s+=grid[i][j] + ", ";
-						// System.out.print(grid[i][j] + ", " );
 						String temp = " ";
 						if (grid[i][j] == Constant.UNEXPLORED) {
 							temp = String.format("%3s|", dist[i][j]);
@@ -216,25 +211,20 @@ public class Map {
 		 * always 3x3 grid diagonally opposite the start point (top right)
 		 */
 
-		// new String[]{"Unexplored", "Explored", "Obstacle",
-		// "Waypoint", "Startpoint", "Endpoint"};
 		for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				// Set the start point grids
-				// Set dist to 0 to ensure all values will NOT be overridden
 				if (i < Constant.STARTPOINTWIDTH && j < Constant.STARTPOINTHEIGHT) {
 					setGrid(i, j, Constant.STARTPOINT);
 					setDist(i, j, 0);
 				}
 				// Set the end point grids
-				// Set dist to 0 to ensure all values will NOT be overridden
 				else if (i >= Constant.BOARDWIDTH - Constant.ENDPOINTWIDTH
 						&& j >= Constant.BOARDHEIGHT - Constant.ENDPOINTHEIGHT) {
 					setGrid(i, j, Constant.ENDPOINT);
 					setDist(i, j, 0);
 				}
 				// Set the remaining grids unexplored
-				// Set dist to 999999 to ensure all values will be overridden
 				else {
 					setGrid(i, j, Constant.UNEXPLORED);
 					setDist(i, j, 999999);
@@ -469,8 +459,6 @@ public class Map {
 		MDFBitStringPart1.append("11");
 
 		for (int i = 0; i < MDFBitStringPart1.length(); i += 4) {
-			// System.out.println(Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i,
-			// i + 4), 2), 16));
 			MDFHexString[0] += Integer.toString(Integer.parseInt(MDFBitStringPart1.substring(i, i + 4), 2), 16);
 		}
 

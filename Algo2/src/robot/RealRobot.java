@@ -20,8 +20,6 @@ import datastruct.Obstacle;
 public class RealRobot extends Robot {
 	private ConnectionSocket connectionSocket = ConnectionSocket.getInstance();
 	private static RealRobot r = null;
-	private int numOfCount = 0;
-	private int numOfImages = 0;
 	private SimulatorRobot sr = null;
 	private boolean acknowledgementCompleted = false;
 
@@ -125,7 +123,6 @@ public class RealRobot extends Robot {
 
 		boolean completed = false;
 		this.acknowledgementCompleted = false;
-		//System.out.println("No acknowledgement");
 
 		while (!completed) {
 			s = connectionSocket.receiveMessage().trim();
@@ -189,7 +186,6 @@ public class RealRobot extends Robot {
 
 	// Send the mdf string every 4 times we receive the sensor value
 	public void sendMDFString() {
-		// if (this.numOfCount > 3) {
 		String[] arr2 = this.getMDFString();
 		connectionSocket.sendMessage("M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
 				+ ",\"obstacle\":\"" + arr2[2] + "\"}]}|");
@@ -197,16 +193,11 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: M{\"map\":[{\"explored\": \"" + arr2[0] + "\",\"length\":" + arr2[1]
 					+ ",\"obstacle\":\"" + arr2[2] + "\"}]}|", 1);
 		}
-		// this.numOfCount = 0;
-		// } else {
-		// this.numOfCount++;
-		// }
 	}
 
 	// Send the forward message with how many steps and update the robot position
 	@Override
 	public void forward(int step) {
-		// connectionSocket.sendMessage("W0" + Integer.toString(step) + "|");
 		connectionSocket.sendMessage(Constant.FORWARD_MOVEMENT);
 		this.x = setValidX(this.x + Constant.SENSORDIRECTION[this.getDirection()][0]);
 		this.y = setValidX(this.y + Constant.SENSORDIRECTION[this.getDirection()][1]);
@@ -215,7 +206,6 @@ public class RealRobot extends Robot {
 			sr.displayMessage("Sent message: W0" + Integer.toString(step) + "|", 1);
 		}
 		toggleValid();
-		// sendMDFString();
 		if (!acknowledge()) {
 			this.x = setValidX(this.x - Constant.SENSORDIRECTION[this.getDirection()][0]);
 			this.y = setValidX(this.y - Constant.SENSORDIRECTION[this.getDirection()][1]);
@@ -229,17 +219,11 @@ public class RealRobot extends Robot {
 	@Override
 	public void rotateRight() {
 		connectionSocket.sendMessage(Constant.TURN_RIGHT);
-		// try {
-		// TimeUnit.MILLISECONDS.sleep(1000);
-		// } catch (Exception e) {
-		// System.out.println(e.getMessage());
-		// }
 		setDirection((this.getDirection() + 1) % 4);
 		if (sr != null) {
 			sr.rotateRight();
 			sr.displayMessage("Sent message: " + Constant.TURN_RIGHT, 1);
 		}
-		// sendMDFString();
 		acknowledge();
 	}
 
@@ -251,7 +235,6 @@ public class RealRobot extends Robot {
 			sr.rotate180();
 			sr.displayMessage("Sent message: " + Constant.U_TURN, 1);
 		}
-		//sendMDFString();
 		acknowledge();
 	}
 
@@ -264,13 +247,11 @@ public class RealRobot extends Robot {
 			sr.rotateLeft();
 			sr.displayMessage("Sent message: " + Constant.TURN_LEFT, 1);
 		}
-		// sendMDFString();
 		acknowledge();
 	}
 
 	// Send the image position and the command to take picture
 	public boolean captureImage(Obstacle[] image_pos) {
-		this.numOfImages += 1;
 		try {
 			TimeUnit.MILLISECONDS.sleep(1250);
 		} catch (Exception e) {
@@ -302,10 +283,7 @@ public class RealRobot extends Robot {
 			} else if (completed && s.equals(Constant.IMAGE_STOP)) {
 				return true;
 			} else {
-				//s = connectionSocket.receiveMessage().trim();
-				// buffer = ConnectionManager.getBuffer();
 				for (int i = 0; i < buffer.size(); i++) {
-					System.out.println("In LOOOOP");
 					completed = checkImageAcknowledge(buffer.get(i));
 					i += 1;
 					if (completed) {
@@ -327,11 +305,14 @@ public class RealRobot extends Robot {
 	}
 
 	public void sendPosition() {
-		connectionSocket.sendMessage("R{\"robotPosition\":[" + y + "," + x + "," + ((getDirection()+3)%4)*90 + "]}|");
+		connectionSocket
+				.sendMessage("R{\"robotPosition\":[" + y + "," + x + "," + ((getDirection() + 3) % 4) * 90 + "]}|");
 		if (sr != null) {
-			sr.displayMessage("Sent message: " + "R{\"robotPosition\":[" + y + "," + x + "," + ((getDirection()+3)%4)*90 + "]}", 1);
+			sr.displayMessage("Sent message: " + "R{\"robotPosition\":[" + y + "," + x + ","
+					+ ((getDirection() + 3) % 4) * 90 + "]}", 1);
 		}
 	}
+
 	// Send the calibrate command
 	public void calibrate() {
 		connectionSocket.sendMessage(Constant.CALIBRATE);
@@ -372,9 +353,7 @@ public class RealRobot extends Robot {
 		if (sr != null) {
 			sr.displayMessage(s, mode);
 		} else {
-			System.out.println("Display on simulator");
 			System.out.println(s);
-			System.out.println("Display on sfdsfimulator");
 		}
 	}
 

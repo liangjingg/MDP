@@ -5,28 +5,29 @@ import map.Map;
 
 public class SimulatorSensor extends Sensor {
 	// Simulate the Ardurino sensor
-	private Map trueMap;
 	private String sensorValue;
 	private String[] sensorArray;
 
 	// Randomly generate a true map for simulated environment
 	public SimulatorSensor() {
-		trueMap = new Map();
+		Map trueMap = new Map();
 		trueMap.generateMap(Constant.RANDOMMAP);
+		setTrueMap(trueMap);
 	}
 
 	// Set a map for the simulated environment
 	public SimulatorSensor(Map map) {
-		trueMap = map;
+		setTrueMap(map);
+		// trueMap = map;
 	}
 
 	// Based on the true simulated map, the sensor will get the valid sensor value
 	// for the robot
 	private void updateSensorsValue(int x, int y, int direction) {
 		// sensorValue will have this: FR, FC, FL, RB, RF, LF
-
+		Map trueMap = getTrueMap();
 		String[] sensorValue = new String[6];
-		for (int i = 1; i <= Constant.SHORTSENSORMAXRANGE; i++) { // ShortSensorMaxRange=3
+		for (int i = 1; i <= Constant.SHORT_SENSOR_MAX_RANGE; i++) {
 			if (sensorValue[0] == null
 					&& trueMap.getGrid(x + sensorLocation[0][0] + i * sensorDirection[0][0],
 							y + sensorLocation[0][1] + i * sensorDirection[0][1]).equals(Constant.OBSTACLE)
@@ -58,7 +59,7 @@ public class SimulatorSensor extends Sensor {
 				sensorValue[4] = setSensorValueToObstacle(4, i);
 			}
 		}
-		for (int i = 1; i <= Constant.FARSENSORMAXRANGE; i++) {
+		for (int i = 1; i <= Constant.FAR_SENSOR_MAX_RANGE; i++) {
 			if (sensorValue[5] == null
 					&& trueMap.getGrid(x + sensorLocation[5][0] + i * sensorDirection[2][0],
 							y + sensorLocation[5][1] + i * sensorDirection[2][1]).equals(Constant.OBSTACLE)
@@ -91,18 +92,9 @@ public class SimulatorSensor extends Sensor {
 		// Pad whatever value that has no obstacle
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i] == null) {
-				arr[i] = "" + (Constant.FARSENSORMAXRANGE * 10 + Constant.FARSENSOROFFSET + 1) + ".0";
+				arr[i] = "" + (Constant.FAR_SENSOR_MAX_RANGE * 10 + Constant.FAR_SENSOR_OFFSET + 1) + ".0";
 			}
 		}
 		return arr;
 	}
-
-	public Map getTrueMap() {
-		return trueMap;
-	}
-
-	public void setTrueMap(Map map) {
-		trueMap = map;
-	}
-
 }

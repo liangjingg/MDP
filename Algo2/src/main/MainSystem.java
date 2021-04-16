@@ -14,8 +14,7 @@ public class MainSystem {
 	private static boolean realRun = false;
 	private static boolean simulate = false;
 
-	public static
-	 void main(String[] args) {
+	public static void main(String[] args) {
 		ImageIcon icon = new ImageIcon(
 				new ImageIcon(Constant.DIALOGICONIMAGEPATH).getImage().getScaledInstance(40, 40, Image.SCALE_DEFAULT));
 		int result = JOptionPane.CLOSED_OPTION;

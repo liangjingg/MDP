@@ -1,14 +1,10 @@
 package sensor;
 
-import map.Map;
-
+/** Represents the class for the sensor during the actual run */
 public class RealSensor extends Sensor {
-
-	/* This class basically instantiate the sensor class for Real Run. */
 	private int x;
 	private int y;
 	private int direction;
-	private Map trueMap;
 	private String arr[] = new String[6];
 
 	public RealSensor() {
@@ -26,23 +22,9 @@ public class RealSensor extends Sensor {
 		if (this.x == x && this.y == y && this.direction == direction) {
 			this.x = x;
 			this.y = y;
-			this.direction = y; // wtf is this
+			this.direction = y;
 			return arr;
 		}
 		return null;
-	}//
-
-	@Override
-	// In the real run, the robot cannot know what is the true map.
-	public Map getTrueMap() {
-		//return null;
-		return trueMap;
 	}
-
-	@Override
-	// This is not valid action for the robot
-	public void setTrueMap(Map map) {
-		this.trueMap = map;
-	}
-
 }

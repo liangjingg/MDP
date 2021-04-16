@@ -146,16 +146,11 @@ public class ConnectionManager extends Thread {
 					&& s.equals(Constant.FASTEST_PATH)) {
 				thread = FastestPathThread.getInstance(robot, robot.getWaypoint(), 1);
 				thread.setPriority(Thread.MAX_PRIORITY);
-				// Map map = robot.getTrueMap();
-				// need to robot.setMap() here
-				// loadMap only runs setTrueMap() of simulator robot -> sets simulated sensor of
-				// simulator robot
 				if (robot.getSimulatorRobot() != null) {
 					SimulatorRobot sr = robot.getSimulatorRobot();
 					Map map = sr.getTrueMap();
 					robot.setMap(map);
 					sr.setSimulatorMap(map);
-					// sr.toggleMap();
 				}
 				// run map
 				System.out.println(robot.getMap().print(robot));
@@ -166,9 +161,6 @@ public class ConnectionManager extends Thread {
 				} catch (Exception e) {
 					System.out.println("Error in fastest path in ConnectionManager");
 				}
-				// Set map
-				// robot.setTrueMap(map);
-				// robot.getMap();
 				complete = true;
 			}
 
@@ -224,7 +216,6 @@ public class ConnectionManager extends Thread {
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}
-					// System.out.println(map.getMDFString());
 				}
 			} else {
 				System.out.println("Unknown command: " + s);
