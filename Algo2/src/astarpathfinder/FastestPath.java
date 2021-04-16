@@ -14,15 +14,11 @@ public class FastestPath {
             boolean move) {
         AStarPathFinder astar = new AStarPathFinder();
         astar.setDirection(robot.getDirection());
-        astar.setFirst(true); // wtf -> this is set in the old code when the open list is empty? -> means no
-                              // possible path
+        astar.setFirst(true);
         int[] path, path1, path2;
 
         if (waypoint != null && astar.isValid(robot, waypoint.x, waypoint.y)) { // If valid waypoint
-            // move is false when running fastest path
-            // removing first turn penalty to find fastest path due to initial calibration
-            // before timing
-            if (!move) {// ????
+            if (!move) {
                 astar.setFirstTurnPenalty(false);
             }
             Coordinate startPos = robot.getPosition();
@@ -43,19 +39,43 @@ public class FastestPath {
         System.out.println(Arrays.toString(path));
         if ((path != null) && move) {
             if (ConnectionSocket.checkConnection() && FastestPathThread.getRunning()) {
-                move(robot, path, speed, onGrid, goal);
+                realFPmove(path, robot);
                 System.out.println("Finsh sending");
             } else {
                 // get realPath
-                System.out.println(getRealPath(path));
-                move(robot, path, speed, onGrid, goal);
+                String pathString = getRealPath(path);
+                FPsimulatorMove(pathString, robot);
                 System.out.printf("At goal, x: %d, y: %d \n now", goal.x, goal.y);
             }
         }
         System.out.println(Arrays.toString(path));
-        // System.out.println(Arrays.toString(robot.getWaypoint()));
         System.out.println("Finished Fastest Path");
         return path;
+    }
+
+    private void FPsimulatorMove(String path, Robot robot) {
+        String[] moves = path.split("\\|");
+        for (int i = 0; i < moves.length; i++) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            char action = moves[i].charAt(0);
+            if (action == 'W') {
+                int count = 0;
+                if (moves[i].length() == 3) {
+                    count = Integer.parseInt(moves[i].substring(1, 3));
+                } else {
+                    count = Integer.parseInt(moves[i].substring(1, 2));
+                }
+                robot.forward(count);
+            } else if (action == 'A') {
+                robot.rotateLeft();
+            } else if (action == 'D') {
+                robot.rotateRight();
+            }
+        }
     }
 
     private String getRealPath(int[] path) {
@@ -66,7 +86,7 @@ public class FastestPath {
                 count++;
             } else if (count > 0) { // No Longer forward
                 if (count < 10) {
-                    sb.append("W").append("0").append(count).append("|");
+                    sb.append("W").append(count).append("|");
                 } else if (count >= 10) {
                     sb.append("W").append(count).append("|");
                 }
@@ -77,7 +97,7 @@ public class FastestPath {
                     sb.append(Constant.TURN_LEFT);
                     count = 1;
                 } else if (direction == Constant.BACKWARD) {
-                    sb.append(Constant.TURN_RIGHT).append(Constant.TURN_RIGHT);
+                    sb.append(Constant.U_TURN);
                     count = 1;
                 } else {
                     System.out.println("Error!");
@@ -91,19 +111,18 @@ public class FastestPath {
                     sb.append(Constant.TURN_LEFT);
                     count = 1;
                 } else if (direction == Constant.BACKWARD) {
-                    sb.append(Constant.TURN_RIGHT).append(Constant.TURN_RIGHT);
+                    sb.append(Constant.U_TURN);
                     count = 1;
                 }
             }
         }
         if (count < 10) {
-            sb.append("W").append("0").append(count).append("|");
+            sb.append("W").append(count).append("|");
         }
         if (count >= 10) {
             sb.append("W").append(count).append("|");
         }
         String msg = sb.toString();
-        System.out.println("Actual msg! " + msg);
         return msg;
     }
 
@@ -113,7 +132,6 @@ public class FastestPath {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         for (int direction : path) {
-            // System.out.printf("count: %d, direction: %d\n", count, direction);
             if (direction == Constant.FORWARD) {
                 count++;
             } else if (count > 0) {
@@ -156,92 +174,70 @@ public class FastestPath {
         }
         String msg = sb.toString();
         System.out.println("Actual msg! " + msg);
-        // [1, 0, 1, 0, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1]
-        // Map 1: W02|A|W09|D|W08|A|W02|A|W02|D|W06|D|W4
-        // msg = "W03|D|W03|D|D";
         robot.displayMessage("Message sent for FastestPath real run: " + msg, 2);
         ConnectionSocket.getInstance().sendMessage(msg);
     }
 
     private void rotateToFaceObstacle(Robot robot, Coordinate endPos) {
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         int direction = robot.getDirection();
         int x = robot.getPosition().x;
         int y = robot.getPosition().y;
-        System.out.println("Direction: " + direction);
         switch (direction) {
         case Constant.NORTH:
             if (endPos.y == (y - 2)) { // original is posX - 2??
-                System.out.println("First case");
                 break;
             } else if (endPos.x == (x + 2) && endPos.y == y) {
-                System.out.println("Second case");
                 robot.rotateRight();
                 break;
             } else if (endPos.x == (x - 2) && endPos.y != y) {
-                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else if (endPos.y == y + 2) {
-                System.out.println("Fourth case");
-                // robot.rotateRight();
-                // robot.rotateRight();
                 robot.rotate180();
                 break;
             }
         case Constant.EAST:
             if (endPos.x == (x + 2)) {
-                System.out.println("First case");
                 break;
             } else if (endPos.y == (y + 2) && endPos.x == x) {
-                System.out.println("Second case");
                 robot.rotateRight();
                 break;
             } else if (endPos.y == (y - 2) && endPos.x != x) {
-                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else if (endPos.x == (x - 2)) {
-                System.out.println("Fourth case");
-                // robot.rotateRight();
-                // robot.rotateRight();
                 robot.rotate180();
                 break;
             }
         case Constant.SOUTH:
             if (endPos.y == (y + 2)) { // why not posX + 2??
-                System.out.println("First case");
                 break;
             } else if (endPos.x == (x - 2) && endPos.y == y) {
-                System.out.println("Second case");
                 robot.rotateRight();
                 break;
             } else if (endPos.x == (x + 2) && endPos.y != y) {
-                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else if (endPos.y == (y - 2)) {
-                System.out.println("Fourth case");
-                // robot.rotateRight();
-                // robot.rotateRight();
                 robot.rotate180();
                 break;
             }
         case Constant.WEST:
             if (endPos.x == (x - 2)) { // orig is posY
-                System.out.println("First case");
                 break;
             } else if (endPos.y == (y - 2) && endPos.x == x) {
-                System.out.println("Second case");
                 robot.rotateRight();
                 break;
             } else if (endPos.y == (y + 2) && endPos.x != x) {
-                System.out.println("Third case");
                 robot.rotateLeft();
                 break;
             } else if (endPos.x == (x + 2)) {
-                System.out.println("Fourth case");
-                // robot.rotateRight();
-                // robot.rotateRight();
                 robot.rotate180();
                 break;
             }

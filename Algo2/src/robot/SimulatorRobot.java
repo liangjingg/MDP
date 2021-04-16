@@ -27,28 +27,12 @@ public class SimulatorRobot extends Robot {
 
 	public SimulatorRobot(JFrame frame, int x, int y, int direction) {
 		super();
-		System.out.println(" Simulate robot!");
-		initialise(x, y, direction); // From Robot parent class (This sets the x, y and direction of the robot ->
-										// From start (0, 19, 1))
+		initialise(x, y, direction);
 		this.frame = frame;
-		this.sensor = new SimulatorSensor(); // This uses its own map which is all explored
-
-		/*
-		 * THE ORDER OF ADDING THE ROBOT INTO THE FRAME MATTERS OTHERWISE IT WILL APPEAR
-		 * UNDERNEATH THE GRID Hence, initialiseRobotImage must run before SimulatorMap
-		 * create the UI grid
-		 */
-
-		// Place the robot image based on its coordinate in the grid
+		this.sensor = new SimulatorSensor();
 		initialiseRobotImage(this.x, this.y);
-
-		// Create an unexplored map for the robot
 		map = new Map();
-
-		// Create the UI map for display with the robot map
 		smap = SimulatorMap.getInstance(frame, map.copy());
-
-		// Add the buttons onto the UI
 		buttonListener = new SetUpUI(frame, this, map);
 
 	}
@@ -69,7 +53,6 @@ public class SimulatorRobot extends Robot {
 		this.x = setValidX(1);
 		this.y = setValidY(1);
 		toggleValid();
-		// TODO: Set this as a constant value
 		robotImage.setLocation(
 				Constant.MARGINLEFT + (Constant.GRIDWIDTH * 3 - Constant.ROBOTWIDTH) / 2 + (x - 1) * Constant.GRIDWIDTH,
 				Constant.MARGINTOP + (Constant.GRIDHEIGHT * 3 - Constant.ROBOTHEIGHT) / 2
@@ -79,7 +62,6 @@ public class SimulatorRobot extends Robot {
 
 	// Get the sensor values from the simulated environment
 	protected String[] getSensorValues() {
-		// FR, FC, FL, RB, RF, LF
 		String[] sensorValues = sensor.getAllSensorsValue(this.x, this.y, getDirection());
 		return sensorValues;
 	}
@@ -107,7 +89,7 @@ public class SimulatorRobot extends Robot {
 		if (!oldWaypoint.equals(this.getWaypoint())) {
 			smap.setMap(map);
 			if (this.getWaypoint().x != -1 && this.getWaypoint().y != -1) {
-				buttonListener.displayMessage("Removed waypoint.", 1);
+				buttonListener.displayMessage("Successfully set the waypoint: " + x + ", " + y, 1);
 			} else {
 				buttonListener.displayMessage("Successfully set the waypoint: " + x + ", " + y, 1);
 			}
@@ -173,11 +155,16 @@ public class SimulatorRobot extends Robot {
 			s = "Error";
 		}
 		toggleValid();
-		// System.out.println("Move simulator by " + step);
+		Object lock = new Object();
 		for (int i = 0; i < step * Constant.GRIDWIDTH; i++) {
-			// System.out.printf("MOVE IMAGE by %d, x: %d, y: %d, i: %d \n", step,
-			// this.getPosition()[0], this.getPosition()[1], i);
-			t.schedule(new MoveImageTask(robotImage, s, 1), delay * (i + 1));
+			t.schedule(new MoveImageTask(robotImage, s, 1, lock), 1);
+			synchronized (lock) {
+				try {
+					lock.wait();
+				} catch (InterruptedException ex) {
+
+				}
+			}
 		}
 	}
 
@@ -210,8 +197,9 @@ public class SimulatorRobot extends Robot {
 			s = "Error";
 		}
 		toggleValid();
+		Object lock = new Object();
 		for (int i = 0; i < step * Constant.GRIDWIDTH; i++) {
-			t.schedule(new MoveImageTask(robotImage, s, 1), delay * (i + 1));
+			t.schedule(new MoveImageTask(robotImage, s, 1, lock), delay * (i + 1));
 		}
 	}
 

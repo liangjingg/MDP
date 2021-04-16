@@ -1,6 +1,4 @@
-package astarpathfinder;
-
-import datastruct.Coordinate;
+package datastruct;
 
 public class Node implements Comparable<Node> {
     public Coordinate pos;

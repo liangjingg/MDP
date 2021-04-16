@@ -1,4 +1,5 @@
 package config;
+
 import java.io.File;
 import datastruct.Coordinate;
 
@@ -20,8 +21,8 @@ public class Constant {
 	public static final int ENDPOINTWIDTH = 3;
 
 	// You need to define your own range for your sensors
-	public static final double[][] SENSOR_RANGES = { { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0}, { 7.0, 19.0, 27.0 },
-	{ 7.0, 19.0, 27.0}, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
+	public static final double[][] SENSOR_RANGES = { { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 },
+			{ 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
 
 	public static final double[] MAX_SENSOR_LIMIT = { 30.0, 30.0, 30.0, 30.0, 30.0, 50.0 };
 	public static final double[] MAX_UNCERTAINTY = { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
@@ -57,7 +58,8 @@ public class Constant {
 	public static final int GRIDWIDTH = 40;
 	public static final int MARGINLEFT = 100;
 	public static final int MARGINTOP = 100;
-	public static final String SIMULATORICONIMAGEPATH = File.separator+ "images" + File.separator + "simulator_icon.ico";
+	public static final String SIMULATORICONIMAGEPATH = File.separator + "images" + File.separator
+			+ "simulator_icon.ico";
 
 	// Used in Map and possibly used in real run and simulator
 	public static final String[] POSSIBLEGRIDLABELS = new String[] { "Unexplored", "Explored", "Obstacle", "Waypoint",
@@ -104,22 +106,34 @@ public class Constant {
 	public static final String CALIBRATE = "C|";
 	public static final String RIGHTALIGN = "B|";
 	public static final String END_TOUR = "N";
-	public static final String FOLDER_TO_WRITE = "/Users/ray/Desktop/Projects/MDP Stuff/MDP/Algo2";
+	public static final String FOLDER_TO_WRITE = "C:\\Users\\lisas\\Desktop\\NTU\\Year 3\\Semester 2\\CZ3004 Multidisciplinary Project\\FullRepo\\MDP\\Algo2";
 	public static final String SETMDF = "MDF";
 	public static final String INITIAL_CALIBRATE = "E|";
 	// Image path for UI Simulator
-	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "unexplored_grid.png";
-	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "explored_grid.png";
-	public static final String OBSTACLEIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "obstacle_grid.png";
-	public static final String WAYPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "waypoint_grid.png";
-	public static final String STARTPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "start_grid.png";
-	public static final String ENDPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "end_grid.png";
-	public static final String ROBOTIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "robot.png";
-	public static final String ROBOTNIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "carN.gif";
-	public static final String ROBOTEIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "carE.gif";
-	public static final String ROBOTSIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "carS.gif";
-	public static final String ROBOTWIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "carW.gif";
-	public static final String DIALOGICONIMAGEPATH = FOLDER_TO_WRITE + File.separator+ "images" + File.separator + "letter-r.png";
+	public static final String UNEXPLOREDIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "unexplored_grid.png";
+	public static final String EXPLOREDIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "explored_grid.png";
+	public static final String OBSTACLEIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "obstacle_grid.png";
+	public static final String WAYPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "waypoint_grid.png";
+	public static final String STARTPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "start_grid.png";
+	public static final String ENDPOINTIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "end_grid.png";
+	public static final String ROBOTIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "robot.png";
+	public static final String ROBOTNIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "carN.gif";
+	public static final String ROBOTEIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "carE.gif";
+	public static final String ROBOTSIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "carS.gif";
+	public static final String ROBOTWIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "carW.gif";
+	public static final String DIALOGICONIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
+			+ "letter-r.png";
 
 	public static final String[] GRIDIMAGEPATH = new String[] { UNEXPLOREDIMAGEPATH, EXPLOREDIMAGEPATH,
 			OBSTACLEIMAGEPATH, WAYPOINTIMAGEPATH, STARTPOINTIMAGEPATH, ENDPOINTIMAGEPATH };

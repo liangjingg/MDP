@@ -16,6 +16,7 @@ public class Exploration {
     private FastestPath fp = new FastestPath();
     private Map map;
     private boolean imageStop;
+    private Robot robot;
     // private int countOfMoves = 0;
     // private int directionChange = 0;
     private int consecutiveDirectionChange = 0;
@@ -111,9 +112,6 @@ public class Exploration {
 
         Coordinate unexplored = nearestUnexplored(robot, robot.getPosition()); // Returns the
         while (unexplored != null) {
-            System.out.println("Unexplored: " + unexplored);
-            // fastest path to nearest unexplored square
-            System.out.println("Phase 2");
             int[] path = fp.FastestPathAlgo(robot, null, unexplored, 1, false, true);
             if ((path == null) || (map.getGrid(unexplored.x, unexplored.y).equals(Constant.UNEXPLORED))) {
                 // need fix this becuase sensor position changed
@@ -147,11 +145,6 @@ public class Exploration {
         Obstacle[] obsPos = new Obstacle[] { defaultPos, defaultPos, defaultPos }; // 3 x 3 array //use arraylist
         do {
             checkedObstacles = move(robot, 1, checkedObstacles);
-            // System.out.println("Checked obstacles:");
-            // for (Obstacle o : checkedObstacles) {
-            // System.out.printf("x: %d, y: %d, direction: %d, ", o.coordinates.x,
-            // o.coordinates.y, o.direction);
-            // }
             System.out.println();
             cornerCalibration(robot);
             checkUTurn(robot);
@@ -168,21 +161,17 @@ public class Exploration {
         if (!this.imageStop) {
             // nearest obstacle whose coordinate isnt in checked obstacles
             needTake = pictureTaken(robot, robot.getPosition(), checkedObstacles);
-            System.out.println("Need take: " + needTake);
             // go next to the obstacle
             whereToGo = nextToObstacle(robot, needTake);
-            System.out.println("Where to go (Picture taken): " + whereToGo);
         }
         // else, go to the nearest unexplored
         if (whereToGo == null) {
             unexplored = true;
             needTake = null;
             whereToGo = nearestUnexplored(robot, robot.getPosition());
-            System.out.println("Where to go (Nearest unexplored): " + whereToGo);
         }
         Coordinate goTo = null;
         while ((whereToGo != null) && !(this.imageStop)) {
-            System.out.println("Phase 2");
             goTo = new Coordinate(whereToGo.x, whereToGo.y);
             int[] path = fp.FastestPathAlgo(robot, null, goTo, 1, true, true);
             if ((unexplored)
@@ -191,9 +180,7 @@ public class Exploration {
                 checkedObstacles.add(new Obstacle(whereToGo, -1));
             } else { // if not unexplored (pictureTaken) or path not null and grid is not unexplored
                      // (successfully do fastest path)
-                System.out.println("Not unexplored (Nearest obstacle)");
                 move = obstacleOnRight(robot, needTake); // false if need take is null
-                System.out.println("obstacle on right " + move);
             }
 
             // go in a circle around d block (will be an island if not reachable during the
@@ -223,14 +210,6 @@ public class Exploration {
                 fp.FastestPathAlgo(robot, null, Constant.START, 1, true, true);
                 cornerCalibration(robot);
             }
-            // } else { // means all explored?
-            // // to corner calibrate after each "island"
-            // fp.FastestPathAlgo(robot, null, nearestCorner(robot), 1, true, true);
-            // cornerCalibration(robot);
-            // if (!this.imageStop) {
-            // this.imageStop = robot.captureImage(obsPos);
-            // }
-            // }
 
             robot.updateMap();
         }
@@ -471,14 +450,7 @@ public class Exploration {
                     checkedObstacles.add(obsPos[k]);
                 }
             }
-            // while (!robot.isAcknowledged()) {
-            // try {
-            // System.out.println("sleeep");
-            // TimeUnit.MILLISECONDS.sleep(500);
-            // } catch (Exception e) {
-            // System.out.println(e.getMessage());
-            // }
-            // }
+            robot.setImage();
             this.imageStop = robot.captureImage(obsPos);
         }
         return checkedObstacles;
@@ -690,7 +662,6 @@ public class Exploration {
     // }
     // }
     // }
-
     // return corners[cheapest_index];
     // }
 

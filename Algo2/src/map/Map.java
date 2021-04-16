@@ -49,7 +49,7 @@ public class Map {
 				if (grid[i][j] < Constant.POSSIBLEGRIDLABELS.length) {
 					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[grid[i][j]]);
 				} else {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[0]);
+					setGrid(i, j, Constant.UNEXPLORED);
 				}
 			}
 		}
@@ -69,18 +69,17 @@ public class Map {
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 				if (i != Constant.BOARDWIDTH - 1) {
-					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1] || grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]
-							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]
-							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+					if (grid[i][j] == Constant.EXPLORED || grid[i][j] == Constant.OBSTACLE
+							|| grid[i][j] == Constant.WAYPOINT || grid[i][j] == Constant.ENDPOINT) {
 						// s+=grid[i][j] + " , ";
 						String temp = " ";
-						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+						if (grid[i][j] == Constant.EXPLORED) {
 							temp = String.format("%3s|", " ");
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+						} else if (grid[i][j] == Constant.OBSTACLE) {
 							temp = String.format("%3s|", "X");
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+						} else if (grid[i][j] == Constant.WAYPOINT) {
 							temp = String.format("%3s|", "W");
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+						} else if (grid[i][j] == Constant.ENDPOINT) {
 							temp = String.format("%3s|", "E");
 						}
 
@@ -92,9 +91,9 @@ public class Map {
 						// s+=grid[i][j] + ", ";
 						// System.out.print(grid[i][j] + ", " );
 						String temp = " ";
-						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+						if (grid[i][j] == Constant.UNEXPLORED) {
 							temp = String.format("%3s|", "O");
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+						} else if (grid[i][j] == Constant.STARTPOINT) {
 							temp = String.format("%3s|", "S");
 						}
 						s += temp;
@@ -102,17 +101,17 @@ public class Map {
 					}
 				} else {
 					String temp = " ";
-					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+					if (grid[i][j] == Constant.EXPLORED) {
 						temp = String.format("%3s|", " ");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+					} else if (grid[i][j] == Constant.OBSTACLE) {
 						temp = String.format("%3s|", "X");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+					} else if (grid[i][j] == Constant.WAYPOINT) {
 						temp = String.format("%3s|", "W");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+					} else if (grid[i][j] == Constant.ENDPOINT) {
 						temp = String.format("%3s|", "E");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+					} else if (grid[i][j] == Constant.UNEXPLORED) {
 						temp = String.format("%3s|", "O");
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+					} else if (grid[i][j] == Constant.STARTPOINT) {
 						temp = String.format("%3s|", "S");
 					}
 
@@ -136,18 +135,17 @@ public class Map {
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 				if (i != Constant.BOARDWIDTH - 1) {
-					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1] || grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]
-							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]
-							|| grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+					if (grid[i][j] == Constant.EXPLORED || grid[i][j] == Constant.OBSTACLE
+							|| grid[i][j] == Constant.WAYPOINT || grid[i][j] == Constant.ENDPOINT) {
 						// s+=grid[i][j] + " , ";
 						String temp = " ";
-						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+						if (grid[i][j] == Constant.EXPLORED) {
 							temp = String.format("%3s|", dist[i][j]);
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+						} else if (grid[i][j] == Constant.OBSTACLE) {
 							temp = String.format("%3s|", dist[i][j]);
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+						} else if (grid[i][j] == Constant.WAYPOINT) {
 							temp = String.format("%3s|", dist[i][j]);
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+						} else if (grid[i][j] == Constant.ENDPOINT) {
 							temp = String.format("%3s|", dist[i][j]);
 						}
 
@@ -159,9 +157,9 @@ public class Map {
 						// s+=grid[i][j] + ", ";
 						// System.out.print(grid[i][j] + ", " );
 						String temp = " ";
-						if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+						if (grid[i][j] == Constant.UNEXPLORED) {
 							temp = String.format("%3s|", dist[i][j]);
-						} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+						} else if (grid[i][j] == Constant.STARTPOINT) {
 							temp = String.format("%3s|", dist[i][j]);
 						}
 						s += temp;
@@ -169,17 +167,17 @@ public class Map {
 					}
 				} else {
 					String temp = " ";
-					if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[1]) {
+					if (grid[i][j] == Constant.EXPLORED) {
 						temp = String.format("%3s|", dist[i][j]);
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[2]) {
+					} else if (grid[i][j] == Constant.OBSTACLE) {
 						temp = String.format("%3s|", dist[i][j]);
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[3]) {
+					} else if (grid[i][j] == Constant.WAYPOINT) {
 						temp = String.format("%3s|", dist[i][j]);
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[5]) {
+					} else if (grid[i][j] == Constant.ENDPOINT) {
 						temp = String.format("%3s|", dist[i][j]);
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[0]) {
+					} else if (grid[i][j] == Constant.UNEXPLORED) {
 						temp = String.format("%3s|", dist[i][j]);
-					} else if (grid[i][j] == Constant.POSSIBLEGRIDLABELS[4]) {
+					} else if (grid[i][j] == Constant.STARTPOINT) {
 						temp = String.format("%3s|", dist[i][j]);
 					}
 
@@ -218,20 +216,20 @@ public class Map {
 				// Set the start point grids
 				// Set dist to 0 to ensure all values will NOT be overridden
 				if (i < Constant.STARTPOINTWIDTH && j < Constant.STARTPOINTHEIGHT) {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[4]);
+					setGrid(i, j, Constant.STARTPOINT);
 					setDist(i, j, 0);
 				}
 				// Set the end point grids
 				// Set dist to 0 to ensure all values will NOT be overridden
 				else if (i >= Constant.BOARDWIDTH - Constant.ENDPOINTWIDTH
 						&& j >= Constant.BOARDHEIGHT - Constant.ENDPOINTHEIGHT) {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[5]);
+					setGrid(i, j, Constant.ENDPOINT);
 					setDist(i, j, 0);
 				}
 				// Set the remaining grids unexplored
 				// Set dist to 999999 to ensure all values will be overridden
 				else {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[0]);
+					setGrid(i, j, Constant.UNEXPLORED);
 					setDist(i, j, 999999);
 				}
 			}
@@ -282,16 +280,16 @@ public class Map {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				// Set the start point grids
 				if (i < Constant.STARTPOINTWIDTH && j < Constant.STARTPOINTHEIGHT) {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[4]);
+					setGrid(i, j, Constant.STARTPOINT);
 				}
 				// Set the end point grids
 				else if (i >= Constant.BOARDWIDTH - Constant.ENDPOINTWIDTH
 						&& j >= Constant.BOARDHEIGHT - Constant.ENDPOINTHEIGHT) {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[5]);
+					setGrid(i, j, Constant.ENDPOINT);
 				}
 				// Set the remaining grids explored
 				else {
-					setGrid(i, j, Constant.POSSIBLEGRIDLABELS[1]);
+					setGrid(i, j, Constant.EXPLORED);
 				}
 			}
 		}
@@ -300,8 +298,8 @@ public class Map {
 			while (k <= Constant.MAXOBSTACLECOUNT) {
 				int x = r.nextInt(Constant.BOARDWIDTH);
 				int y = r.nextInt(Constant.BOARDHEIGHT);
-				if (getGrid(x, y).compareTo(Constant.POSSIBLEGRIDLABELS[1]) == 0) {
-					setGrid(x, y, Constant.POSSIBLEGRIDLABELS[2]);
+				if (getGrid(x, y).equals(Constant.EXPLORED)) {
+					setGrid(x, y, Constant.OBSTACLE);
 					k++;
 				}
 
@@ -315,8 +313,8 @@ public class Map {
 		int waypointX = waypoint.x;
 		int waypointY = waypoint.y;
 		if (x >= Constant.BOARDWIDTH - 1 || x <= 0 || y >= Constant.BOARDHEIGHT - 1 || y <= 0
-				|| (getGrid(x, y) != null && !getGrid(x, y).equals(Constant.POSSIBLEGRIDLABELS[0]))
-						&& !getGrid(x, y).equals(Constant.POSSIBLEGRIDLABELS[1])) {
+				|| (getGrid(x, y) != null && !getGrid(x, y).equals(Constant.UNEXPLORED))
+						&& !getGrid(x, y).equals(Constant.EXPLORED)) {
 			if (!(waypointX == -1 && waypointY == -1)) {
 				this.waypoint.x = -1;
 				this.waypoint.y = -1;
@@ -361,7 +359,7 @@ public class Map {
 
 		// If the x, y is outside the board, it returns an obstacle.
 		if (x < 0 || x >= Constant.BOARDWIDTH || y < 0 || y >= Constant.BOARDHEIGHT) {
-			return Constant.POSSIBLEGRIDLABELS[2];
+			return Constant.OBSTACLE;
 		}
 		return grid[x][y];
 	}
@@ -396,9 +394,9 @@ public class Map {
 		for (int x = 0; x < Constant.BOARDWIDTH; x++) {
 			for (int y = 0; y < Constant.BOARDHEIGHT; y++) {
 				if (MDFBitStringP2.charAt(x * Constant.BOARDHEIGHT + y) == '1') {
-					grid[x][y] = Constant.POSSIBLEGRIDLABELS[2];
+					grid[x][y] = Constant.OBSTACLE;
 				} else {
-					grid[x][y] = Constant.POSSIBLEGRIDLABELS[1];
+					grid[x][y] = Constant.EXPLORED;
 				}
 			}
 		}
@@ -406,8 +404,8 @@ public class Map {
 			File folder = new File(Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena");
 			int numOfFiles = folder.list().length;
 			System.out.println(numOfFiles);
-			File file = new File(
-					Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena" + File.separator + "" + "samplearena" + (numOfFiles - 1) + ".txt");
+			File file = new File(Constant.FOLDER_TO_WRITE + "" + File.separator + "sample arena" + File.separator + ""
+					+ "samplearena" + (numOfFiles - 1) + ".txt");
 			PrintWriter out = new PrintWriter(file);
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 				for (int i = 0; i < Constant.BOARDWIDTH; i++) {
@@ -480,7 +478,7 @@ public class Map {
 		int length = 0;
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
-				if (grid[i][j] != Constant.POSSIBLEGRIDLABELS[0]) {
+				if (grid[i][j] != Constant.UNEXPLORED) {
 					length++;
 				}
 			}

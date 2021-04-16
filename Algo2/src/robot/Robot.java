@@ -44,7 +44,8 @@ public abstract class Robot {
 		if (ConnectionSocket.getDebug()) {
 			try {
 				this.writer = new OutputStreamWriter(
-						new FileOutputStream(Constant.FOLDER_TO_WRITE + "" + File.separator + "" + "Output.txt"), "UTF-8");
+						new FileOutputStream(Constant.FOLDER_TO_WRITE + "" + File.separator + "" + "Output.txt"),
+						"UTF-8");
 				writer.write("");
 			} catch (Exception e) {
 				System.out.println("Unable to write into output");
@@ -73,6 +74,11 @@ public abstract class Robot {
 	public abstract void displayMessage(String s, int mode);
 
 	public abstract boolean isAcknowledged();
+
+	public void setImage() {
+		Map newMap = map;
+		newMap.setGrid(x, y, Constant.WAYPOINT);
+	}
 
 	public void setDirection(int direction) {
 		this.direction = direction;
@@ -210,9 +216,9 @@ public abstract class Robot {
 				if (value <= sensorThreshold[h]) {
 					if (h == 0) {
 						/*
-						* If it is the far sensor, it has a lower accuracy than the short range sensor.
-						* Only update if the obstacle is determined to be more accurate.
-						*/
+						 * If it is the far sensor, it has a lower accuracy than the short range sensor.
+						 * Only update if the obstacle is determined to be more accurate.
+						 */
 						x = this.x + sensorLocation[i][0] + sensorDirectionValueX;
 						y = this.y + sensorLocation[i][1] + sensorDirectionValueY;
 						if (i == 5) { // for far sensors
@@ -231,8 +237,9 @@ public abstract class Robot {
 							}
 						}
 					} else {
-						if  (value - sensorThreshold[h-1] < sensorThreshold[h] - value) {
-							//System.out.printf("%f less than %f \n", value - sensorThreshold[h], sensorThreshold[h] - value);
+						if (value - sensorThreshold[h - 1] < sensorThreshold[h] - value) {
+							// System.out.printf("%f less than %f \n", value - sensorThreshold[h],
+							// sensorThreshold[h] - value);
 							System.out.printf("x: %d, y: %d \n", x, y);
 							x = this.x + sensorLocation[i][0] + sensorDirectionValueX * h;
 							y = this.y + sensorLocation[i][1] + sensorDirectionValueY * h;
@@ -291,8 +298,7 @@ public abstract class Robot {
 			}
 		}
 
-		if (ConnectionSocket.getDebug())
-		{
+		if (ConnectionSocket.getDebug()) {
 			try {
 				File file = new File(Constant.FOLDER_TO_WRITE + "" + File.separator + "" + "Output.txt");
 				BufferedReader br = new BufferedReader(new FileReader(file));
@@ -301,7 +307,8 @@ public abstract class Robot {
 					st += tmp + "\n";
 				}
 				this.writer = new OutputStreamWriter(
-						new FileOutputStream(Constant.FOLDER_TO_WRITE + "" + File.separator + "" + "Output.txt"), "UTF-8");
+						new FileOutputStream(Constant.FOLDER_TO_WRITE + "" + File.separator + "" + "Output.txt"),
+						"UTF-8");
 				writer.write(st + "\n\n");
 				writer.write("Pos : [" + x + ", " + y + ", " + Constant.DIRECTIONS[direction] + "]\n");
 				writer.write("The sensor values are: ");

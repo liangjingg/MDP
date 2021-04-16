@@ -122,8 +122,8 @@ public class SetUpUI implements ActionListener {
 		JButton up = new JButton();
 
 		JButton resetRobot = new JButton();
-		JLabel robotView = new JLabel("Robot's View");
-		JLabel simulatedMap = new JLabel("Simulated Map");
+		JLabel robotView = new JLabel("Simulator");
+		JLabel simulatedMap = new JLabel("Simulator");
 
 		JButton returnToStart = new JButton();
 		JLabel status = new JLabel("Status");
@@ -133,12 +133,12 @@ public class SetUpUI implements ActionListener {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		// Set Icon or Image to the UI Component
-		right.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "right.png").getImage()
+		right.setIcon(new ImageIcon(new ImageIcon(File.separator + "images" + File.separator + "right.png").getImage()
 				.getScaledInstance(Constant.GRIDWIDTH, Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
-		left.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "left.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
-				Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
-		up.setIcon(new ImageIcon(new ImageIcon(File.separator+ "images" + File.separator + "up.png").getImage().getScaledInstance(Constant.GRIDWIDTH,
-				Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
+		left.setIcon(new ImageIcon(new ImageIcon(File.separator + "images" + File.separator + "left.png").getImage()
+				.getScaledInstance(Constant.GRIDWIDTH, Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
+		up.setIcon(new ImageIcon(new ImageIcon(File.separator + "images" + File.separator + "up.png").getImage()
+				.getScaledInstance(Constant.GRIDWIDTH, Constant.GRIDHEIGHT, Image.SCALE_DEFAULT)));
 
 		// Set text of buttons
 		update.setText("Update");
@@ -582,18 +582,6 @@ public class SetUpUI implements ActionListener {
 					// Here, we set to explored instead of Unexplored
 					grid[i][heightCount] = Constant.EXPLORED;
 					break;
-
-				// case 'W':
-				/*
-				 * We do not allow waypoint setting as there may be ambiguous situation
-				 * 
-				 * For example, if user accidentally set wrongly, what should be the grid string
-				 * after it resets as one map should only have one waypoint?
-				 * 
-				 * This might affect the correctness of our mdf string.
-				 */
-				// grid[i][heightCount] = Constant.POSSIBLEGRIDLABELS[3];
-				// break;
 
 				case 'E': // Represent end grid
 					grid[i][heightCount] = Constant.ENDPOINT;

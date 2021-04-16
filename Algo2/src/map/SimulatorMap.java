@@ -85,8 +85,8 @@ public class SimulatorMap {
 		}
 		for (int i = 0; i < Constant.BOARDWIDTH; i++) {
 			for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
-				if ((oldGridValue[i][j].compareTo(newGridValue[i][j]) != 0 || oldWaypoint.equals(new Coordinate(i, j)))
-						&& gridToImagePath.containsKey(newGridValue[i][j]) && !waypoint.equals(new Coordinate(i, j))) {
+				if ((oldGridValue[i][j].compareTo(newGridValue[i][j]) != 0)
+						&& gridToImagePath.containsKey(newGridValue[i][j])) {
 					gridCells[i][j].setImage(gridToImagePath.get(newGridValue[i][j]));
 				}
 			}

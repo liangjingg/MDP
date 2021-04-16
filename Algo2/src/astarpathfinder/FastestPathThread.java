@@ -48,7 +48,6 @@ public class FastestPathThread extends Thread {
             if (isSimulated) {
                 SimulatorRobot sr = (SimulatorRobot) r;
                 sr.displayMessage("Fastest Path Completed", 1);
-                sr.setDirection(Constant.NORTH);
             }
         }
     }

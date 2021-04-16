@@ -4,6 +4,7 @@ import robot.Robot;
 import map.Map;
 import config.Constant;
 import datastruct.Coordinate;
+import datastruct.Node;
 
 import java.util.PriorityQueue;
 
@@ -17,10 +18,8 @@ public class AStarPathFinder {
     Node[][] nodeDetails;
 
     public int[] AStarPathFinderAlgo(Robot robot, Coordinate startPos, Coordinate endPos, boolean onGrid) {
-        // Node start = new Node(start_pos);
         initialDirection = robot.getDirection();
         Node cur = null;
-        // System.out.printf("End pos: x: %d, y: %d \n", endPos.x, endPos.y);
         // matrix indicating whether is on open list or not
         boolean[][] openList = new boolean[Constant.BOARDWIDTH][Constant.BOARDHEIGHT];
         // matrix indicating whether is on closed list or not
@@ -53,22 +52,8 @@ public class AStarPathFinder {
         boolean pathFound = false;
 
         while (!openQueue.isEmpty()) {
-            // System.out.println("Priority Queue: ");
-            // PriorityQueue<Node> queueCopy = new PriorityQueue<Node>(openQueue);
-            // while (queueCopy.size() != 0) {
-            // Node temp = queueCopy.poll();
-            // System.out.printf("x: %d, y: %d, g_cost: %d, h_cost: %d, cost: %d \n",
-            // temp.pos.x, temp.pos.y,
-            // temp.g_cost, temp.h_cost, temp.cost);
-            // }
             cur = openQueue.poll();
-            // System.out.printf("Cur - x: %d, y: %d, g_cost: %d, h_cost: %d \n", cur.pos.x,
-            // cur.pos.y,
-            // nodeDetails[cur.pos.x][cur.pos.y].g_cost,
-            // nodeDetails[cur.pos.x][cur.pos.y].h_cost);
-
             if (((!onGrid) && (canReach(cur.pos, endPos, first))) || ((onGrid) && (cur.pos.equals(endPos)))) {
-                System.out.println("Path found!");
                 pathFound = true;
                 break;
             }
@@ -78,25 +63,8 @@ public class AStarPathFinder {
                 if (neighbour != null) {
                     neighbour.parent = cur;
                     calculateCosts(neighbour, endPos, robot);
-                    // if (neighbour.pos.x == 3 && neighbour.pos.y == 1) {
-                    // System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d,
-                    // cost: %d\n",
-                    // neighbour.pos.x, neighbour.pos.y, neighbour.g_cost, neighbour.h_cost,
-                    // neighbour.cost);
-                    // }
-                    // System.out.printf("Neighbour: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d,
-                    // cost: %d\n",
-                    // neighbour.pos.x, neighbour.pos.y, neighbour.g_cost, neighbour.h_cost,
-                    // neighbour.cost);
                     if (closedList[neighbour.pos.x][neighbour.pos.y])
                         continue;
-                    // if (openList[neighbour.pos.x][neighbour.pos.y]) {
-                    // Node temp = nodeDetails[neighbour.pos.x][neighbour.pos.y];
-                    // System.out.printf(
-                    // "Current in node details: Pos: x: %d, y: %d, g_cost: %d, h_cost: %d, cost:
-                    // %d\n",
-                    // temp.pos.x, temp.pos.y, temp.g_cost, temp.h_cost, temp.cost);
-                    // }
                     if (!openList[neighbour.pos.x][neighbour.pos.y]
                             || neighbour.cost < nodeDetails[neighbour.pos.x][neighbour.pos.y].cost) { // shd update if
                                                                                                       // h_cost
@@ -349,10 +317,6 @@ public class AStarPathFinder {
         }
 
         while (cur.parent != null) {
-            // System.out.printf("reverse Path cur: x: %d, y: %d \n", cur.pos.x,
-            // cur.pos.y);
-            // System.out.printf("reverse Path cur PARENT: x: %d, y: %d \n",
-            // cur.parent.pos.x, cur.parent.pos.y);
             int direction = directionToGo(cur);
             if (direction >= 0) {
                 int[] temp_path = new int[path.length + 1];

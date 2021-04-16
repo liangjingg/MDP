@@ -4,21 +4,13 @@ import config.Constant;
 import map.Map;
 
 public abstract class Sensor {
-	// More like sensor interface class to arduino
+	public static int[][] sensorLocation = new int[6][2];
+	public static int[][] sensorDirection = new int[3][2];
 
-	// Far sensor range = 80-150
-	// Short sensor range = 10-50
-	// FR, FC, FL, RB, RF, LF
-
-	public static int[][] sensorLocation = new int[6][2]; // 6x2 Grid -->
-	public static int[][] sensorDirection = new int[3][2]; // Assume NORTH is the direction, Represent front, left and
-															// right sensor direction
-
-	// Calculates the sensor direction and the position of all my sensors based on
-	// offset from my robot position
+	// Calculates the sensor direction and the position of sensors based on
+	// offset from robot position
 	public static void updateSensorDirection(int direction) {
-		// int direction = direction; // NORTH, EAST, SOUTH, WEST
-		// new int [][]{{0, -1},{1, 0},{0, 1},{-1, 0}};
+
 		// SENSOR DIRECTION
 		sensorDirection[0] = Constant.SENSORDIRECTION[direction];
 		sensorDirection[1] = Constant.SENSORDIRECTION[(direction + 1) % Constant.SENSORDIRECTION.length];
@@ -26,10 +18,6 @@ public abstract class Sensor {
 				% Constant.SENSORDIRECTION.length];
 
 		int[] lastDirection = Constant.SENSORDIRECTION[(direction + 2) % Constant.SENSORDIRECTION.length];
-
-		// System.out.printf("Direction : %d, (%s) \n", direction,
-		// Constant.DIRECTIONS[direction]);
-
 		// SENSOR LOCATION
 		sensorLocation[0] = new int[] { sensorDirection[0][0] + sensorDirection[1][0],
 				sensorDirection[0][1] + sensorDirection[1][1] };
@@ -40,9 +28,7 @@ public abstract class Sensor {
 				sensorDirection[1][1] + lastDirection[1] };
 		sensorLocation[4] = new int[] { sensorLocation[0][0], sensorLocation[0][1] };
 		sensorLocation[5] = sensorDirection[2];
-		System.out.printf("Last sensor location: %d, %d \n", sensorLocation[5][0], sensorLocation[5][1]);
 	}
-
 
 	public static void print() {
 		System.out.println("Sensor Location \n");
