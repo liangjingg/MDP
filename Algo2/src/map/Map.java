@@ -367,7 +367,7 @@ public class Map {
 		String[][] b_grid = b.getGridMap();
 		for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
 			for (int i = 0; i < Constant.BOARDWIDTH; i++) {
-				if (a_grid[i][j].compareTo(b_grid[i][j]) != 0) {
+				if (!a_grid[i][j].equals(b_grid[i][j])) {
 					return false;
 				}
 			}
