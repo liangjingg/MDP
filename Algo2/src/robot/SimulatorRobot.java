@@ -39,7 +39,7 @@ public class SimulatorRobot extends Robot {
 
 	// Takes the centre of the 3x3 grid where the robot is located
 	private void initialiseRobotImage(int x, int y) {
-		robotImage = new RobotImageComponent(Constant.ROBOTIMAGEPATHS[this.getDirection()], Constant.ROBOTWIDTH,
+		robotImage = new RobotImageComponent(Constant.ROBOT_IMAGE_PATHS[this.getDirection()], Constant.ROBOTWIDTH,
 				Constant.ROBOTHEIGHT);
 		frame.add(robotImage);
 		robotImage.setLocation(
@@ -69,7 +69,7 @@ public class SimulatorRobot extends Robot {
 	// Set the robot direction and update the UI
 	public void setDirection(int direction) {
 		super.setDirection(direction);
-		robotImage.setImage(Constant.ROBOTIMAGEPATHS[direction]);
+		robotImage.setImage(Constant.ROBOT_IMAGE_PATHS[direction]);
 	}
 
 	public boolean isAcknowledged() {

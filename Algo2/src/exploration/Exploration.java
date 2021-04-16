@@ -603,7 +603,7 @@ public class Exploration {
 
     private Coordinate nearestUnexplored(Robot robot, Coordinate start) {
         Map map = robot.getMap();
-        int lowestCost = Constant.MAXFCOST;
+        int lowestCost = Constant.MAXCOST;
         Coordinate cheapestPos = null;
         for (int i = 0; i < Constant.BOARDWIDTH; i++) {
             for (int j = 0; j < Constant.BOARDHEIGHT; j++) {
@@ -662,7 +662,7 @@ public class Exploration {
 
     private Coordinate pictureTaken(Robot robot, Coordinate start, Set<Obstacle> checkedObstacles) {
         Map map = robot.getMap();
-        int lowestCost = Constant.MAXFCOST;
+        int lowestCost = Constant.MAXCOST;
         int x = 0;
         int y = 0;
 

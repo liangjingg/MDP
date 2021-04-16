@@ -24,7 +24,7 @@ public class SimulatorMap {
 
 		// Create the hashmap for the grid label mapped to the grid image path
 		for (int i = 0; i < Constant.POSSIBLEGRIDLABELS.length; i++) {
-			gridToImagePath.put(Constant.POSSIBLEGRIDLABELS[i], Constant.GRIDIMAGEPATH[i]);
+			gridToImagePath.put(Constant.POSSIBLEGRIDLABELS[i], Constant.GRID_IMAGE_PATHS[i]);
 		}
 		initializeMapOnUI(frame);
 

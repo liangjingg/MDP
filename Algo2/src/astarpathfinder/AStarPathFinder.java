@@ -33,9 +33,9 @@ public class AStarPathFinder {
                 closedList[i][j] = false;
                 Coordinate pos = new Coordinate(i, j);
                 nodeDetails[i][j] = new Node(pos);
-                nodeDetails[i][j].cost = Constant.MAXFCOST;
-                nodeDetails[i][j].g_cost = Constant.MAXFCOST;
-                nodeDetails[i][j].h_cost = Constant.MAXFCOST;
+                nodeDetails[i][j].cost = Constant.MAXCOST;
+                nodeDetails[i][j].g_cost = Constant.MAXCOST;
+                nodeDetails[i][j].h_cost = Constant.MAXCOST;
                 nodeDetails[i][j].parent = null;
             }
         }
