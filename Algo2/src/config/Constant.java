@@ -11,16 +11,13 @@ public class Constant {
 	public static final boolean IMAGE_REC = false;
 
 	// Used for all Real and Simulator Events
-	public static final int BOARDWIDTH = 20; // By default, this should be 20. This must be greater than 3 as the Robot
-												// assumes to take 3x3 grid.
-	public static final int BOARDHEIGHT = 15; // By default, this should be 15. This must be greater than 3 as the Robot
-												// assumes to take 3x3 grid.
+	public static final int BOARDWIDTH = 20;
+	public static final int BOARDHEIGHT = 15;
 	public static final int STARTPOINTHEIGHT = 3;
 	public static final int STARTPOINTWIDTH = 3;
 	public static final int ENDPOINTHEIGHT = 3;
 	public static final int ENDPOINTWIDTH = 3;
 
-	// You need to define your own range for your sensors
 	public static final double[][] SENSOR_RANGES = { { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 },
 			{ 7.0, 19.0, 27.0 }, { 7.0, 19.0, 27.0 }, { 8.0, 15.0, 27.0, 38.0, 50.0, 60.0 } };
 
@@ -43,7 +40,7 @@ public class Constant {
 	public static final int BACKWARD = 3;
 
 	// MAX COST
-	public static final int MAXFCOST = 9999;
+	public static final int MAXCOST = 9999;
 
 	// For Timertask in UI Simulator
 	public static final int DELAY = 15;
@@ -81,14 +78,13 @@ public class Constant {
 	public static final Coordinate END = new Coordinate(18, 13);
 
 	// Avoid changing these values below
-	public static final int ROBOTHEIGHT = 100; // By default, this should be twice of the grid height. GRIDHEIGHT * 2
-	public static final int ROBOTWIDTH = 100; // By default, this should be twice of the grid width. GRIDWIDTH * 2
+	public static final int ROBOTHEIGHT = 100;
+	public static final int ROBOTWIDTH = 100;
 	public static final int HEIGHT = BOARDHEIGHT * GRIDHEIGHT + MARGINTOP;
 	public static final int WIDTH = BOARDWIDTH * GRIDWIDTH + MARGINLEFT;
 
 	// Connection Constants
 	public static final String IP_ADDRESS = "192.168.11.11";
-	// public static final String IP_ADDRESS = "192.168.15.15";
 	public static final int PORT = 5020;
 	public static final int BUFFER_SIZE = 512;
 
@@ -133,7 +129,7 @@ public class Constant {
 	public static final String ROBOTWIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
 			+ "carW.gif";
 	public static final String DIALOGICONIMAGEPATH = FOLDER_TO_WRITE + File.separator + "images" + File.separator
-			+ "letter-r.png";
+			+ "dialog_icon.png";
 
 	public static final String[] GRIDIMAGEPATH = new String[] { UNEXPLOREDIMAGEPATH, EXPLOREDIMAGEPATH,
 			OBSTACLEIMAGEPATH, WAYPOINTIMAGEPATH, STARTPOINTIMAGEPATH, ENDPOINTIMAGEPATH };
