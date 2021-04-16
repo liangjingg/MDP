@@ -1,12 +1,19 @@
 package com.example.mdp_group_11.ui.main;
 
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -22,20 +29,25 @@ import com.example.mdp_group_11.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MapTabFragment extends Fragment {
+import static android.content.Context.SENSOR_SERVICE;
+
+public class MapTabFragment extends Fragment implements SensorEventListener{
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String TAG = "MapFragment";
 
     private PageViewModel pageViewModel;
 
-    Button resetMapBtn, updateButton;
-    ImageButton directionChangeImageBtn, exploredImageBtn, obstacleImageBtn, clearImageBtn;
-    ToggleButton setStartPointToggleBtn, setWaypointToggleBtn;
+    Button resetMapBtn, updateButton,waypointBtn,startPointBtn;
+    ImageButton moveForwardImageBtn, turnRightImageBtn, moveBackImageBtn, turnLeftImageBtn;
     Switch manualAutoToggleBtn;
-    GridMap gridMap;
     private static boolean autoUpdate = false;
+    GridMap gridMap;
+    Switch phoneTiltSwitch;
     public static boolean manualUpdateRequest = false;
+
+    private Sensor mSensor;
+    private SensorManager mSensorManager;
 
     public static MapTabFragment newInstance(int index) {
         MapTabFragment fragment = new MapTabFragment();
@@ -65,16 +77,18 @@ public class MapTabFragment extends Fragment {
 
         gridMap = MainActivity.getGridMap();
         final DirectionFragment directionFragment = new DirectionFragment();
+        final WaypointFragment waypointFragment = new WaypointFragment();
 
-        resetMapBtn = root.findViewById(R.id.resetMapBtn);
-        setStartPointToggleBtn = root.findViewById(R.id.setStartPointToggleBtn);
-        setWaypointToggleBtn = root.findViewById(R.id.setWaypointToggleBtn);
-        directionChangeImageBtn = root.findViewById(R.id.directionChangeImageBtn);
-        exploredImageBtn = root.findViewById(R.id.exploredImageBtn);
-        obstacleImageBtn = root.findViewById(R.id.obstacleImageBtn);
-        clearImageBtn = root.findViewById(R.id.clearImageBtn);
         manualAutoToggleBtn = root.findViewById(R.id.manualAutoToggleBtn);
-        updateButton = root.findViewById(R.id.updateButton);
+        waypointBtn = root.findViewById(R.id.waypointBtn);
+        startPointBtn=root.findViewById(R.id.startPointBtn);
+        resetMapBtn=root.findViewById(R.id.resetBtn);
+        moveForwardImageBtn = root.findViewById(R.id.forwardImageBtn);
+        turnRightImageBtn = root.findViewById(R.id.rightImageBtn);
+        moveBackImageBtn = root.findViewById(R.id.backImageBtn);
+        turnLeftImageBtn = root.findViewById(R.id.leftImageBtn);
+        phoneTiltSwitch = root.findViewById(R.id.phoneTiltSwitch);
+
 
         resetMapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,93 +100,158 @@ public class MapTabFragment extends Fragment {
             }
         });
 
-        setStartPointToggleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLog("Clicked setStartPointToggleBtn");
-                if (setStartPointToggleBtn.getText().equals("STARTING POINT"))
-                    showToast("Cancelled selecting starting point");
-                else if (setStartPointToggleBtn.getText().equals("CANCEL") && !gridMap.getAutoUpdate()) {
-                    showToast("Please select starting point");
-                    gridMap.setStartCoordStatus(true);
-                    gridMap.toggleCheckedBtn("setStartPointToggleBtn");
-                } else
-                    showToast("Please select manual mode");
-                showLog("Exiting setStartPointToggleBtn");
-            }
-        });
+        mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        setWaypointToggleBtn.setOnClickListener(new View.OnClickListener() {
+        phoneTiltSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (gridMap.getAutoUpdate()) {
+                    updateStatus("Please press 'MANUAL'");
+                    phoneTiltSwitch.setChecked(false);
+                }
+                else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
+                    if(phoneTiltSwitch.isChecked()){
+                        showToast("MOTION SENSOR ON");
+                        moveForwardImageBtn.setVisibility(View.GONE);
+                        moveBackImageBtn.setVisibility(View.GONE);
+                        turnRightImageBtn.setVisibility(View.GONE);
+                        turnLeftImageBtn.setVisibility(View.GONE);
+                        phoneTiltSwitch.setPressed(true);
+
+                        mSensorManager.registerListener(MapTabFragment.this, mSensor, mSensorManager.SENSOR_DELAY_NORMAL);
+                        sensorHandler.post(sensorDelay);
+                    }else{
+                        showToast("MOTION SENSOR OFF");
+                        moveForwardImageBtn.setVisibility(View.VISIBLE);
+                        moveBackImageBtn.setVisibility(View.VISIBLE);
+                        turnRightImageBtn.setVisibility(View.VISIBLE);
+                        turnLeftImageBtn.setVisibility(View.VISIBLE);
+                        showLog("unregistering Sensor Listener");
+                        try {
+                            mSensorManager.unregisterListener( MapTabFragment.this);
+                        }catch(IllegalArgumentException e) {
+                            e.printStackTrace();
+                        }
+                        sensorHandler.removeCallbacks(sensorDelay);
+                    }
+                } else {
+                    updateStatus("Please set the 'STARTING POINT'");
+                    phoneTiltSwitch.setChecked(false);
+                }
+                if(phoneTiltSwitch.isChecked()){
+                    compoundButton.setText("MOTION SENSOR ON");
+                }else
+                {
+                    compoundButton.setText("MOTION SENSOR OFF");
+                }
+            }
+        }); moveForwardImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLog("Clicked setWaypointToggleBtn");
-                if (setWaypointToggleBtn.getText().equals("WAYPOINT"))
-                    showToast("Cancelled selecting waypoint");
-                else if (setWaypointToggleBtn.getText().equals("CANCEL")) {
-                    showToast("Please select waypoint");
-                    gridMap.setWaypointStatus(true);
-                    gridMap.toggleCheckedBtn("setWaypointToggleBtn");
+                showLog("Clicked moveForwardImageBtn");
+                if (gridMap.getAutoUpdate())
+                    updateStatus("Please press 'MANUAL'");
+                else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
+                    gridMap.moveRobot("forward");
+                    MainActivity.refreshLabel();
+                    if (gridMap.getValidPosition()){
+                        MainActivity.printMessage("W1|");
+                        updateStatus("moving forward");
+                        /*if(counter>1){
+                            TimerTask MyTimer = new MyTimerTask();
+                            timer.scheduleAtFixedRate(MyTimer, 4000, 6000);
+                        }*/
+                    }
+
+                    else
+                        updateStatus("Unable to move forward");
                 }
                 else
-                    showToast("Please select manual mode");
-                showLog("Exiting setWaypointToggleBtn");
+                    updateStatus("Please press 'STARTING POINT'");
+                showLog("Exiting moveForwardImageBtn");
             }
         });
 
-        directionChangeImageBtn.setOnClickListener(new View.OnClickListener() {
+        turnRightImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showLog("Clicked directionChangeImageBtn");
-                directionFragment.show(getActivity().getFragmentManager(), "Direction Fragment");
+                showLog("Clicked turnRightImageBtn");
+                if (gridMap.getAutoUpdate())
+                    updateStatus("Please press 'MANUAL'");
+                else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
+                    gridMap.moveRobot("right");
+                    MainActivity.refreshLabel();
+                    MainActivity.printMessage("D|");
+                }
+                else
+                    updateStatus("Please press 'STARTING POINT'");
+                showLog("Exiting turnRightImageBtn");
+            }
+        });
+
+        moveBackImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLog("Clicked moveBackwardImageBtn");
+                if (gridMap.getAutoUpdate())
+                    updateStatus("Please press 'MANUAL'");
+                else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
+                    gridMap.moveRobot("back");
+                    MainActivity.refreshLabel();
+                    if (gridMap.getValidPosition()){
+                        MainActivity.printMessage("S1|");
+                        updateStatus("moving backward");
+                        /*if(counter>1){
+                            TimerTask MyTimer = new MyTimerTask();
+                            timer.scheduleAtFixedRate(MyTimer, 4000, 6000);
+                        }*/
+                    }else
+                        updateStatus("Unable to move backward");
+
+                }
+                else
+                    updateStatus("Please press 'STARTING POINT'");
+                showLog("Exiting moveBackwardImageBtn");
+            }
+        });
+
+        turnLeftImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLog("Clicked turnLeftImageBtn");
+                if (gridMap.getAutoUpdate())
+                    updateStatus("Please press 'MANUAL'");
+                else if (gridMap.getCanDrawRobot() && !gridMap.getAutoUpdate()) {
+                    gridMap.moveRobot("left");
+                    MainActivity.refreshLabel();
+                    updateStatus("turning left");
+                    MainActivity.printMessage("A|");
+                }
+                else
+                    updateStatus("Please press 'STARTING POINT'");
+                showLog("Exiting turnLeftImageBtn");
+            }
+        });
+        startPointBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    try {
+                        gridMap.setStartingPointManual();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //gridMap.toggleCheckedBtn("setStartPointToggleBtn");
+            }
+        });
+        waypointBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLog("Clicked waypointBtn");
+                waypointFragment.show(getActivity().getFragmentManager(), "Waypoint Fragment");
                 showLog("Exiting directionChangeImageBtn");
             }
         });
-
-        exploredImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLog("Clicked exploredImageBtn");
-                if (!gridMap.getExploredStatus()) {
-                    showToast("Please check cell");
-                    gridMap.setExploredStatus(true);
-                    gridMap.toggleCheckedBtn("exploredImageBtn");
-                }
-                else if (gridMap.getExploredStatus())
-                    gridMap.setSetObstacleStatus(false);
-                showLog("Exiting exploredImageBtn");
-            }
-        });
-
-        obstacleImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLog("Clicked obstacleImageBtn");
-                if (!gridMap.getSetObstacleStatus()) {
-                    showToast("Please plot obstacles");
-                    gridMap.setSetObstacleStatus(true);
-                    gridMap.toggleCheckedBtn("obstacleImageBtn");
-                }
-                else if (gridMap.getSetObstacleStatus())
-                    gridMap.setSetObstacleStatus(false);
-                showLog("Exiting obstacleImageBtn");
-            }
-        });
-
-        clearImageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLog("Clicked clearImageBtn");
-                if (!gridMap.getUnSetCellStatus()) {
-                    showToast("Please remove cells");
-                    gridMap.setUnSetCellStatus(true);
-                    gridMap.toggleCheckedBtn("clearImageBtn");
-                }
-                else if (gridMap.getUnSetCellStatus())
-                    gridMap.setUnSetCellStatus(false);
-                showLog("Exiting clearImageBtn");
-            }
-        });
-
         manualAutoToggleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -181,67 +260,110 @@ public class MapTabFragment extends Fragment {
                     try {
                         gridMap.setAutoUpdate(true);
                         autoUpdate = true;
-                        gridMap.toggleCheckedBtn("None");
-                        updateButton.setClickable(false);
-                        updateButton.setTextColor(Color.GRAY);
-                        ControlFragment.getCalibrateButton().setClickable(false);
-                        ControlFragment.getCalibrateButton().setTextColor(Color.GRAY);
+                        //gridMap.toggleCheckedBtn("None");
+                        phoneTiltSwitch.setVisibility(View.GONE);
+                        moveForwardImageBtn.setVisibility(View.GONE);
+                        moveBackImageBtn.setVisibility(View.GONE);
+                        turnRightImageBtn.setVisibility(View.GONE);
+                        turnLeftImageBtn.setVisibility(View.GONE);
                         manualAutoToggleBtn.setText("AUTO");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     showToast("AUTO mode");
+
                 }
                 else if (manualAutoToggleBtn.getText().equals("AUTO")) {
                     try {
-                        gridMap.setAutoUpdate(false);
                         autoUpdate = false;
-                        gridMap.toggleCheckedBtn("None");
-                        updateButton.setClickable(true);
-                        updateButton.setTextColor(Color.BLACK);
-                        ControlFragment.getCalibrateButton().setClickable(true);
-                        ControlFragment.getCalibrateButton().setTextColor(Color.BLACK);
+                        gridMap.setAutoUpdate(false);
+                        phoneTiltSwitch.setVisibility(View.VISIBLE);
+                        moveForwardImageBtn.setVisibility(View.VISIBLE);
+                        moveBackImageBtn.setVisibility(View.VISIBLE);
+                        turnRightImageBtn.setVisibility(View.VISIBLE);
+                        turnLeftImageBtn.setVisibility(View.VISIBLE);
                         manualAutoToggleBtn.setText("MANUAL");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    showToast("MANUAL mode");
+
                 }
                 showLog("Exiting manualAutoToggleBtn");
             }
         });
 
-
-        //MANUAL UPDATE OF MAP?????????
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLog("Clicked updateButton");
-                MainActivity.printMessage("sendArena");
-                manualUpdateRequest = true;
-                showLog("Exiting updateButton");
-                try {
-                    String message = "{\"map\":[{\"explored\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"length\":300,\"obstacle\":\"00000000000000000706180400080010001e000400000000200044438f840000000000000080\"}]}";
-
-                    gridMap.setReceivedJsonObject(new JSONObject(message));
-                    gridMap.updateMapInformation();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
-
         return root;
     }
-
-    private void showLog(String message) {
+    private static void showLog(String message) {
         Log.d(TAG, message);
     }
 
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    Handler sensorHandler = new Handler();
+    boolean sensorFlag= false;
+
+    private final Runnable sensorDelay = new Runnable() {
+        @Override
+        public void run() {
+            sensorFlag = true;
+            sensorHandler.postDelayed(this,1000);
+        }
+    };
+
+    public void onSensorChanged(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        showLog("SensorChanged X: "+x);
+        showLog("SensorChanged Y: "+y);
+        showLog("SensorChanged Z: "+z);
+
+        if(sensorFlag) {
+            if (y < -2) {
+                showLog("Sensor Move Forward Detected");
+                gridMap.moveRobot("forward");
+                MainActivity.refreshLabel();
+                MainActivity.printMessage("W1|");
+            } else if (y > 2) {
+                showLog("Sensor Move Backward Detected");
+                gridMap.moveRobot("back");
+                MainActivity.refreshLabel();
+                MainActivity.printMessage("S1|");
+            } else if (x > 2) {
+                showLog("Sensor Move Left Detected");
+                gridMap.moveRobot("left");
+                MainActivity.refreshLabel();
+                MainActivity.printMessage("A|");
+            } else if (x < -2) {
+                showLog("Sensor Move Right Detected");
+                gridMap.moveRobot("right");
+                MainActivity.refreshLabel();
+                MainActivity.printMessage("D|");
+            }
+        }
+        sensorFlag = false;
+    }
+    public void onAccuracyChanged(Sensor sensor, int i) {
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        try{
+            mSensorManager.unregisterListener(MapTabFragment.this);
+        } catch(IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void updateStatus(String message) {
+        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP,0, 0);
+        toast.show();
+    }
+
 
 }

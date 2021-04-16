@@ -2,8 +2,8 @@ from bluetooth import *
 import os
 
 LOCALE = 'UTF-8'
-ANDROID_SOCKET_BUFFER_SIZE = 1024
-RFCOMM_CHANNEL = 7
+BUFFERSIZE = 1024
+RFCOMM = 7
 UUID = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
 
 
@@ -11,19 +11,13 @@ class Android:
     def __init__(self):
         self.serversocket = None
         self.clientsocket = None
-
         os.system("sudo hciconfig hci0 piscan")
+
         self.serversocket = BluetoothSocket(RFCOMM)
-        self.serversocket.bind(("", RFCOMM_CHANNEL))
-        self.serversocket.listen(RFCOMM_CHANNEL)
+        self.serversocket.bind(("", RFCOMM))
+        self.serversocket.listen(RFCOMM)
         port = self.serversocket.getsockname()[1]
 
-        # advertise_service( self.serversocket, "MDP-Server",
-        # service_id = UUID,
-        # service_classes = [ UUID, SERIAL_PORT_CLASS ],
-        # profiles = [ SERIAL_PORT_PROFILE ],
-        # # protocols = [ OBEX_UUID ]
-        # )
         print("Waiting for connection on RFCOMM channel %d" % port)
 
 
@@ -32,37 +26,41 @@ class Android:
             print("Connecting to Android...")
 
             if self.clientsocket == None:
-                self.clientsocket, client_info = self.serversocket.accept()
+                self.clientsocket, clientID = self.serversocket.accept()
 
-                print("Accepted connection from ", client_info)
-                retry = False
+                print("Accepted connection from ", clientID)
+                reconnect = False
 
-        except Exception as err:
-            print("Connection to Android failed. Error = {}".format(str(err)))
+        except Exception as errorMsg:
+            print("Connection to Android failed. Error = {}".format(str(errorMsg)))
 
             if self.clientsocket is not None:
                 self.clientsocket.close()
                 self.clientsocket = None
     
     def read(self):
-        message = self.clientsocket.recv(ANDROID_SOCKET_BUFFER_SIZE).strip()
-        print("From Android = {}".format(message))
 
-        if message == None:
+        try:
+            readMsg = self.clientsocket.recv(BUFFERSIZE).strip()
+            print("From Android = {}".format(readMsg))
+
+            if len(readMsg) > 0:
+                return readMsg
+            
             return None
 
-        if len(message) > 0:
-            return message
+        except Exception as errorMsg:
+            print('Android read failed: ' + str(errorMsg))
+            raise errorMsg
         
-        return None
 
-    def write(self, message):
-        print("To Android: {}".format(message))
+    def write(self, msgToWrite):
+        print("To Android: {}".format(msgToWrite))
         try:
-             self.clientsocket.send(message)
-        except Exception as err:
-            print("Fail to send to Android... {}".format(str(err)))
-            raise err
+             self.clientsocket.send(msgToWrite)
+        except Exception as errorMsg:
+            print("Fail to send to Android... {}".format(str(errorMsg)))
+            raise errorMsg
 
     def disconnect(self):
         try:
@@ -70,5 +68,5 @@ class Android:
                 self.clientsocket.close()
                 self.clientsocket = None
 
-        except Exception as err:
-            print("android.disconnect() failed:" +str(err))
+        except Exception as errorMsg:
+            print("android.disconnect() failed:" +str(errorMsg))

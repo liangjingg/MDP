@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">MDP Group 11</string>
     <string name="tab_text_1">Bluetooth</string>
-    <string name="tab_text_2">Communication</string>
-    <string name="tab_text_3">Map settings</string>
-    <string name="tab_text_4">Control</string>
+    <string name="tab_text_2">Map Controls</string>
+    <string name="tab_text_3">Challenges</string>
+    <string name="tab_text_4">Communication</string>
 
     <!--  Comms  -->
     <string name="send">SEND</string>

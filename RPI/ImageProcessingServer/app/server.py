@@ -15,7 +15,6 @@ import PIL
 import glob
 from PIL import Image
 from math import ceil, floor
-import wbf
 import timeit
 
 IMG_ENCODING = '.jpg'

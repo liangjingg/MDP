@@ -48,7 +48,12 @@ public class Exploration {
             if (time != -1) {
                 // to account for the time-limited exploration
                 int time_taken = (int) stopwatch.getElapsedTime();
+                // System.out.println(time + " vs " + time_taken);
                 if (time_taken >= time) {
+                    if (!atPosition(robot, Constant.START)) {
+                        //System.out.println("Back to start");
+                        fp.FastestPathAlgo(robot, null, Constant.START, speed, true, true);
+                    }
                     return;
                 }
             }
@@ -251,7 +256,7 @@ public class Exploration {
 
     private void checkUTurn(Robot robot) {
         if (atPosition(robot, Constant.START) && !goneUTurn) {
-            System.out.println("At start position");
+            //System.out.println("At start position");
             int y = 3;
             while (y < Constant.BOARDHEIGHT - 2) {
                 if (robot.getMap().getGrid(0, y).equals(Constant.OBSTACLE)
@@ -262,7 +267,7 @@ public class Exploration {
                 y += 1;
                 ;
             }
-            System.out.println("y: " + y);
+            //System.out.println("y: " + y);
             boolean hasEmptySpace = false;
             if (y <= Constant.BOARDHEIGHT - 2) {
                 int emptySpaces = 0;
@@ -278,7 +283,7 @@ public class Exploration {
                         emptySpaces = 0;
                     }
                 }
-                System.out.println(hasEmptySpace);
+                //System.out.println(hasEmptySpace);
                 if (!hasEmptySpace) {
                     switch (robot.getDirection()) {
                     case Constant.WEST:
@@ -303,7 +308,7 @@ public class Exploration {
     }
 
     private Set<Obstacle> move(Robot robot, int speed, Set<Obstacle> checkedObstacles) {
-        System.out.println(robot.getPosition() + " Direction: " + Constant.DIRECTIONS[robot.getDirection()]);
+        //System.out.println(robot.getPosition() + " Direction: " + Constant.DIRECTIONS[robot.getDirection()]);
         robot.updateMap();
         // System.out.println(obstacles);
 
@@ -541,12 +546,12 @@ public class Exploration {
                 && ((posY == 1) || (posY == Constant.BOARDHEIGHT - 2)))) {
             return;
         }
-        System.out.println("At corner!");
+        //System.out.println("At corner!");
         // System.out.printf("x: %d, y: %d", pos[0], pos[1]);
         robot.updateMap();
         int direction = robot.getDirection();
         if ((posX == 1) && (posY == Constant.BOARDHEIGHT - 2)) {
-            System.out.println("Bottom left corner");
+            //System.out.println("Bottom left corner");
             switch (direction) {
             case Constant.NORTH:
                 // robot.rotateRight();
@@ -563,7 +568,7 @@ public class Exploration {
                 break;
             }
         } else if ((posX == Constant.BOARDWIDTH - 2) && (posY == Constant.BOARDHEIGHT - 2)) {
-            System.out.println("Bottom right corner");
+            //System.out.println("Bottom right corner");
             switch (direction) {
             case Constant.WEST:
                 // robot.rotateRight();
@@ -580,7 +585,7 @@ public class Exploration {
                 break;
             }
         } else if ((posX == Constant.BOARDWIDTH - 2) && (posY == 1)) {
-            System.out.println("Top right corner");
+            //System.out.println("Top right corner");
             switch (direction) {
             case Constant.SOUTH:
                 // robot.rotateRight();
@@ -597,7 +602,7 @@ public class Exploration {
                 break;
             }
         } else if ((posX == 1) && (posY == 1)) {
-            System.out.println("At start");
+            //System.out.println("At start");
             switch (direction) {
             case Constant.EAST:
                 // robot.rotateRight();
@@ -616,7 +621,7 @@ public class Exploration {
         }
         // robot.calibrate();
         int newDirection = robot.getDirection();
-        System.out.println("New direction: " + newDirection);
+        //System.out.println("New direction: " + newDirection);
         switch (Math.abs(direction - newDirection + 4) % 4) {
         case 1:
             robot.rotateRight();
@@ -630,7 +635,7 @@ public class Exploration {
             robot.rotateLeft();
             break;
         }
-        System.out.println("Wtf is this " + robot.getDirection());
+        //System.out.println("Wtf is this " + robot.getDirection());
     }
 
     // private int[] nearestCorner(Robot robot) {

@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -50,8 +52,8 @@ public class GridMap extends View {
     private Paint unexploredColor = new Paint();
     private Paint exploredColor = new Paint();
     private Paint arrowColor = new Paint();
-    private Paint fastestPathColor = new Paint();
-
+    //private Paint fastestPathColor = new Paint();
+    
     private static JSONObject receivedJsonObject = new JSONObject();
     private static JSONObject mapInformation;
     private static JSONObject backupMapInformation;
@@ -70,6 +72,8 @@ public class GridMap extends View {
     private static boolean unSetCellStatus = false;
     private static boolean setExploredStatus = false;
     private static boolean validPosition = false;
+    private static boolean waypointNew=false;
+    private boolean newEndCoord=false;
     private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_error);
 
     private static final String TAG = "GridMap";
@@ -77,25 +81,26 @@ public class GridMap extends View {
     private static final int ROW = 20;
     private static float cellSize;
     private static Cell[][] cells;
+    private Canvas can;
 
     private boolean mapDrawn = false;
     public static String publicMDFExploration;
     public static String publicMDFObstacle;
-
 
     public GridMap(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initMap();
         blackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
-        robotColor.setColor(Color.parseColor("#FF8B3D"));
-        endColor.setColor(Color.parseColor("#FFFCCB"));
+        robotColor.setColor(Color.parseColor("#ffd3b6"));
+        //endColor.setColor(Color.TRANSPARENT);
+        endColor.setColor(Color.parseColor("#fefdca"));
         startColor.setColor(Color.CYAN);
-        waypointColor.setColor(Color.YELLOW);
+        waypointColor.setColor(Color.parseColor("#fefdca"));
         unexploredColor.setColor(Color.LTGRAY);
         exploredColor.setColor(Color.WHITE);
         arrowColor.setColor(Color.BLACK);
-        fastestPathColor.setColor(Color.MAGENTA);
+        //fastestPathColor.setColor(Color.MAGENTA);
 
         // get shared preferences
         sharedPreferences = getContext().getSharedPreferences("Shared Preferences", Context.MODE_PRIVATE);
@@ -122,19 +127,41 @@ public class GridMap extends View {
             arrowCoord.add(dummyArrowCoord);
             this.createCell();
             this.setEndCoord(14, 19);
-            mapDrawn = true;
+            newEndCoord=true;
+            showLog("Map drawn");
         }
 
         drawIndividualCell(canvas);
         drawHorizontalLines(canvas);
         drawVerticalLines(canvas);
         drawGridNumber(canvas);
+
+        if(newEndCoord==true){
+            int endcol = 14;
+            int endrow = 19;
+            endrow = this.convertRow(endrow);
+            RectF endrect = new RectF(endcol * cellSize, endrow * cellSize, (endcol + 1) * cellSize, (endrow + 1) * cellSize);
+            Bitmap goal = BitmapFactory.decodeResource(getResources(), R.drawable.goal);
+            canvas.drawBitmap(goal, null, endrect, null);
+            mapDrawn = true;
+            newEndCoord=false;
+        }
+
         if (getCanDrawRobot())
             drawRobot(canvas, curCoord);
-        drawArrow(canvas, arrowCoord);
+        //drawArrow(canvas, arrowCoord);
 
         showLog("Exiting onDraw");
     }
+    /*private void drawWaypoint(Canvas canvas){
+        int col=waypointCoord[0];
+        int row=waypointCoord[1];
+        row = this.convertRow(row);
+        cells[col][row].setType("waypoint");
+        RectF rect = new RectF(col * cellSize, row * cellSize, (col + 1) * cellSize, (row + 1) * cellSize);
+        Bitmap dog = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
+        canvas.drawBitmap(dog, null, rect, null);
+    }*/
 
     private void drawIndividualCell(Canvas canvas) {
         showLog("Entering drawIndividualCell");
@@ -191,10 +218,28 @@ public class GridMap extends View {
     private void drawRobot(Canvas canvas, int[] curCoord) {
         showLog("Entering drawRobot");
         int androidRowCoord = this.convertRow(curCoord[1]);
-        for (int y = androidRowCoord; y <= androidRowCoord + 1; y++)
-            canvas.drawLine(cells[curCoord[0] - 1][y].startX, cells[curCoord[0] - 1][y].startY - (cellSize / 30), cells[curCoord[0] + 1][y].endX, cells[curCoord[0] + 1][y].startY - (cellSize / 30), robotColor);
-        for (int x = curCoord[0] - 1; x < curCoord[0] + 1; x++)
+        if(newEndCoord){
+            int endcol = 14;
+            int endrow = 19;
+            endrow = this.convertRow(endrow);
+            RectF endrect = new RectF(endcol * cellSize, endrow * cellSize, (endcol + 1) * cellSize, (endrow + 1) * cellSize);
+            Bitmap goal = BitmapFactory.decodeResource(getResources(), R.drawable.goal);
+            canvas.drawBitmap(goal, null, endrect, null);
+            newEndCoord=false;
+        }
+        for (int y = androidRowCoord; y <= androidRowCoord + 1; y++){
+            canvas.drawLine(cells[curCoord[0] - 1][y].startX, cells[curCoord[0] - 1][y].startY - (cellSize / 30), cells[curCoord[0] + 1][y].endX, cells[curCoord[0] + 1][y].startY - (cellSize / 30), robotColor );
+        }
+            //canvas.drawBitmap(bitmap, null, mRedPaddleRect, mPaint);
+        for (int x = curCoord[0] - 1; x < curCoord[0] + 1; x++){
             canvas.drawLine(cells[x][androidRowCoord - 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord - 1].startY, cells[x][androidRowCoord + 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord + 1].endY, robotColor);
+        }
+        int col = curCoord[0];
+        int row = androidRowCoord;
+        RectF rect = new RectF(col * cellSize, row * cellSize, (col + 1) * cellSize, (row + 1) * cellSize);
+        Bitmap robot = BitmapFactory.decodeResource(getResources(), R.drawable.robot);
+        canvas.drawBitmap(robot, null, rect, null);
+        //canvas.drawRect(cells[curCoord[0] - 1][androidRowCoord - 1].startX,cells[curCoord[0] - 1][androidRowCoord - 1].startY,cells[curCoord[0] - 1][androidRowCoord + 1].startX,cells[curCoord[0] - 1][androidRowCoord + 1].endY,waypointColor);
 
         switch (this.getRobotDirection()) {
             case "up":
@@ -206,6 +251,17 @@ public class GridMap extends View {
                 canvas.drawLine((cells[curCoord[0]][androidRowCoord + 1].startX + cells[curCoord[0]][androidRowCoord + 1].endX) / 2, cells[curCoord[0]][androidRowCoord + 1].endY, cells[curCoord[0] + 1][androidRowCoord - 1].endX, cells[curCoord[0] + 1][androidRowCoord - 1].startY, blackPaint);
                 break;
             case "right":
+                /*float startx=cells[curCoord[0] - 1][androidRowCoord - 1].startX;
+                float starty = cells[curCoord[0] - 1][androidRowCoord - 1].startY;
+                float endx=cells[curCoord[0] + 1][androidRowCoord].endX;
+                float endy=cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2;
+                showLog("start x"+startx);showLog("start y"+starty); showLog("end x"+endx);showLog("end y"+endy);
+
+                startx=cells[curCoord[0] + 1][androidRowCoord].endX;
+                starty = cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2;
+                endx=cells[curCoord[0] - 1][androidRowCoord + 1].startX;
+                endy=cells[curCoord[0] - 1][androidRowCoord + 1].endY;
+                showLog("start x"+startx);showLog("start y"+starty); showLog("end x"+endx);showLog("end y"+endy);*/
                 canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord - 1].startX, cells[curCoord[0] - 1][androidRowCoord - 1].startY, cells[curCoord[0] + 1][androidRowCoord].endX, cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2, blackPaint);
                 canvas.drawLine(cells[curCoord[0] + 1][androidRowCoord].endX, cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2, cells[curCoord[0] - 1][androidRowCoord + 1].startX, cells[curCoord[0] - 1][androidRowCoord + 1].endY, blackPaint);
                 break;
@@ -250,6 +306,45 @@ public class GridMap extends View {
         backupMapInformation = receivedJsonObject;
     }
 
+    /*public static void findMDF(){
+        String obstacleString="";
+        String exploredString="";
+        String hexStringExplored="";
+        BigInteger hexBigIntegerExplored, hexBigIntegerObstacle;
+        for (int y=ROW-1; y>=0; y--)
+            for (int x=1; x<=COL; x++)
+                if (cells[x][y].type.equals("explored") || cells[x][y].type.equals("robot") || cells[x][y].type.equals("obstacle") || cells[x][y].type.equals("arrow"))
+                    exploredString = exploredString + "1";
+                else
+                    exploredString = exploredString + "0";
+        exploredString = exploredString + "11";
+
+        hexBigIntegerExplored = new BigInteger(exploredString, 2);
+        hexStringExplored = hexBigIntegerExplored.toString(16);
+        for (int y=ROW-1; y>=0; y--)
+            for (int x=1; x<=COL; x++)
+                if (cells[x][y].type.equals("explored") || cells[x][y].type.equals("robot"))
+                    obstacleString = obstacleString + "0";
+                else if (cells[x][y].type.equals("obstacle") || cells[x][y].type.equals("arrow"))
+                    obstacleString = obstacleString + "1";
+
+        while ((obstacleString.length() % 8) != 0) {
+            obstacleString = obstacleString + "0";
+        }
+
+        //publicMDFObstacle = obstacleString;
+        //publicMDFExploration = exploredString;
+        publicMDFExploration = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+        publicMDFObstacle = binaryToHex(obstacleString);
+        //publicMDFExploration = binaryToHex(exploredString);
+    }*/
+    public static String binaryToHex(String bin) {
+        String hex;
+        BigInteger b = new BigInteger(bin, 2);
+        hex=b.toString(16);
+        return hex;
+    }
     public boolean getAutoUpdate() {
         return autoUpdate;
     }
@@ -318,22 +413,31 @@ public class GridMap extends View {
         showLog("Exiting createCell");
     }
 
-    public void setEndCoord(int col, int row) {
+    /*public void setEndCoord(Canvas canvas,int col, int row) {
         showLog("Entering setEndCoord");
         row = this.convertRow(row);
         for (int x = col - 1; x <= col + 1; x++)
             for (int y = row - 1; y <= row + 1; y++)
                 cells[x][y].setType("end");
         showLog("Exiting setEndCoord");
+    }*/
+    public void setEndCoord(int col, int row) {
+        showLog("Entering setEndCoord");
+        row = this.convertRow(row);
+        for (int x = col - 1; x <= col + 1; x++)
+            for (int y = row - 1; y <= row + 1; y++)
+                cells[x][y].setType("end");
+
+        showLog("Exiting setEndCoord");
     }
 
-    public void setStartCoord(int col, int row) {
+    public void setStartCoord(int col, int row) throws JSONException {
         showLog("Entering setStartCoord");
         startCoord[0] = col;
         startCoord[1] = row;
         String direction = getRobotDirection();
         if(direction.equals("None")) {
-            direction = "up";
+            direction = "right";
         }
         if (this.getStartCoordStatus())
             this.setCurCoord(col, row, direction);
@@ -414,7 +518,7 @@ public class GridMap extends View {
         robotDirection = direction;
         editor.putString("direction", direction);
         editor.commit();
-        this.invalidate();;
+        this.invalidate();
     }
 
     private void updateRobotAxis(int col, int row, String direction) {
@@ -427,13 +531,19 @@ public class GridMap extends View {
         directionAxisTextView.setText(direction);
     }
 
-    private void setWaypointCoord(int col, int row) throws JSONException {
+    public void setWaypointCoord(int col, int row) throws JSONException {
         showLog("Entering setWaypointCoord");
         waypointCoord[0] = col;
         waypointCoord[1] = row;
+        waypointNew=true;
+        //Canvas canvas = null;
 
         row = this.convertRow(row);
         cells[col][row].setType("waypoint");
+        /*RectF rect = new RectF(col * cellSize, row * cellSize, (col + 1) * cellSize, (row + 1) * cellSize);
+        Bitmap dog = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
+        canvas.drawBitmap(dog, null, rect, null);*/
+        this.invalidate();
 
         MainActivity.printMessage("waypoint", waypointCoord[1]-1,waypointCoord[0]-1);
         showLog("Exiting setWaypointCoord");
@@ -460,7 +570,7 @@ public class GridMap extends View {
         Log.d(TAG, message);
     }
 
-    private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord) {
+    /*private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord) {
         showLog("Entering drawArrow");
         RectF rect;
 
@@ -489,7 +599,7 @@ public class GridMap extends View {
             }
             showLog("Exiting drawArrow");
         }
-    }
+    }*/
 
 
     private class Cell {
@@ -534,12 +644,12 @@ public class GridMap extends View {
                 case "arrow":
                     this.paint = arrowColor;
                     break;
-                case "fastestPath":
+                /*case "fastestPath":
                     this.paint = fastestPathColor;
                     break;
                 case "image":
                     this.paint = obstacleColor;
-                    break;
+                    break;*/
                 case "id":
                     this.paint = obstacleColor;
                     break;
@@ -558,10 +668,12 @@ public class GridMap extends View {
         }
     }
 
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         showLog("Entering onTouchEvent");
+        //if (event.getAction() == MotionEvent.ACTION_DOWN && this.stopExplore==false) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && this.getAutoUpdate() == false) {
+            //if (event.getAction() == MotionEvent.ACTION_DOWN) {
             int column = (int) (event.getX() / cellSize);
             int row = this.convertRow((int) (event.getY() / cellSize));
             ToggleButton setStartPointToggleBtn = ((Activity)this.getContext()).findViewById(R.id.setStartPointToggleBtn);
@@ -579,7 +691,11 @@ public class GridMap extends View {
                 }
                 else
                     canDrawRobot = true;
-                this.setStartCoord(column, row);
+                try {
+                    this.setStartCoord(column, row);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 startCoordStatus = false;
                 String direction = getRobotDirection();
                 if(direction.equals("None")) {
@@ -634,7 +750,7 @@ public class GridMap extends View {
             }
             if (unSetCellStatus) {
                 ArrayList<int[]> obstacleCoord = this.getObstacleCoord();
-                cells[column][20-row].setType("unexplored");
+                cells[column][20-row].setType("explored");
                 for (int i=0; i<obstacleCoord.size(); i++)
                     if (obstacleCoord.get(i)[0] == column && obstacleCoord.get(i)[1] == row)
                         obstacleCoord.remove(i);
@@ -644,9 +760,9 @@ public class GridMap extends View {
         }
         showLog("Exiting onTouchEvent");
         return false;
-    }
+    }*/
 
-    public void toggleCheckedBtn(String buttonName) {
+    /*public void toggleCheckedBtn(String buttonName) {
         ToggleButton setStartPointToggleBtn = ((Activity)this.getContext()).findViewById(R.id.setStartPointToggleBtn);
         ToggleButton setWaypointToggleBtn = ((Activity)this.getContext()).findViewById(R.id.setWaypointToggleBtn);
         ImageButton obstacleImageBtn = ((Activity)this.getContext()).findViewById(R.id.obstacleImageBtn);
@@ -672,8 +788,36 @@ public class GridMap extends View {
         if (!buttonName.equals("clearImageBtn"))
             if (clearImageBtn.isEnabled())
                 this.setUnSetCellStatus(false);
-    }
+    }*/
 
+    public void setStartingPointManual() throws JSONException {
+        //TextView robotStatusTextView = ((Activity)this.getContext()).findViewById(R.id.robotStatusTextView);
+        //robotStatusTextView.setText("yesss");
+        if (canDrawRobot)
+            this.setOldRobotCoord(curCoord[0], curCoord[1]);
+        Integer[] infoJsonArray = new Integer[]{0,17,90};
+//                    infoJsonObject = infoJsonArray.getJSONObject(0);
+
+        for (int row = ROW - 1; row >= 0; row--)
+            for (int col = 1; col <= COL; col++)
+                cells[col][row].setType("unexplored");
+
+        String direction;
+        if (infoJsonArray[2] == 90) {
+            direction = "right";
+        } else if (infoJsonArray[2] == 180) {
+            direction = "down";
+        } else if (infoJsonArray[2] == 270) {
+            direction = "left";
+        } else {
+            direction = "up";
+        }
+        this.setStartCoord(infoJsonArray[0], infoJsonArray[1]);
+        this.setCurCoord(infoJsonArray[0]+2, convertRow(infoJsonArray[1])-1, direction);
+        canDrawRobot = true;
+        setEndCoord(14, 19);
+        newEndCoord=true;
+    }
 
     public void resetMap() {
         showLog("Entering resetMap");
@@ -689,7 +833,7 @@ public class GridMap extends View {
             manualAutoToggleBtn.toggle();
             manualAutoToggleBtn.setText("MANUAL");
         }
-        this.toggleCheckedBtn("None");
+        //this.toggleCheckedBtn("None");
 
         if (phoneTiltSwitch.isChecked()) {
             phoneTiltSwitch.toggle();
@@ -778,30 +922,34 @@ public class GridMap extends View {
                         cells[waypointCoord[0]][20 - waypointCoord[1]].setType("waypoint");
                     break;
                 case "robotPosition":
-                    //TextView robotStatusTextView = ((Activity)this.getContext()).findViewById(R.id.robotStatusTextView);
+                    infoJsonArray = mapInformation.getJSONArray("robotPosition");
+                    if (infoJsonArray.getInt(0)<=13 && infoJsonArray.getInt(0)>=0 && infoJsonArray.getInt(1)<=18 && infoJsonArray.getInt(1)>=0){
+                        //TextView robotStatusTextView = ((Activity)this.getContext()).findViewById(R.id.robotStatusTextView);
                     //robotStatusTextView.setText("yesss");
                     if (canDrawRobot)
                         this.setOldRobotCoord(curCoord[0], curCoord[1]);
-                    infoJsonArray = mapInformation.getJSONArray("robotPosition");
+
 //                    infoJsonObject = infoJsonArray.getJSONObject(0);
 
-                    for (int row = ROW - 1; row >= 0; row--)
+                    /*for (int row = ROW - 1; row >= 0; row--)
                         for (int col = 1; col <= COL; col++)
-                            cells[col][row].setType("unexplored");
+                            cells[col][row].setType("unexplored");*/
 
-                    String direction;
-                    if (infoJsonArray.getInt(2) == 90) {
-                        direction = "right";
-                    } else if (infoJsonArray.getInt(2) == 180) {
-                        direction = "down";
-                    } else if (infoJsonArray.getInt(2) == 270) {
-                        direction = "left";
-                    } else {
-                        direction = "up";
+                        String direction;
+                        if (infoJsonArray.getInt(2) == 90) {
+                            direction = "right";
+                        } else if (infoJsonArray.getInt(2) == 180) {
+                            direction = "down";
+                        } else if (infoJsonArray.getInt(2) == 270) {
+                            direction = "left";
+                        } else {
+                            direction = "up";
+                        }
+                        this.setStartCoord(infoJsonArray.getInt(0), infoJsonArray.getInt(1));
+                        this.setCurCoord(infoJsonArray.getInt(0)+1, convertRow(19-infoJsonArray.getInt(1)), direction);
+                        //this.setCurCoord(infoJsonArray.getInt(0)+2, convertRow(infoJsonArray.getInt(1)), direction);
+                        canDrawRobot = true;
                     }
-                    this.setStartCoord(infoJsonArray.getInt(0), infoJsonArray.getInt(1));
-                    this.setCurCoord(infoJsonArray.getInt(0)+2, convertRow(infoJsonArray.getInt(1))-1, direction);
-                    canDrawRobot = true;
                     break;
                 case "waypoint":
                     infoJsonArray = mapInformation.getJSONArray("waypoint");
@@ -813,7 +961,7 @@ public class GridMap extends View {
                     infoJsonArray = mapInformation.getJSONArray("obstacle");
                     for (int j = 0; j < infoJsonArray.length(); j++) {
                         infoJsonObject = infoJsonArray.getJSONObject(j);
-                        this.setObstacleCoord(infoJsonObject.getInt("x"), infoJsonObject.getInt("y"));
+                        this.setObstacleCoord(infoJsonObject.getInt("x")+1, infoJsonObject.getInt("y")+1);
                     }
                     message = "No. of Obstacle: " + String.valueOf(infoJsonArray.length());
                     break;
@@ -828,12 +976,12 @@ public class GridMap extends View {
                     }
                     break;
                 case "move":
-                    message = "works, kinda";
                     infoJsonArray = mapInformation.getJSONArray("move");
                     infoJsonObject = infoJsonArray.getJSONObject(0);
                     if (canDrawRobot)
                         moveRobot(infoJsonObject.getString("direction"));
                     message = "moveDirection: " + infoJsonObject.getString("direction");
+                    //message = "length of the map info: " + mapInformation.names().length();
                     break;
                 case "status":
 //                    infoJsonArray = mapInformation.getJSONArray("status");
@@ -1160,5 +1308,6 @@ public class GridMap extends View {
     public static String getPublicMDFObstacle() {
         return publicMDFObstacle;
     }
+
 
 }
